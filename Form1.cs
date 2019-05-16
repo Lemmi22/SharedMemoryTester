@@ -44,7 +44,7 @@ using Timer = System.Timers.Timer;
 // PHCC-40DO RightEyebrow, Caution Panel: 0x10
 // PHCC-40DO LeftEyebrow, Indexers, Other Indicators: 0x12
 
-// Adresses for PHCC-boards (hardcoded on PIC)
+// Adresses for PHCC-boards (hardcoded on PIC),
 // All charges from "Airdances PHCC lot":
 
 // DOA_Stepper : 0x73, 0x72, 0x71, 0x70
@@ -111,7 +111,7 @@ namespace WindowsFormsApplication1
         public sbyte altAB2 = 0;
 
         // public sbyte[] schritteTab = {0,0,0,0,0,0,0,-1,0,0,0,0,0,1,0,0}; // 1/1 resolution, bad results!!!!
-        //  public sbyte[] schritteTab = {0,0,1,0,0,0,0,-1,-1,0,0,0,0,1,0,0}; // TEST2
+        // public sbyte[] schritteTab = {0,0,1,0,0,0,0,-1,-1,0,0,0,0,1,0,0}; // TEST2
         // public sbyte[] schritteTab = { 0, 0, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 0, 0 }; // TEST2
         // public sbyte[] schritteTab = { 0,  1, -1, 0, -1, 0, 0,  1,  1, 0, 0, -1, 0, -1,  1, 0 }; //TEST1
         // public sbyte[] schritteTab = { 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 };  //  1/4 resolution
