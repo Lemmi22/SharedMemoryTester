@@ -1,10 +1,10 @@
-﻿// Erstellt mit:
+﻿// Created with
 // ------------ VISUAL STUDIO C# 2017 --------------
 //
-// Erforderliche Ressource:
+// Ressources needed:
 // ------------ Frame Network 4.5.1 ----------------
 //
-// Datum: 14.07.2017 LE
+// Last update: 16.05.2019 LE
 
 
 
@@ -54,7 +54,7 @@ using Timer = System.Timers.Timer;
 // DOA_40DO    : 0x13, 0x12, 0x11, 0x10
 // DOA_7seg    : 0x34, 0x33, 0x32, 0x31, 0x30
 
-// Definition für 7-Segment-Anzeige:
+// Definition for 7-segment-displays:
 //
 //             --a--
 //            |     |
@@ -66,9 +66,9 @@ using Timer = System.Timers.Timer;
 //            |     |
 //             --d--      . DP
 //
-// Board-Adresse: 0x30, 
-// Sub-Addr. 0x00       (Erste-7-Segment-Anzeige, usw.)
-// Sub-Addr. 0 bis 31   (14 wäre Display 15,  bei 32 Displays maximum pro Karte).
+// Board-adress: 0x30, 
+// Sub-addr. 0x00       (Erste-7-Segment-Anzeige, usw.)
+// Sub-addr. 0 bis 31   (14 wäre Display 15,  bei 32 Displays maximum pro Karte).
 //
 // Data Byte für einzelne Segmente:
 //
@@ -157,10 +157,6 @@ namespace WindowsFormsApplication1
             this.label3.Text = "";
             this.label4.Text = "";
             this.label6.Text = "";
-
-
-
-
 
             //  SpeechSynthesizer readerSpeech = new SpeechSynthesizer();
             //  readerSpeech = new SpeechSynthesizer();
