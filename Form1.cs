@@ -38,16 +38,14 @@ using F4KeyFile;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
-
-
 // Adresses for PHCC-boards (hardcoded on PIC):
 //
 // PHCC-CMDS: 0x44
 // PHCC-40DO RightEyebrow, Caution Panel: 0x10
 // PHCC-40DO LeftEyebrow, Indexers, Other Indicators: 0x12
 
-// Adresses for PHCC-boards (hardcoded on PIC):
-// For all charges from "Airdances PHCC lot".
+// Adresses for PHCC-boards (hardcoded on PIC)
+// All charges from "Airdances PHCC lot":
 
 // DOA_Stepper : 0x73, 0x72, 0x71, 0x70
 // DOA_Aircore : 0x83, 0x82, 0x81, 0x80
@@ -57,7 +55,6 @@ using Timer = System.Timers.Timer;
 // DOA_7seg    : 0x34, 0x33, 0x32, 0x31, 0x30
 
 // Definition für 7-Segment-Anzeige:
-//
 //
 //             --a--
 //            |     |
@@ -93,7 +90,6 @@ namespace WindowsFormsApplication1
 
     public partial class Form1 : Form
     {
-
 
         // SerialPort port2;                       // Ansonsten port statt port1 ... 
         // auch unten bei den RPM-Write-Routinen!
@@ -646,22 +642,20 @@ namespace WindowsFormsApplication1
         //       }
 
         // currently working
-    //    OuterMarker  = 0x01,	// defined in HsiBits    - slow flashing for outer marker
-	//	MiddleMarker = 0x02,	// defined in HsiBits    - fast flashing for middle marker
-	//	PROBEHEAT    = 0x04,	// defined in LightBits2 - probeheat system is tested
-	//	AuxSrch      = 0x08,	// defined in LightBits2 - search function in NOT activated and a search radar is painting ownship
-	//	Launch       = 0x10,	// defined in LightBits2 - missile is fired at ownship
-	//	PriMode      = 0x20,	// defined in LightBits2 - priority mode is enabled but more than 5 threat emitters are detected
-	//	Unk          = 0x40,	// defined in LightBits2 - unknown is not active but EWS detects unknown radar
+        //    OuterMarker  = 0x01,	// defined in HsiBits    - slow flashing for outer marker
+	    //	MiddleMarker = 0x02,	// defined in HsiBits    - fast flashing for middle marker
+	    //	PROBEHEAT    = 0x04,	// defined in LightBits2 - probeheat system is tested
+	    //	AuxSrch      = 0x08,	// defined in LightBits2 - search function in NOT activated and a search radar is painting ownship
+	    //	Launch       = 0x10,	// defined in LightBits2 - missile is fired at ownship
+	    //	PriMode      = 0x20,	// defined in LightBits2 - priority mode is enabled but more than 5 threat emitters are detected
+	    //	Unk          = 0x40,	// defined in LightBits2 - unknown is not active but EWS detects unknown radar
 
 		// not working yet, defined for future use
-	//	Elec_Fault   = 0x80,	// defined in LightBits3 - non-resetting fault
-	//	OXY_BROW     = 0x100,	// defined in LightBits  - monitor fault during Obogs
-	//	EPUOn        = 0x200,	// defined in LightBits3 - abnormal EPU operation
-	//	JFSOn_Slow   = 0x400,	// defined in LightBits3 - slow blinking: non-critical failure - 1x pro Sek.
-	//	JFSOn_Fast   = 0x800,	// defined in LightBits3 - fast blinking: critical failure - 2x pro Sek.
-
-
+	    //	Elec_Fault   = 0x80,	// defined in LightBits3 - non-resetting fault
+	    //	OXY_BROW     = 0x100,	// defined in LightBits  - monitor fault during Obogs
+	    //	EPUOn        = 0x200,	// defined in LightBits3 - abnormal EPU operation
+	    //	JFSOn_Slow   = 0x400,	// defined in LightBits3 - slow blinking: non-critical failure - 1x pro Sek.
+	    //	JFSOn_Fast   = 0x800,	// defined in LightBits3 - fast blinking: critical failure - 2x pro Sek.
 
         public void Blink_ElecSys()
         { // WORKS! 16.05.2019 LE.
