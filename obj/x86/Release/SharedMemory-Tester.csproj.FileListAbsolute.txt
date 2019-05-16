@@ -1,0 +1,3 @@
+K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\WindowsFormsApplication1.Form1.resources
+K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\WindowsFormsApplication1.Properties.Resources.resources
+K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\SharedMemory-Tester.csproj.GenerateResource.Cache
