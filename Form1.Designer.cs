@@ -44,7 +44,6 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.textBox7 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -53,7 +52,6 @@
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -83,6 +81,25 @@
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button6 = new System.Windows.Forms.Button();
+            this.grid = new System.Windows.Forms.DataGridView();
+            this.LineNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LineType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Callback = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kbKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kbComboKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kbUIVisibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diButton = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.diCallbackInvocationBehavior = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button3 = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label5 = new System.Windows.Forms.Label();
+            this.progressBar2 = new System.Windows.Forms.ProgressBar();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -95,6 +112,11 @@
             this.groupBox6.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -130,7 +152,7 @@
             this.groupBox1.Controls.Add(this.textBox3);
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Location = new System.Drawing.Point(226, 387);
+            this.groupBox1.Location = new System.Drawing.Point(226, 185);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(192, 107);
             this.groupBox1.TabIndex = 10;
@@ -141,7 +163,7 @@
             // 
             this.groupBox2.Controls.Add(this.textBox10);
             this.groupBox2.Controls.Add(this.textBox1);
-            this.groupBox2.Location = new System.Drawing.Point(25, 345);
+            this.groupBox2.Location = new System.Drawing.Point(22, 401);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(132, 100);
             this.groupBox2.TabIndex = 11;
@@ -158,7 +180,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.textBox5);
-            this.groupBox3.Location = new System.Drawing.Point(25, 283);
+            this.groupBox3.Location = new System.Drawing.Point(22, 339);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(132, 53);
             this.groupBox3.TabIndex = 12;
@@ -176,7 +198,7 @@
             // 
             this.groupBox4.Controls.Add(this.textBox11);
             this.groupBox4.Controls.Add(this.textBox6);
-            this.groupBox4.Location = new System.Drawing.Point(25, 194);
+            this.groupBox4.Location = new System.Drawing.Point(22, 250);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(132, 83);
             this.groupBox4.TabIndex = 13;
@@ -201,7 +223,7 @@
             // 
             this.groupBox5.Controls.Add(this.textBox12);
             this.groupBox5.Controls.Add(this.textBox7);
-            this.groupBox5.Location = new System.Drawing.Point(25, 94);
+            this.groupBox5.Location = new System.Drawing.Point(22, 150);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(132, 94);
             this.groupBox5.TabIndex = 14;
@@ -222,18 +244,9 @@
             this.textBox7.Size = new System.Drawing.Size(59, 20);
             this.textBox7.TabIndex = 0;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(193, 331);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "label5";
-            // 
             // textBox8
             // 
-            this.textBox8.Location = new System.Drawing.Point(15, 19);
+            this.textBox8.Location = new System.Drawing.Point(11, 18);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(48, 20);
             this.textBox8.TabIndex = 17;
@@ -241,7 +254,7 @@
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.textBox8);
-            this.groupBox7.Location = new System.Drawing.Point(25, 12);
+            this.groupBox7.Location = new System.Drawing.Point(22, 6);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(82, 50);
             this.groupBox7.TabIndex = 18;
@@ -251,7 +264,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(114, 37);
+            this.label7.Location = new System.Drawing.Point(281, 377);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 19;
@@ -260,7 +273,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(352, 331);
+            this.label8.Location = new System.Drawing.Point(281, 401);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 13);
             this.label8.TabIndex = 20;
@@ -269,7 +282,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(352, 365);
+            this.label9.Location = new System.Drawing.Point(281, 432);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(35, 13);
             this.label9.TabIndex = 21;
@@ -285,7 +298,7 @@
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.textBox9);
-            this.groupBox8.Location = new System.Drawing.Point(226, 507);
+            this.groupBox8.Location = new System.Drawing.Point(22, 77);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(119, 55);
             this.groupBox8.TabIndex = 23;
@@ -295,34 +308,26 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(193, 365);
+            this.label10.Location = new System.Drawing.Point(281, 455);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(41, 13);
             this.label10.TabIndex = 24;
             this.label10.Text = "label10";
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(18, 539);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 54;
-            this.button3.Text = "Pause";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(18, 568);
+            this.button4.Location = new System.Drawing.Point(46, 594);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(98, 23);
             this.button4.TabIndex = 61;
+            this.button4.Text = "Pause";
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.Red;
             this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button2.Location = new System.Drawing.Point(576, 343);
+            this.button2.Location = new System.Drawing.Point(21, 438);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -334,7 +339,7 @@
             // 
             this.button1.BackColor = System.Drawing.Color.ForestGreen;
             this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.Location = new System.Drawing.Point(576, 313);
+            this.button1.Location = new System.Drawing.Point(21, 409);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -363,9 +368,9 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(284, 145);
+            this.pictureBox1.Location = new System.Drawing.Point(324, 8);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(222, 153);
+            this.pictureBox1.Size = new System.Drawing.Size(138, 112);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -382,7 +387,7 @@
             // 
             this.progressBar1.BackColor = System.Drawing.Color.Red;
             this.progressBar1.ForeColor = System.Drawing.Color.Green;
-            this.progressBar1.Location = new System.Drawing.Point(753, 318);
+            this.progressBar1.Location = new System.Drawing.Point(204, 416);
             this.progressBar1.MarqueeAnimationSpeed = 10;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(14, 13);
@@ -391,7 +396,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(223, 573);
+            this.label11.Location = new System.Drawing.Point(97, 143);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(89, 13);
             this.label11.TabIndex = 51;
@@ -427,7 +432,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(662, 318);
+            this.label13.Location = new System.Drawing.Point(115, 414);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(89, 13);
             this.label13.TabIndex = 53;
@@ -459,7 +464,7 @@
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.comboBox1);
             this.groupBox6.Controls.Add(this.groupBox9);
-            this.groupBox6.Location = new System.Drawing.Point(517, 31);
+            this.groupBox6.Location = new System.Drawing.Point(204, 140);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(250, 112);
             this.groupBox6.TabIndex = 57;
@@ -485,7 +490,7 @@
             this.groupBox10.Controls.Add(this.comboBox4);
             this.groupBox10.Controls.Add(this.comboBox3);
             this.groupBox10.Controls.Add(this.comboBox2);
-            this.groupBox10.Location = new System.Drawing.Point(517, 159);
+            this.groupBox10.Location = new System.Drawing.Point(205, 264);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size(250, 139);
             this.groupBox10.TabIndex = 58;
@@ -567,7 +572,7 @@
             this.groupBox11.Controls.Add(this.label6);
             this.groupBox11.Controls.Add(this.label2);
             this.groupBox11.Controls.Add(this.label4);
-            this.groupBox11.Location = new System.Drawing.Point(226, 31);
+            this.groupBox11.Location = new System.Drawing.Point(16, 8);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(280, 112);
             this.groupBox11.TabIndex = 59;
@@ -577,51 +582,233 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(515, 416);
+            this.listBox1.Location = new System.Drawing.Point(226, 19);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(150, 147);
             this.listBox1.TabIndex = 60;
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(676, 376);
+            this.button6.Location = new System.Drawing.Point(397, 19);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 0;
             this.button6.Text = "Restart ";
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // grid
+            // 
+            this.grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.grid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.grid.CausesValidation = false;
+            this.grid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.LineNum,
+            this.LineType,
+            this.Description,
+            this.Callback,
+            this.kbKey,
+            this.kbComboKey,
+            this.kbUIVisibility,
+            this.SoundId,
+            this.diButton,
+            this.diCallbackInvocationBehavior});
+            this.grid.Location = new System.Drawing.Point(46, 35);
+            this.grid.Name = "grid";
+            this.grid.ReadOnly = true;
+            this.grid.Size = new System.Drawing.Size(938, 495);
+            this.grid.TabIndex = 62;
+            this.grid.Visible = false;
+            // 
+            // LineNum
+            // 
+            this.LineNum.HeaderText = "LineNum";
+            this.LineNum.Name = "LineNum";
+            this.LineNum.ReadOnly = true;
+            this.LineNum.Width = 74;
+            // 
+            // LineType
+            // 
+            this.LineType.HeaderText = "LineType";
+            this.LineType.Name = "LineType";
+            this.LineType.ReadOnly = true;
+            this.LineType.Width = 76;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.Width = 85;
+            // 
+            // Callback
+            // 
+            this.Callback.HeaderText = "Callback";
+            this.Callback.Name = "Callback";
+            this.Callback.ReadOnly = true;
+            this.Callback.Width = 73;
+            // 
+            // kbKey
+            // 
+            this.kbKey.HeaderText = "kbKey";
+            this.kbKey.Name = "kbKey";
+            this.kbKey.ReadOnly = true;
+            this.kbKey.Width = 62;
+            // 
+            // kbComboKey
+            // 
+            this.kbComboKey.HeaderText = "kbComboKey";
+            this.kbComboKey.Name = "kbComboKey";
+            this.kbComboKey.ReadOnly = true;
+            this.kbComboKey.Width = 95;
+            // 
+            // kbUIVisibility
+            // 
+            this.kbUIVisibility.HeaderText = "kbUIVisibility";
+            this.kbUIVisibility.Name = "kbUIVisibility";
+            this.kbUIVisibility.ReadOnly = true;
+            this.kbUIVisibility.Width = 91;
+            // 
+            // SoundId
+            // 
+            this.SoundId.HeaderText = "SoundId";
+            this.SoundId.Name = "SoundId";
+            this.SoundId.ReadOnly = true;
+            this.SoundId.Width = 72;
+            // 
+            // diButton
+            // 
+            this.diButton.HeaderText = "diButton";
+            this.diButton.Name = "diButton";
+            this.diButton.ReadOnly = true;
+            this.diButton.Width = 71;
+            // 
+            // diCallbackInvocationBehavior
+            // 
+            this.diCallbackInvocationBehavior.HeaderText = "diCallbackInvocationBehavior";
+            this.diCallbackInvocationBehavior.Name = "diCallbackInvocationBehavior";
+            this.diCallbackInvocationBehavior.ReadOnly = true;
+            this.diCallbackInvocationBehavior.Width = 173;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(46, 565);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(98, 23);
+            this.button3.TabIndex = 63;
+            this.button3.Text = "Load";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Location = new System.Drawing.Point(12, 25);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1036, 664);
+            this.tabControl1.TabIndex = 64;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.button5);
+            this.tabPage1.Controls.Add(this.groupBox11);
+            this.tabPage1.Controls.Add(this.groupBox6);
+            this.tabPage1.Controls.Add(this.groupBox10);
+            this.tabPage1.Controls.Add(this.button1);
+            this.tabPage1.Controls.Add(this.label11);
+            this.tabPage1.Controls.Add(this.button2);
+            this.tabPage1.Controls.Add(this.pictureBox1);
+            this.tabPage1.Controls.Add(this.label13);
+            this.tabPage1.Controls.Add(this.progressBar1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1028, 638);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Connection";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Controls.Add(this.progressBar2);
+            this.tabPage2.Controls.Add(this.button4);
+            this.tabPage2.Controls.Add(this.grid);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1028, 638);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "KeyFile";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(243, 604);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(35, 13);
+            this.label5.TabIndex = 64;
+            this.label5.Text = "label5";
+            // 
+            // progressBar2
+            // 
+            this.progressBar2.Enabled = false;
+            this.progressBar2.ForeColor = System.Drawing.Color.Green;
+            this.progressBar2.Location = new System.Drawing.Point(140, 565);
+            this.progressBar2.Name = "progressBar2";
+            this.progressBar2.Size = new System.Drawing.Size(301, 23);
+            this.progressBar2.Step = 1;
+            this.progressBar2.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar2.TabIndex = 63;
+            this.progressBar2.Visible = false;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.groupBox8);
+            this.tabPage3.Controls.Add(this.groupBox7);
+            this.tabPage3.Controls.Add(this.button6);
+            this.tabPage3.Controls.Add(this.label10);
+            this.tabPage3.Controls.Add(this.groupBox1);
+            this.tabPage3.Controls.Add(this.label9);
+            this.tabPage3.Controls.Add(this.listBox1);
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.groupBox5);
+            this.tabPage3.Controls.Add(this.label7);
+            this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.groupBox3);
+            this.tabPage3.Controls.Add(this.groupBox4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1028, 638);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Outputs";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(220, 472);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 60;
+            this.button5.Text = "button5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(786, 601);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.groupBox11);
-            this.Controls.Add(this.groupBox10);
-            this.Controls.Add(this.groupBox6);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.groupBox8);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.groupBox7);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.groupBox5);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(1168, 718);
+            this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "SharedMemory-Tester";
             this.groupBox1.ResumeLayout(false);
@@ -647,8 +834,15 @@
             this.groupBox10.PerformLayout();
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -665,7 +859,6 @@
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label label7;
@@ -677,7 +870,6 @@
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.TextBox textBox12;
-        public System.Windows.Forms.Button button3;
         public System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
@@ -707,6 +899,25 @@
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.DataGridView grid;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LineNum;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LineType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Description;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Callback;
+        private System.Windows.Forms.DataGridViewTextBoxColumn kbKey;
+        private System.Windows.Forms.DataGridViewTextBoxColumn kbComboKey;
+        private System.Windows.Forms.DataGridViewTextBoxColumn kbUIVisibility;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SoundId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diButton;
+        private System.Windows.Forms.DataGridViewTextBoxColumn diCallbackInvocationBehavior;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ProgressBar progressBar2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button5;
     }
 }
 

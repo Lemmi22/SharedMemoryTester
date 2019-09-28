@@ -23,91 +23,94 @@ using System.Speech.Synthesis;
 
 namespace WindowsFormsApplication1
 {
-   /* public class Value7seg {
+    /* public class Value7seg {
 
-        public byte SEGA = 0x80;
-        public byte SEGB = 0x40;
-        public byte SEGC = 0x20;
-        public byte SEGD = 0x08;
-        public byte SEGE = 0x04;
-        public byte SEGF = 0x02;
-        public byte SEGG = 0x01;
-        public byte SEGDP = 0x10;
-        public char Charto7seg(char test)
-        {// Variablen for 7-Segments:
-         // SEGA 0x80
-         // SEGB 0x40
-         // SEGC 0x20
-         // SEGD 0x08
-         // SEGE 0x04
-         // SEGF 0x02
-         // SEGG 0x01
-         // SEGDP 0x10
-            switch (test)
-            {
-                case '0': return (SEGA += SEGB += SEGC += SEGD += SEGE += SEGF);
-                case "1": return (SEGB += SEGC);
-                case "2": return (SEGA += SEGB += SEGG += SEGE += SEGD);
-                case "3": return (SEGA += SEGB += SEGC += SEGD += SEGG);
-                case "4": return (SEGF += SEGG += SEGB += SEGC);
-                case "5": return (SEGA += SEGF += SEGG += SEGC += SEGD);
-                case "6": return (SEGF += SEGE += SEGD += SEGC += SEGG);
-                case "7": return (SEGA += SEGB += SEGC);
-                case "8": return (SEGA += SEGB += SEGC += SEGD += SEGE += SEGF += SEGG);
-                case "9": return (SEGA += SEGB += SEGC += SEGF += SEGG);
-                    /* 
+         public byte SEGA = 0x80;
+         public byte SEGB = 0x40;
+         public byte SEGC = 0x20;
+         public byte SEGD = 0x08;
+         public byte SEGE = 0x04;
+         public byte SEGF = 0x02;
+         public byte SEGG = 0x01;
+         public byte SEGDP = 0x10;
+         public char Charto7seg(char test)
+         {// Variablen for 7-Segments:
+          // SEGA 0x80
+          // SEGB 0x40
+          // SEGC 0x20
+          // SEGD 0x08
+          // SEGE 0x04
+          // SEGF 0x02
+          // SEGG 0x01
+          // SEGDP 0x10
+             switch (test)
+             {
+                 case '0': return (SEGA += SEGB += SEGC += SEGD += SEGE += SEGF);
+                 case "1": return (SEGB += SEGC);
+                 case "2": return (SEGA += SEGB += SEGG += SEGE += SEGD);
+                 case "3": return (SEGA += SEGB += SEGC += SEGD += SEGG);
+                 case "4": return (SEGF += SEGG += SEGB += SEGC);
+                 case "5": return (SEGA += SEGF += SEGG += SEGC += SEGD);
+                 case "6": return (SEGF += SEGE += SEGD += SEGC += SEGG);
+                 case "7": return (SEGA += SEGB += SEGC);
+                 case "8": return (SEGA += SEGB += SEGC += SEGD += SEGE += SEGF += SEGG);
+                 case "9": return (SEGA += SEGB += SEGC += SEGF += SEGG);
+                     /* 
 
-                    case '.': return (SEGDP);
-                    case '-': return (SEGG);
-                    case '+': return (SEGG|SEGF|SEGE);
-                    case 'A':
-                    case 'a': return (SEGA|SEGB|SEGC|SEGE|SEGF|SEGG);
-                    case 'C':
-                    case 'c': return (SEGA|SEGD|SEGE|SEGF);
-                    case 'E':
-                    case 'e': return (SEGA|SEGD|SEGE|SEGF|SEGG);
-                    case 'F':
-                    case 'f': return (SEGA|SEGE|SEGF|SEGG);
-                    case 'G':
-                    case 'g': return (SEGA|SEGC|SEGD|SEGE|SEGF);
-                    case 'H':
-                    case 'h': return (SEGB|SEGC|SEGE|SEGF|SEGG);
-                    case 'J':
-                    case 'j': return (SEGB|SEGC|SEGD|SEGE);
-                    case 'L':
-                    case 'l': return (SEGD|SEGE|SEGF);
-                    case 'N':
-                    case 'n': return (SEGC|SEGE|SEGG);
-                    case 'O':
-                    case 'o': return (SEGC|SEGD|SEGE|SEGG);
-                    case 'P':
-                    case 'p': return (SEGA|SEGB|SEGE|SEGF|SEGG);
-                    case 'R':
-                    case 'r': return (SEGE|SEGG);
-                    case 'T':
-                    case 't': return (SEGD|SEGE|SEGF|SEGG);
-                    case 'U':
-                    case 'u': return (SEGB|SEGC|SEGD|SEGE|SEGF);
-                    case 'Y':
-                    case 'y': return (SEGB|SEGE|SEGF|SEGG);
-                    case ' ':
-                    */
+                     case '.': return (SEGDP);
+                     case '-': return (SEGG);
+                     case '+': return (SEGG|SEGF|SEGE);
+                     case 'A':
+                     case 'a': return (SEGA|SEGB|SEGC|SEGE|SEGF|SEGG);
+                     case 'C':
+                     case 'c': return (SEGA|SEGD|SEGE|SEGF);
+                     case 'E':
+                     case 'e': return (SEGA|SEGD|SEGE|SEGF|SEGG);
+                     case 'F':
+                     case 'f': return (SEGA|SEGE|SEGF|SEGG);
+                     case 'G':
+                     case 'g': return (SEGA|SEGC|SEGD|SEGE|SEGF);
+                     case 'H':
+                     case 'h': return (SEGB|SEGC|SEGE|SEGF|SEGG);
+                     case 'J':
+                     case 'j': return (SEGB|SEGC|SEGD|SEGE);
+                     case 'L':
+                     case 'l': return (SEGD|SEGE|SEGF);
+                     case 'N':
+                     case 'n': return (SEGC|SEGE|SEGG);
+                     case 'O':
+                     case 'o': return (SEGC|SEGD|SEGE|SEGG);
+                     case 'P':
+                     case 'p': return (SEGA|SEGB|SEGE|SEGF|SEGG);
+                     case 'R':
+                     case 'r': return (SEGE|SEGG);
+                     case 'T':
+                     case 't': return (SEGD|SEGE|SEGF|SEGG);
+                     case 'U':
+                     case 'u': return (SEGB|SEGC|SEGD|SEGE|SEGF);
+                     case 'Y':
+                     case 'y': return (SEGB|SEGE|SEGF|SEGG);
+                     case ' ':
+                     */
 
 
-                    //             --a--
-                    //            |     |
-                    //            f     b
-                    //            |     |
-                    //             --g--
-                    //            |     |
-                    //            e     c
-                    //            |     |
-                    //             --d--
-           
-        
+    //             --a--
+    //            |     |
+    //            f     b
+    //            |     |
+    //             --g--
+    //            |     |
+    //            e     c
+    //            |     |
+    //             --d--
+
+
     public class F4Callbacks
     {
-       
+        //public enum Callbacks
+        //{
+        //    SimTogglePaused
+        //}
         public enum ScanCodes : int
         {
             NotAssigned = -1,
@@ -1097,6 +1100,64 @@ namespace WindowsFormsApplication1
         *-------------------------------------------------------------------------------------------
         */
 
+        public void HSIHeadingIncrease1()
+        { // ALT + Home
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Home, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Home, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, false, true);
+        }
+
+        public void HSIHeadingDecrease1()
+        { // CTRL + Home
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Home, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Home, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, false, true);
+        }
+
+        public void HSICourseIncrease1()
+        { // CTRL + DEL
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Delete, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Delete, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, false, true);
+        }
+
+        public void HSICourseDecrease1()
+        { // ALT + DEL
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Delete, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Delete, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, false, true);
+        }
+        public void AltPressureIncrease1()
+        { // CTRL + UpArrow
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Up, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Up, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LControl, false, true);
+        }
+
+        public void AltPressureDecrease1()
+        { // ALT + UpArrow
+
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, true, false);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Up, true, false);
+            Wait(50);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.Up, false, true);
+            KeyAndMouseUtils.SendKeyInputToFalcon((ushort)ScanCodes.LMenu, false, true);
+        }
 
         // --------------------------------------------------------------------------------------- //
         //                           4.08 INSTR MODE PANEL                                         //
@@ -1190,7 +1251,7 @@ namespace WindowsFormsApplication1
         //                           8.01 GENERAL RADIO OPTIONS                                    //
         // --------------------------------------------------------------------------------------- //
 
-        
+
         public void Wait(int ms)
             {
                 // Warteschleife - offensichtlich besser als "Thread.Sleep()"??? 14.07.2017

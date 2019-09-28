@@ -115,3 +115,10 @@ D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\zh-Hant\Microsoft.Build.Utilities.C
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.exe.manifest
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.application
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.CopyComplete
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll.config
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.pdb

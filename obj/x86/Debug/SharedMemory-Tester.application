@@ -7,14 +7,14 @@
     <framework targetVersion="4.7.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="SharedMemory-Tester.exe.manifest" size="22491">
+    <dependentAssembly dependencyType="install" codebase="SharedMemory-Tester.exe.manifest" size="22885">
       <assemblyIdentity name="SharedMemory-Tester.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>DuQVN9CxEzFz001fLB/I02vqM/ruQu179hP70LmIyxg=</dsig:DigestValue>
+        <dsig:DigestValue>nH1H4UQeoEJxLpN0Ukjjnyh1bVmw/EVw8pM3r6nqxx4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

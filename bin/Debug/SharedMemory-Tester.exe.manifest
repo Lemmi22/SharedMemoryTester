@@ -59,7 +59,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>DJpry2w2646WDC385CGyZPBGuYEAk20RnW6S3N5uwaY=</dsig:DigestValue>
+        <dsig:DigestValue>yimw9sWtF0IkVRdywxh//elPJk+3EQsA13fWChq4j+g=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -71,7 +71,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4Zutl1PH+4P0d8pw4C0VmhVYWu39gwCzuzaOzVXJgiI=</dsig:DigestValue>
+        <dsig:DigestValue>Wt53DwzW0Iwx2iHWLvREMXKUOrDKepzWhRVuYJqks5E=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -83,7 +83,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>xUlVue5b2vOUhaW7EuO2e1LC/o2J5PiJlLLnmTbjVoY=</dsig:DigestValue>
+        <dsig:DigestValue>hesGPAxifLra2knQFBk+QD7ABMqR+yNXVr5WdY6LFDM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -352,14 +352,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharedMemory-Tester.exe" size="160256">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharedMemory-Tester.exe" size="176128">
       <assemblyIdentity name="SharedMemory-Tester" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>/1N/d+QEc85JyzRw2S1DzlONz27seIKC5o01pmSpaFM=</dsig:DigestValue>
+        <dsig:DigestValue>kqflX05wt/YE++m1wXeQ27s4ZatCFQ8/qqw53X4itSs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -375,6 +375,15 @@
       </hash>
     </dependentAssembly>
   </dependency>
+  <file name="Common.UI.csproj" size="7892">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>SA/qHlVBr5pEsFP9pB9zhau7f3Mli9n5205cQ8ynono=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="SharedMemory-Tester.exe.config" size="146">
     <hash>
       <dsig:Transforms>
