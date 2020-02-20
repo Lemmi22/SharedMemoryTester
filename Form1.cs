@@ -286,6 +286,9 @@ namespace WindowsFormsApplication1
         public bool AutoDegree = false;
         public bool FlareLow = false;
         public bool ChaffLow = false;
+        public bool _prevGo = false;
+        public bool _prevNoGo = false;
+        public bool _prevDispenseReady = false;
 
         // RIGHT EYEBROW - WARNING LIGHTS:
         public bool _prevENG_FIRE;
@@ -1763,8 +1766,9 @@ namespace WindowsFormsApplication1
 
                                 // CMDS, 
                                 // When loading screen appears, clear L0 chaffs / L0 flares from previous missions.
-                                // Statusanzeige reset:
+                                // Statusanzeige & LED reset:
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, zero);
 
                                 Reset_PHCC_when_in_UI = 0;
                             }
@@ -2013,9 +2017,6 @@ namespace WindowsFormsApplication1
                                         ChaffLow = false;
                                     }
 
-
-
-
                                     // Show "L0", when low on Flares:
                                     if (((myCurrentData.lightBits2 & 0x800) != 0) && (FlareLow == false))
                                     {
@@ -2067,15 +2068,55 @@ namespace WindowsFormsApplication1
                                         Thread.Sleep(5);
                                         AutoDegree = false;
                                     }
+
+                                    // Lighten up "GO":
+                                    if (((myCurrentData.lightBits2 & 0x40) != 0) && ((myCurrentData.lightBits2 & 0x200) == 0))// && ( _prevGo==false))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 4);
+                                        _prevGo = true;
+                                        _prevNoGo = false;
+                                        _prevDispenseReady = false;
+                                    }
+
+                                    // Lighten up "NOGO":
+                                    if (((myCurrentData.lightBits2 & 0x80) != 0))//&& ( _prevNoGo == false))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 8);
+                                        _prevGo = false;
+                                        _prevNoGo = true;
+                                        _prevDispenseReady = false;
+                                    }
+
+                                    // Lighten up "DISPENSE READY":
+                                    if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) == 0))// && ( _prevDispenseReady==false))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 3);
+                                        _prevGo = false;
+                                        _prevNoGo = false;
+                                        _prevDispenseReady = true;
+                                    }
+
+                                    // Lighten up "GO" and "DISPENSE READY":
+                                    if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) != 0))// && (_prevDispenseReady == false) && (_prevGo == false))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
+                                        _prevGo = true;
+                                        _prevNoGo = false;
+                                        _prevDispenseReady = true;
+                                    }
                                 }
                                 // }
-                                // Reset CMDS-display when CMDS power is off:
+                                // Reset CMDS-display & LED when CMDS power is off:
                                 if (myCurrentData.cmdsMode == 0)
                                 {
                                     if ((myCurrentData.lightBits2 & 0x800) != 0) FlareLow = false;
                                     if ((myCurrentData.lightBits2 & 0x400) != 0) ChaffLow = false;
                                     if ((myCurrentData.lightBits2 & 0x100) != 0) AutoDegree = false;
+                                    _prevGo = false;
+                                    _prevNoGo = false;
+                                    _prevDispenseReady = false;
                                     Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 0);
 
 
                                     //Thread.Sleep(5);
