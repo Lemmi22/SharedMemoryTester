@@ -289,6 +289,8 @@ namespace WindowsFormsApplication1
         public bool _prevGo = false;
         public bool _prevNoGo = false;
         public bool _prevDispenseReady = false;
+        public bool _prevChaffWasLow = false;
+        public bool _prevFlareWasLow = false;
 
         // RIGHT EYEBROW - WARNING LIGHTS:
         public bool _prevENG_FIRE;
@@ -554,7 +556,6 @@ namespace WindowsFormsApplication1
 
         // Arduino Threads,
         // LEFT CONSOLE:
-        private Thread UhfPanelThread;                      /* erforderlich? */
         private Thread Blink_JetEngineStartPanelThread;
         private Thread TrimPanelThread;
 
@@ -734,7 +735,6 @@ namespace WindowsFormsApplication1
 
                     this.SpeedBrakeThread = new Thread(new ThreadStart(Speedbrake));
 
-                    this.UhfPanelThread = new Thread(new ThreadStart(UhfPanel));
                     this.Blink_JetEngineStartPanelThread = new Thread(new ThreadStart(Blink_JetEngineStartPanel));
                     this.TrimPanelThread = new Thread(new ThreadStart(TrimPanel));
 
@@ -767,7 +767,6 @@ namespace WindowsFormsApplication1
 
                     // SpeedBrakeThread.Start();
 
-                    // UhfPanelThread.Start();
                     // Blink_JetEngineStartPanelThread.Start();
                     // TrimPanelThread.Start();
 
@@ -1384,7 +1383,6 @@ namespace WindowsFormsApplication1
                 }
         }
 
-        public void UhfPanel() { }
         public void Blink_JetEngineStartPanel() { }
         public void TrimPanel() { }
 
@@ -2006,6 +2004,16 @@ namespace WindowsFormsApplication1
                                         Thread.Sleep(5);
                                         _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
                                         ChaffLow = true;
+                                        _prevChaffWasLow = ChaffLow;
+                                    }
+
+                                    if ((_prevChaffWasLow==true)&&((myCurrentData.lightBits2 & 0x400) != 0))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                        Thread.Sleep(5);
+                                        _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
+                                        ChaffLow = true;
                                     }
 
                                     if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
@@ -2025,6 +2033,16 @@ namespace WindowsFormsApplication1
                                         _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
                                         Thread.Sleep(5);
                                         FlareLow = true;
+                                        _prevFlareWasLow = FlareLow;
+                                    }
+
+                                    if ((_prevFlareWasLow == true)&&((myCurrentData.lightBits2 & 0x800) !=0))
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
+                                        _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
+                                        Thread.Sleep(5);
+                                        FlareLow = true;
                                     }
 
                                     if (((myCurrentData.lightBits2 & 0x800) == 0) && (FlareLow == true))
@@ -2035,7 +2053,6 @@ namespace WindowsFormsApplication1
                                         _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
                                         FlareLow = false;
                                     }
-
 
                                     // Show "AUTO DEGR":
                                     if (((myCurrentData.lightBits2 & 0x100) != 0) && (AutoDegree == false))
