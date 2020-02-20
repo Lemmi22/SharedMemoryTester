@@ -122,3 +122,10 @@ D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll.config
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.pdb
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.pdb
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll.config
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.pdb
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.pdb

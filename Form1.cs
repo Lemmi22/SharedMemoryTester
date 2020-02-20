@@ -482,6 +482,33 @@ namespace WindowsFormsApplication1
         public bool ENGINE_TEST = false;
         public bool SimSeatOn;
 
+        // UHF Radio:
+        public int myBupUhfPreset;
+        public int _prevmyBupUhfPreset = 0;
+
+        public int myBupUhfPresetEiner;
+        public int myBupUhfPresetZehner = 0;
+
+        public int _prevmyBupUhfPresetEiner = 9;
+        public int _prevmyBupUhfPresetZehner = 9;
+
+        public int myBupUhfFreq;
+        public int _prevmyBupUhfFreq = 0;
+
+        public int myBupUhfFreqHunderttausender;
+        public int myBupUhfFreqZehntausender;
+        public int myBupUhfFreqTausender;
+        public int myBupUhfFreqHunderter;
+        public int myBupUhfFreqZehner;
+        public int myBupUhfFreqEiner;
+
+        public int _prevmyBupUhfFreqHunderttausender=9;
+        public int _prevmyBupUhfFreqZehntausender=9;
+        public int _prevmyBupUhfFreqTausender=9;
+        public int _prevmyBupUhfFreqHunderter=9;
+        public int _prevmyBupUhfFreqZehner=9;
+        public int _prevmyBupUhfFreqEiner=9;
+        
         // Allgemeine Zählervariable:
         public int i = 0;
 
@@ -1641,9 +1668,42 @@ namespace WindowsFormsApplication1
                             myChaffCount = myCurrentData.ChaffCount;
                             myFlareCount = myCurrentData.FlareCount;
 
+                            myBupUhfPreset = myCurrentData.BupUhfPreset;
+                            myBupUhfFreq = myCurrentData.BupUhfFreq;
+
                             // Define for better reading of status:
                             int ON = 1;
                             int OFF = 0;
+
+                            
+
+                            //////////////////////////////////////////////////////////////////////////////////////
+                            //                                UHF BACKUP-RADIO                                  //
+                            //               --> Need to crosscheck with "Flightdata.h" <<--                    //
+                            //////////////////////////////////////////////////////////////////////////////////////
+                            // -------------------------------------------------------------------------------- //
+                            //                7segment-displays for preset / frequencies                        //
+                            // --------------------------------------------------------------------- works! --- //
+                            int BupUhfPresetEinertemp = myBupUhfPreset % 10;
+                            int BupUhfPresetZehnertemp = myBupUhfPreset % 100;
+
+                            myBupUhfPresetEiner = BupUhfPresetEinertemp;
+                            myBupUhfPresetZehner = BupUhfPresetZehnertemp / 10;
+
+                            int myBupUhfFreqEinertemp = myBupUhfFreq % 10;
+                            int myBupUhfFreqZehnertemp = myBupUhfFreq % 100;
+                            int myBupUhfFreqHundertertemp = myBupUhfFreq % 1000;
+                            int myBuhpUhfFreqTausendertemp = myBupUhfFreq % 10000;
+                            int myBuhpUhfFreqZehntausendertemp = myBupUhfFreq % 100000;
+                            int myBupUhfFreqHunderttausendertemp = myBupUhfFreq % 1000000;
+
+                            myBupUhfFreqEiner = myBupUhfFreqEinertemp;
+                            myBupUhfFreqZehner = myBupUhfFreqZehnertemp / 10;
+                            myBupUhfFreqHunderter = myBupUhfFreqHundertertemp / 100;
+                            myBupUhfFreqTausender = myBuhpUhfFreqTausendertemp / 1000;
+                            myBupUhfFreqZehntausender = myBuhpUhfFreqZehntausendertemp / 10000;
+                            myBupUhfFreqHunderttausender = myBupUhfFreqHunderttausendertemp / 100000;
+
                             //////////////////////////////////////////////////////////////////////////////////////
                             //                                CMDS LIGHTS                                       //
                             //               --> Need to crosscheck with "Flightdata.h" <<--                    //
@@ -1669,24 +1729,42 @@ namespace WindowsFormsApplication1
 
 
 
-                            // When loading screen appears, clear L0 chaffs / L0 flares from
-                            // previous missions.
-
+                            
                             if (((myCurrentData.hsiBits & 0x80000000) == 0) && (Reset_PHCC_when_in_UI == 1))
                             {
 
                                 byte zero = 0;
+                               
+                                // EYEBROW & CAUTION Panel reset:
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, zero);
 
+                                // MISC Panel-Lights & TWP LIGHTS reset:
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 4, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 5, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, zero);
+                                                               
+                                // UHF, sechststellige Backup-Frequency löschen: 
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, zero);
+
+                                // UHF, zweistellige Preset-Anzeige löschen:
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, zero);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, zero);
+
+                                // CMDS, 
+                                // When loading screen appears, clear L0 chaffs / L0 flares from previous missions.
+                                // Statusanzeige reset:
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
 
                                 Reset_PHCC_when_in_UI = 0;
                             }
@@ -1701,6 +1779,131 @@ namespace WindowsFormsApplication1
 
                                 Reset_PHCC_when_in_UI = 1;
 
+                                if (myBupUhfPreset != _prevmyBupUhfPreset)
+                                {
+                                    if (myBupUhfPresetEiner != _prevmyBupUhfPresetEiner)
+                                    {
+                                        if (myBupUhfPresetEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 238);
+                                        if (myBupUhfPresetEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 96);
+                                        if (myBupUhfPresetEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 205);
+                                        if (myBupUhfPresetEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 233);
+                                        if (myBupUhfPresetEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 99);
+                                        if (myBupUhfPresetEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 171);
+                                        if (myBupUhfPresetEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 175);
+                                        if (myBupUhfPresetEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 224);
+                                        if (myBupUhfPresetEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 239);
+                                        if (myBupUhfPresetEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 235);
+                                        _prevmyBupUhfPresetEiner = myBupUhfPresetEiner;
+                                    }
+
+                                    if (myBupUhfPresetZehner != _prevmyBupUhfPresetZehner)
+                                    {
+                                        if (myBupUhfPresetZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 238);
+                                        if (myBupUhfPresetZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 96);
+                                        if (myBupUhfPresetZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 205);
+                                        _prevmyBupUhfPresetZehner = myBupUhfPresetZehner;
+                                    }
+
+                                    _prevmyBupUhfPreset = myBupUhfPreset;
+
+                                }
+
+                                if (myBupUhfFreq != _prevmyBupUhfFreq)
+                                {
+                                    if (myBupUhfFreqEiner != _prevmyBupUhfFreqEiner)
+                                    {
+                                        if (myBupUhfFreqEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 238);
+                                        if (myBupUhfFreqEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 96);
+                                        if (myBupUhfFreqEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 205);
+                                        if (myBupUhfFreqEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 233);
+                                        if (myBupUhfFreqEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 99);
+                                        if (myBupUhfFreqEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 171);
+                                        if (myBupUhfFreqEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 175);
+                                        if (myBupUhfFreqEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 224);
+                                        if (myBupUhfFreqEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 239);
+                                        if (myBupUhfFreqEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 235);
+                                        _prevmyBupUhfFreqEiner = myBupUhfFreqEiner;
+                                    }
+
+                                    if (myBupUhfFreqZehner != _prevmyBupUhfFreqZehner)
+                                    {
+                                        if (myBupUhfFreqZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 238);
+                                        if (myBupUhfFreqZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 96);
+                                        if (myBupUhfFreqZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 205);
+                                        if (myBupUhfFreqZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 233);
+                                        if (myBupUhfFreqZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 99);
+                                        if (myBupUhfFreqZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 171);
+                                        if (myBupUhfFreqZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 175);
+                                        if (myBupUhfFreqZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 224);
+                                        if (myBupUhfFreqZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 239);
+                                        if (myBupUhfFreqZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 235);
+                                        _prevmyBupUhfFreqZehner = myBupUhfFreqZehner;
+                                    }
+
+                                    if (myBupUhfFreqHunderter != _prevmyBupUhfFreqHunderter)
+                                    {
+                                        if (myBupUhfFreqHunderter == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 238);
+                                        if (myBupUhfFreqHunderter == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 96);
+                                        if (myBupUhfFreqHunderter == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 205);
+                                        if (myBupUhfFreqHunderter == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 233);
+                                        if (myBupUhfFreqHunderter == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 99);
+                                        if (myBupUhfFreqHunderter == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 171);
+                                        if (myBupUhfFreqHunderter == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 175);
+                                        if (myBupUhfFreqHunderter == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 224);
+                                        if (myBupUhfFreqHunderter == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 239);
+                                        if (myBupUhfFreqHunderter == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 235);
+                                        _prevmyBupUhfFreqHunderter = myBupUhfFreqHunderter;
+                                    }
+
+                                    if (myBupUhfFreqTausender != _prevmyBupUhfFreqTausender)
+                                    {
+                                        if (myBupUhfFreqTausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 254);
+                                        if (myBupUhfFreqTausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 112);
+                                        if (myBupUhfFreqTausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 221);
+                                        if (myBupUhfFreqTausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 249);
+                                        if (myBupUhfFreqTausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 115);
+                                        if (myBupUhfFreqTausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 187);
+                                        if (myBupUhfFreqTausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 191);
+                                        if (myBupUhfFreqTausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 240);
+                                        if (myBupUhfFreqTausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 255);
+                                        if (myBupUhfFreqTausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 251);
+                                        _prevmyBupUhfFreqTausender = myBupUhfFreqTausender;
+                                    }
+
+                                    if (myBupUhfFreqZehntausender != _prevmyBupUhfFreqZehntausender)
+                                    {
+                                        if (myBupUhfFreqZehntausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 238);
+                                        if (myBupUhfFreqZehntausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 96);
+                                        if (myBupUhfFreqZehntausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 205);
+                                        if (myBupUhfFreqZehntausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 233);
+                                        if (myBupUhfFreqZehntausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 99);
+                                        if (myBupUhfFreqZehntausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 171);
+                                        if (myBupUhfFreqZehntausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 175);
+                                        if (myBupUhfFreqZehntausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 224);
+                                        if (myBupUhfFreqZehntausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 239);
+                                        if (myBupUhfFreqZehntausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 235);
+                                        _prevmyBupUhfFreqZehntausender = myBupUhfFreqZehntausender;
+                                    }
+
+                                    if (myBupUhfFreqHunderttausender != _prevmyBupUhfFreqHunderttausender)
+                                    {
+                                        if (myBupUhfFreqHunderttausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 238);
+                                        if (myBupUhfFreqHunderttausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 96);
+                                        if (myBupUhfFreqHunderttausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 205);
+                                        if (myBupUhfFreqHunderttausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 233);
+                                        if (myBupUhfFreqHunderttausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 99);
+                                        if (myBupUhfFreqHunderttausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 171);
+                                        if (myBupUhfFreqHunderttausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 175);
+                                        if (myBupUhfFreqHunderttausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 224);
+                                        if (myBupUhfFreqHunderttausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 239);
+                                        if (myBupUhfFreqHunderttausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 235);
+                                        _prevmyBupUhfFreqHunderttausender = myBupUhfFreqHunderttausender;
+                                    }
+                                   
+                                    myBupUhfFreq = _prevmyBupUhfFreq;
+
+                                }
+                            
                                 //----------------------------------------------//
                                 // --> FEHLT NOCH, muss implementiert werden!   //
                                 // --> LED-Status für folgende CMDS LEDs:       //
@@ -1752,7 +1955,7 @@ namespace WindowsFormsApplication1
                                         if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
                                         if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
                                         if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
-                                        if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
+                                        if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
                                         // Thread.Sleep(5);
                                         _prevFlareZehnerState = myFlareZehner;
                                     }
