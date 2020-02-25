@@ -1,3 +1,44 @@
 K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\WindowsFormsApplication1.Form1.resources
 K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\WindowsFormsApplication1.Properties.Resources.resources
 K:\TORTOISE SVN VS 2013 Arbeitskopie\obj\x86\Release\SharedMemory-Tester.csproj.GenerateResource.Cache
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\SharedMemory-Tester.exe.config
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\SharedMemory-Tester.exe.manifest
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\SharedMemory-Tester.application
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\SharedMemory-Tester.exe
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\SharedMemory-Tester.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.Application.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.Win32.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\F4KeyFile.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Microsoft.Build.Framework.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Microsoft.Build.Utilities.Core.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\System.Collections.Immutable.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.dll.config
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.Application.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\Common.Win32.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\F4KeyFile.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\cs\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\de\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\en\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\es\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\fr\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\it\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\ja\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\ko\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\pl\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\pt-BR\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\ru\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\tr\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\zh-Hans\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Release\zh-Hant\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.csprojAssemblyReference.cache
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\WindowsFormsApplication1.Form1.resources
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\WindowsFormsApplication1.Properties.Resources.resources
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.csproj.GenerateResource.cache
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.csproj.CoreCompileInputs.cache
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.exe.manifest
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.application
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.csproj.CopyComplete
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.exe
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Release\SharedMemory-Tester.pdb

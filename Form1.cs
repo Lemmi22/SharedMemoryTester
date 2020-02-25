@@ -37,12 +37,6 @@ using System.Timers;
 using Timer = System.Timers.Timer;
 
 
-
-
-
-
-
-
 // Adresses for PHCC-boards (hardcoded on PIC):
 //
 // PHCC-CMDS: 0x44
@@ -102,6 +96,8 @@ namespace WindowsFormsApplication1
         SerialPort Port1_Arduino_EngineGauges;     // VERSUCHSAUFBAU für mehrere Arduino-Karten.
         SerialPort Port2_Arduino_SpeedBrake;
         private static Device Port3_PHCC_Input_Output = new Device();
+        
+     
 
         //public string[,] keycombo = new string[,] { }; // OFFENSICHTLICH NICHT VERWENDET!
 
@@ -173,10 +169,10 @@ namespace WindowsFormsApplication1
             this.label4.Text = "";
             this.label6.Text = "";
 
-            //  SpeechSynthesizer readerSpeech = new SpeechSynthesizer();
-            //  readerSpeech = new SpeechSynthesizer();
-            // readerSpeech.Rate = -2;
-            // readerSpeech.Speak("Welcome back Stryker, software started. All systems are working fine. Have a good Flight, Sir!");
+          //   SpeechSynthesizer readerSpeech = new SpeechSynthesizer();
+          //   readerSpeech = new SpeechSynthesizer();
+         //    readerSpeech.Rate = -2;
+         //    readerSpeech.Speak("Welcome back Stryker, software started. All systems are working fine. Have a good flight sir - and always clear skies.");
 
             //if (port1 != null)
             //    port1.Close(); 
@@ -191,7 +187,9 @@ namespace WindowsFormsApplication1
             //port2 = new SerialPort("COM4", 115200); //9600 
 
             Port3_PHCC_Input_Output.PortName = "COM1";
-
+            
+            
+            
             //myDevice.PortName = "COM1";
             //myDevice.SerialPort.WriteTimeout = 500;
             //myDevice.SerialPort.ReadTimeout = 500;
@@ -407,11 +405,9 @@ namespace WindowsFormsApplication1
         public byte blinkOld1 = 0;
         public byte blinkAll1 = 0;
 
-
         public byte blinkNew2 = 0;
         public byte blinkOld2 = 0;
         public byte blinkAll2 = 0;
-
 
         // Variablen für Lightbits, Lightbits2, Lightbits3 & HSI_Bits:
 
@@ -419,7 +415,6 @@ namespace WindowsFormsApplication1
         public int _prevFlcs_ABCD = 0;
         public int _prevLEFlaps = 0;
         public int _prevFuelLow = 0;
-
 
         public int _prevAutoPilotOn = 0;
 
@@ -431,19 +426,15 @@ namespace WindowsFormsApplication1
         public int _prevRefuelAR = 0;
         public int _prevRefuelDSC = 0;
 
-
-
         public int _prevAuxSrch = 0;
         public int _prevAuxAct = 0;
         public int _prevAuxLow = 0;
-
 
         public int _prevEcmPwr = 0;
         public int _prevEcmFail = 0;
 
         public int _prevEPUOn = 0;
         public int _prevJFSOn = 0;
-
 
         public long _prevGEARHANDLE = 0;
 
@@ -517,13 +508,16 @@ namespace WindowsFormsApplication1
         // Allgemeine Zählervariable:
         public int i = 0;
 
+        public string Baudrate;
+        public string FirmwareVersion;
+
         // ----------------------------------------------------------------------------------//
         //       Nur erforderlich, wenn als Anwendung auf einem Single-PC konzipiert!        // 
         // ----------------------------------------------------------------------------------//
-        //   [DllImport("User32.dll")]                                                      //
+        //   [DllImport("User32.dll")]                                                       //
         //     static extern IntPtr FindWindow(string lpClassName, string lpWindowName);     //
-        //   [DllImport("User32.dll")]                                                     //
-        //   static extern int SetForegroundWindow(IntPtr hWnd);                            //
+        //   [DllImport("User32.dll")]                                                       //
+        //   static extern int SetForegroundWindow(IntPtr hWnd);                             //
         // ----------------------------------------------------------------------------------//
 
         // Test Threads - in Endversion NICHT erforderlich:
@@ -575,14 +569,18 @@ namespace WindowsFormsApplication1
         // SWITCHES Abfragen: 
         private Thread SwitchesThread;
 
-
-        private static Device _phccDevice = new Device();
+       private static Device _phccDevice = new Device();
+      
         // Verfügbare COM-Ports auslesen und in Combo-Box zur Verfügung stellen:
         public void getAvaiblePorts()
         {
             String[] ports = SerialPort.GetPortNames();
             comboBox1.Items.AddRange(ports);
             button2.Enabled = false;
+
+           
+            
+          
 
         }
 
@@ -642,8 +640,14 @@ namespace WindowsFormsApplication1
 
                     if (PHCC_Test_Environment == true)
                     {
-                        //_phccDevice = new Device("COM1");
-                        //   var firmwareVersion = _phccDevice.FirmwareVersion;
+
+                        Port3_PHCC_Input_Output = new Device("COM1");
+                        
+                      //  _phccDevice = new Device("COM1");
+                      //  _phccDevice.SerialPort.BaudRate = (115200);
+                        Baudrate = Port3_PHCC_Input_Output.SerialPort.BaudRate.ToString();
+
+                       FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
 
                         this.label1.Text = "Self-Test running...";
                         this.label2.Text = "";
@@ -653,9 +657,9 @@ namespace WindowsFormsApplication1
                         Wait(1500);
                         try
                         {
-                            //Port3_PHCC_Input_Output.Reset();
+                            // Port3_PHCC_Input_Output.Reset();
                             // Port3_PHCC_Input_Output.SetIdle();
-                            Wait(1500);
+                            // Wait(1500);
                         }
 
                         catch
@@ -681,7 +685,7 @@ namespace WindowsFormsApplication1
                         }
 
                         this.label2.ForeColor = Color.Green;
-                        this.label2.Text = "PHCC communication started!";
+                        this.label2.Text = "PHCC communication started! " + Baudrate + FirmwareVersion; ;
                         //  Wait(1000);
                         //   this.label2.Text = "PHCC Firmware Version: " + firmwareVersion;
                         Wait(1000);
@@ -1587,18 +1591,18 @@ namespace WindowsFormsApplication1
                             {
                                 FlightData myBlink_SysTest = myReader.GetCurrentData();
 
-                                while (_SysTest == true)
+                                if (_SysTest == true) // while
                                 {
 
                                     for (int i = 0; i < 4; i++)
                                     {
 
-                                        myBlink_SysTest = myReader.GetCurrentData();
+                                      //  myBlink_SysTest = myReader.GetCurrentData();
                                         blinkNew1 = 15;
                                         blinkAll1 = (byte)(blinkOld1 + blinkNew1);
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkAll1);
                                         blinkOld1 = 15;
-                                        on = true;
+                                     //   on = true;
 
                                         blinkNew2 = 255;
                                         blinkAll2 = (byte)(blinkOld2 + blinkNew2);
@@ -1611,12 +1615,12 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkAll2);
                                         blinkOld2 = 0;
 
-                                        myBlink_SysTest = myReader.GetCurrentData();
+                                      //  myBlink_SysTest = myReader.GetCurrentData();
                                         blinkNew1 = 14;
                                         blinkAll1 = (byte)(blinkOld1 - blinkNew1);
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkAll1);
                                         blinkOld1 = 0;
-                                        on = false;
+                                   //     on = false;
                                         Thread.Sleep(250); //schnelle Blinkfolge
 
                                         if (i == 3)
@@ -1768,6 +1772,8 @@ namespace WindowsFormsApplication1
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, zero);
 
+                               // Port3_PHCC_Input_Output.Reset();
+                              
                                 Reset_PHCC_when_in_UI = 0;
                             }
 
@@ -2007,7 +2013,8 @@ namespace WindowsFormsApplication1
                                         _prevChaffWasLow = ChaffLow;
                                     }
 
-                                    if ((_prevChaffWasLow==true)&&((myCurrentData.lightBits2 & 0x400) != 0))
+                                    
+                                    if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow==true))
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
@@ -2015,7 +2022,7 @@ namespace WindowsFormsApplication1
                                         _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
                                         ChaffLow = true;
                                     }
-
+                                   
                                     if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
@@ -2036,7 +2043,7 @@ namespace WindowsFormsApplication1
                                         _prevFlareWasLow = FlareLow;
                                     }
 
-                                    if ((_prevFlareWasLow == true)&&((myCurrentData.lightBits2 & 0x800) !=0))
+                                    if (((myCurrentData.lightBits2 & 0x800) !=0) && (_prevFlareWasLow == true)) 
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
@@ -2129,6 +2136,9 @@ namespace WindowsFormsApplication1
                                     if ((myCurrentData.lightBits2 & 0x800) != 0) FlareLow = false;
                                     if ((myCurrentData.lightBits2 & 0x400) != 0) ChaffLow = false;
                                     if ((myCurrentData.lightBits2 & 0x100) != 0) AutoDegree = false;
+                                    if ((myCurrentData.lightBits2 & 0x800) == 0) FlareLow = true;
+                                    if ((myCurrentData.lightBits2 & 0x400) == 0) ChaffLow = true;
+                                    if ((myCurrentData.lightBits2 & 0x100) == 0) AutoDegree = true;
                                     _prevGo = false;
                                     _prevNoGo = false;
                                     _prevDispenseReady = false;
@@ -3654,106 +3664,110 @@ namespace WindowsFormsApplication1
                     {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
+                            FlightData myCurrentSwitchData = myReader.GetCurrentData();
 
-                            F4Callbacks F4 = new F4Callbacks();
-                            Switch = Port3_PHCC_Input_Output.DigitalInputs;
-                            // Key2 @ Key64-board, Slot 1.
-                            //        EjectHandlePulled = Port3_PHCC_Input_Output.DigitalInputs.GetValue(1).ToString(); // Zahlenwert ÃƒÂ¤ndern fÃƒÂ¼r Schalteranzahl! 0 --> Schalter 1. 64 ist Schalter 65.
-
-                            //Switch[1] = SimSeatOn;
-                            // Thread.Sleep(5);  // 25 möglich????
-
-                            //if (_prevSwitchState[0] != Switch[0])
-                            //{
-                            //    if (Switch[0] == ON)
-                            //    {
-                            //        CW = true;
-                            //        CCW = false;
-                            //         F4.AltPressureIncrease1();
-
-                            //        if ((Switch[0] == ON) && (Switch[1] == OFF))
-                            //        {
-                            //            CW = true;
-                            //            CCW = false;
-                            //            F4.AltPressureIncrease1();
-
-                            //            if ((Switch[0] == ON) && (Switch[1] == ON))
-                            //            {
-                            //                CW = true;
-                            //                CCW = false;
-                            //                F4.AltPressureIncrease1();
-                            //            }
-
-                            //        }
-
-                            //        //if (CW == true)
-                            //        //    {
-                            //        //        F4.AltPressureIncrease1();
-                            //        //        CW = false;
-
-
-                            //    }
-                            //        _prevSwitchState[0] = Switch[0];
-                            //        _prevSwitchState[1] = Switch[1];                            
-                            //}
-
-                            //if (_prevSwitchState[1] != Switch[1])
-                            //{
-                            //    if (Switch[1] == ON)
-                            //    {
-                            //        CCW = true;
-                            //        CW = false;
-                            //         F4.AltPressureDecrease1();
-
-                            //        if ((Switch[1] == ON) && (Switch[0] == OFF))
-                            //        {
-                            //            CCW = true;
-                            //            CW = false;
-                            //            F4.AltPressureDecrease1();
-
-                            //            if ((Switch[1] == ON) && (Switch[0] == ON))
-                            //            {
-                            //                CCW = true;
-                            //                CW = false;
-                            //                F4.AltPressureDecrease1();
-                            //            }
-
-
-                            //        }
-
-                            //        //if (CCW == true)
-                            //        //    {
-                            //        //        F4.AltPressureDecrease1();
-                            //        //        CCW = false;
-                            //        //        }
-                            //    }
-                            //        _prevSwitchState[1] = Switch[1];
-                            //        _prevSwitchState[0] = Switch[0];
-                            //}
-                            if (_prevSwitchState[0] != Switch[0])
+                            if ((myCurrentSwitchData.hsiBits & 0x80000000) != 0)
                             {
+                                F4Callbacks F4 = new F4Callbacks();
+                                Switch = Port3_PHCC_Input_Output.DigitalInputs;
+                                // Key2 @ Key64-board, Slot 1.
+                                //        EjectHandlePulled = Port3_PHCC_Input_Output.DigitalInputs.GetValue(1).ToString(); // Zahlenwert ÃƒÂ¤ndern fÃƒÂ¼r Schalteranzahl! 0 --> Schalter 1. 64 ist Schalter 65.
 
-                                if (Switch[0] == ON)
+                                //Switch[1] = SimSeatOn;
+                                // Thread.Sleep(5);  // 25 möglich????
+
+                                //if (_prevSwitchState[0] != Switch[0])
+                                //{
+                                //    if (Switch[0] == ON)
+                                //    {
+                                //        CW = true;
+                                //        CCW = false;
+                                //         F4.AltPressureIncrease1();
+
+                                //        if ((Switch[0] == ON) && (Switch[1] == OFF))
+                                //        {
+                                //            CW = true;
+                                //            CCW = false;
+                                //            F4.AltPressureIncrease1();
+
+                                //            if ((Switch[0] == ON) && (Switch[1] == ON))
+                                //            {
+                                //                CW = true;
+                                //                CCW = false;
+                                //                F4.AltPressureIncrease1();
+                                //            }
+
+                                //        }
+
+                                //        //if (CW == true)
+                                //        //    {
+                                //        //        F4.AltPressureIncrease1();
+                                //        //        CW = false;
+
+
+                                //    }
+                                //        _prevSwitchState[0] = Switch[0];
+                                //        _prevSwitchState[1] = Switch[1];                            
+                                //}
+
+                                //if (_prevSwitchState[1] != Switch[1])
+                                //{
+                                //    if (Switch[1] == ON)
+                                //    {
+                                //        CCW = true;
+                                //        CW = false;
+                                //         F4.AltPressureDecrease1();
+
+                                //        if ((Switch[1] == ON) && (Switch[0] == OFF))
+                                //        {
+                                //            CCW = true;
+                                //            CW = false;
+                                //            F4.AltPressureDecrease1();
+
+                                //            if ((Switch[1] == ON) && (Switch[0] == ON))
+                                //            {
+                                //                CCW = true;
+                                //                CW = false;
+                                //                F4.AltPressureDecrease1();
+                                //            }
+
+
+                                //        }
+
+                                //        //if (CCW == true)
+                                //        //    {
+                                //        //        F4.AltPressureDecrease1();
+                                //        //        CCW = false;
+                                //        //        }
+                                //    }
+                                //        _prevSwitchState[1] = Switch[1];
+                                //        _prevSwitchState[0] = Switch[0];
+                                //}
+                                if (_prevSwitchState[0] != Switch[0])
                                 {
-                                    F4.SimSeatOn();
-                                    _prevSwitchState[0] = Switch[0];
 
+                                    if (Switch[0] == ON)
+                                    {
+                                        F4.SimSeatOn();
+                                        _prevSwitchState[0] = Switch[0];
+
+                                    }
+                                    if (Switch[0] == OFF)
+                                    {
+                                        F4.SimSeatOff();
+                                        _prevSwitchState[1] = Switch[1];
+
+                                        SendCallback("SimSeatOff");  //<---- WORKS! 26.05.2019 LE
+
+                                    }
                                 }
-                                if (Switch[0] == OFF)
-                                {
-                                    F4.SimSeatOff();
-                                    _prevSwitchState[1] = Switch[1];
 
-                                    SendCallback("SimSeatOff");  //<---- WORKS! 26.05.2019 LE
-
-                                }
                             }
-
                         }
-                    }
 
+                    }
+                    Application.DoEvents();
                 }
-                Application.DoEvents();
             }
         }
 
@@ -3841,6 +3855,8 @@ namespace WindowsFormsApplication1
                             label1.Text = "Running PHCC-ENVIRONMENT only!";
                             progressBar1.Value = 0;
                             button2.Enabled = false;
+                            Application.Restart();
+                            Environment.Exit(0);
                         }
                         else
                         {

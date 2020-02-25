@@ -81,22 +81,30 @@ E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\ru\Microsoft.Build.Utilities.Core
 E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\tr\Microsoft.Build.Utilities.Core.resources.dll
 E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\zh-Hans\Microsoft.Build.Utilities.Core.resources.dll
 E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\zh-Hant\Microsoft.Build.Utilities.Core.resources.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.dll
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.pdb
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll.config
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.pdb
+E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csprojAssemblyReference.cache
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\WindowsFormsApplication1.Form1.resources
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.GenerateResource.cache
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.CoreCompileInputs.cache
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.exe
-D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\SharedMemory-Tester.exe.config
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\SharedMemory-Tester.exe.manifest
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\SharedMemory-Tester.application
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\SharedMemory-Tester.exe
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\SharedMemory-Tester.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\F4KeyFile.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Microsoft.Build.Framework.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Microsoft.Build.Utilities.Core.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\System.Collections.Immutable.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll.config
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\F4KeyFile.pdb
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\cs\Microsoft.Build.Utilities.Core.resources.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\de\Microsoft.Build.Utilities.Core.resources.dll
@@ -112,20 +120,12 @@ D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\ru\Microsoft.Build.Utilities.Core.r
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\tr\Microsoft.Build.Utilities.Core.resources.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\zh-Hans\Microsoft.Build.Utilities.Core.resources.dll
 D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\zh-Hant\Microsoft.Build.Utilities.Core.resources.dll
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\WindowsFormsApplication1.Form1.resources
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.GenerateResource.cache
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.CoreCompileInputs.cache
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.exe.manifest
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.application
 D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.csproj.CopyComplete
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.dll
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.dll
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.pdb
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.dll.config
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Application.pdb
-D:\COCKPIT_CODE_WORKING_COPY\trunk\bin\Debug\Common.Win32.pdb
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.dll
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.dll
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.pdb
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.dll.config
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Application.pdb
-E:\TORTOISE SVN VS 2013 Arbeitskopie\bin\Debug\Common.Win32.pdb
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.exe
+D:\COCKPIT_CODE_WORKING_COPY\trunk\obj\x86\Debug\SharedMemory-Tester.pdb
