@@ -227,8 +227,10 @@ namespace WindowsFormsApplication1
         // Variablen für PHCC-Eingaben / Schalterstellungen:
         public bool[] Switch = new bool[1024]; // = null;
         public bool[] _prevSwitchState = new bool[1024];
-        public bool ON = true;
-        public bool OFF = false;
+        public bool _ON = true;
+        public bool _OFF = false;
+        public int ON = 1;
+        public int OFF = 0;
 
         // Variablen für Arduiono-Karten:
         public string sendReset;
@@ -300,6 +302,8 @@ namespace WindowsFormsApplication1
         public bool _prevT_L_CFG;
         public bool _prevOXY_BROW;
 
+        public byte Eyebrow_Right;
+
         public byte bOld = 0;
         public byte bNew = 0;
         public byte all = 0;
@@ -315,9 +319,7 @@ namespace WindowsFormsApplication1
         public bool _prevFwdFuelLow;
         public bool _prevAftFuelLow;
 
-        public byte bOld1 = 0;
-        public byte bNew1 = 0;
-        public byte all1 = 0;
+        public byte CautionPanel_Row1;
 
         // CAUTIION PANEL 
         // 2nd ROW (starts from left):
@@ -329,9 +331,7 @@ namespace WindowsFormsApplication1
         public bool _prevEEC;
         public bool _prevBUC;
 
-        public byte bOld2 = 0;
-        public byte bNew2 = 0;
-        public byte all2 = 0;
+        public byte CautionPanel_Row2;
 
         // CAUTIION PANEL 
         // 3rd ROW (starts from left):
@@ -341,9 +341,7 @@ namespace WindowsFormsApplication1
         public bool _prevIFF;
         public bool _prevNuclear;
 
-        public byte bOld3 = 0;
-        public byte bNew3 = 0;
-        public byte all3 = 0;
+        public byte CautionPanel_Row3;
 
         // CAUTIION PANEL 
         // 4th ROW (starts from left):
@@ -354,52 +352,56 @@ namespace WindowsFormsApplication1
         public bool _prevOXY_LOW;
         public bool _prevCabinPress;
 
-        public byte bOld4 = 0;
-        public byte bNew4 = 0;
-        public byte all4 = 0;
-
-        // LEFT EYEBROW - WARNING LIGHTS:
-        public bool _prevMasterCaution;
-        public bool _prevTF;
-
-        public byte bOld5 = 0;
-        public byte bNew5 = 0;
-        public byte all5 = 0;
+        public byte CautionPanel_Row4;
 
         // CAUTION PANEL
+        // other:
         public bool _prevAllLampBitsOn;
-
-        // MISC PANEL
+        
+       // MISC PANEL & LEFT EYEBROW - WARNING LIGHTS:
         public bool _prevTFR_ENGAGED;
         public bool _prevTFR_STBY;
         public bool _prevECM;
-        public byte bOld6 = 0;
-        public byte bNew6 = 0;
-        public byte all6 = 0;
+
+        public bool _prevMasterCaution;
+        public bool _prevTF;
+
+        public byte Misc;
 
         // TWP PANEL
-        public bool _prevLaunch;
-        public bool _prevHandOff;
-        public bool _prevPriMode;
-        public bool _prevNaval;
-        public bool _prevUnk;
-        public bool _prevTgtSep;
-        public bool _prevSysTest;
-        public bool _prevAuxPwr; /* Variable für TWP SysTest "POWER ON" */
-        public byte bOld7 = 0;
-        public byte bNew7 = 0;
-        public byte all7 = 0;
-        public bool _SysTest = false;
+        public int Launch;
+        public int HandOff;
+        public int PriMode;
+        public int Naval;
+        public int Unk;
+        public int TgtSep;
+        public int SysTest;
 
-        public byte bNew7a = 0;
-        public byte bOld7a = 0;
-        public byte all7a = 0;
+        public bool Launch_active;
+        public bool Launch_blinking_active;
+        public bool HandOff_active;
+        public bool PriMode_active;
+        public bool Naval_active;
+        public bool Unk_active;
+        public bool TgtSep_active;
+        public bool SysTest_active;
 
-        public int PriMode_Priority = 0;
-        public int PriMode_Open = 0;
-        public int HandOff_Power = 0;
+        public int _prevLaunch;
+        public int _prevLaunch_blinking;
+        public int _prevHandOff; //war Bool
+        public int _prevPriMode;
+        public int _prevNaval;
+        public int _prevUnk;
+        public int _prevTgtSep;
+        public int _prevSysTest;
 
-        public bool priorityMode = false;
+        public int _prevAuxPwr; /* Variable für TWP SysTest "POWER ON" */ //war Bool
+
+        public byte TWP;
+        public byte TWP_Shp;
+
+        public byte blinkTWP;
+        public byte blinkTWP_Shp;
 
         public byte blinkNew1 = 0;
         public byte blinkOld1 = 0;
@@ -1421,31 +1423,31 @@ namespace WindowsFormsApplication1
                                     if ((mySharedMem8.blinkBits & 0x04) != 0)
                                     {
 
-                                        while (((LightBits2)mySharedMem8.lightBits2 & LightBits2.PROBEHEAT) == LightBits2.PROBEHEAT)
+                                        while (((LightBits2)mySharedMem8.lightBits2 & LightBits2.PROBEHEAT) == LightBits2.PROBEHEAT) 
                                         {
+                                                                                    mySharedMem8 = myReader.GetCurrentData();
+                                                                           //         bNew1 = 4;
+                                                                           //         all1 = (byte)(bOld1 + bNew1);
+                                                                           //         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
+                                                                           //         bOld1 = all1;
+                                                                                    on = true;
+                                                                                    Thread.Sleep(125); //schnelle Blinkfolge
 
-                                            mySharedMem8 = myReader.GetCurrentData();
-                                            bNew1 = 4;
-                                            all1 = (byte)(bOld1 + bNew1);
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                            bOld1 = all1;
-                                            on = true;
-                                            Thread.Sleep(125); //schnelle Blinkfolge
-
-                                            mySharedMem8 = myReader.GetCurrentData();
-                                            bNew1 = 4;
-                                            all1 = (byte)(bOld1 - bNew1);
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                            bOld1 = all1;
-                                            on = false;
-                                            Thread.Sleep(125); //schnelle Blinkfolge
+                                                                                    mySharedMem8 = myReader.GetCurrentData();
+                                                                            //        bNew1 = 4;
+                                                                           //         all1 = (byte)(bOld1 - bNew1);
+                                                                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
+                                                                            //        bOld1 = all1;
+                                                                                    on = false;
+                                                                                    Thread.Sleep(125); //schnelle Blinkfolge
+                                             
                                         }
 
                                         if (((LightBits2)mySharedMem8.lightBits2 & LightBits2.PROBEHEAT) != LightBits2.PROBEHEAT)
                                         {
-                                            if (on == true) { all1 = (byte)(bOld1 - bNew1); }
-                                            if (on != true) { all1 = (byte)(bOld1); }
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
+                                          //  if (on == true) { all1 = (byte)(bOld1 - bNew1); }
+                                         //   if (on != true) { all1 = (byte)(bOld1); }
+                                          //  Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
                                             on = false;
                                             //   break;
                                         }
@@ -1509,9 +1511,11 @@ namespace WindowsFormsApplication1
                     }
                 }
         }
+
+       
         
         public void Blink_MissileLaunch()
-        { // WORKS! 16.05.2019 LE.
+        { // WORKS! 28.02.2020 LE.
             using (Reader myReader = new F4SharedMem.Reader())
 
                 while (_keepRunning == true)
@@ -1519,68 +1523,57 @@ namespace WindowsFormsApplication1
                     if (myReader.IsFalconRunning == true)
                     {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
-                        {
+                        {                          
+                            FlightData mySharedMem9 = myReader.GetCurrentData();
+
+                            // Short-definition of Blinkbit:
+                            int Launch_blinking = mySharedMem9.blinkBits & 0x10;
+
+                            if (SysTest_active == false)
                             {
-                                FlightData mySharedMem9 = myReader.GetCurrentData();
-
-                                if (((LightBits3)mySharedMem9.lightBits3 & LightBits3.SysTest)
-                                != LightBits3.SysTest)
+                                if (Launch_blinking != _prevLaunch_blinking)
                                 {
-                                    //falls neuer Zustand erreicht:
-                                    if (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
-                                   == BlinkBits.Launch != _prevLaunch)
+
+                                    while (Launch_blinking != OFF)
                                     {
+                                        // Check if it's time to leave the "while-loop":
                                         mySharedMem9 = myReader.GetCurrentData();
+                                        Launch_blinking = mySharedMem9.blinkBits & 0x10;
 
-                                        //falls Lightbit ON ist:
-                                        if ((mySharedMem9.blinkBits & 0x10) != 0)
-                                        {
-                                            while (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch) == BlinkBits.Launch)
-                                          
-                                            {
+                                        TWP_Shp += 12;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        Launch_blinking_active = true;
+                                        Wait(250); //fast blinktime
 
-                                                mySharedMem9 = myReader.GetCurrentData();
-                                                bNew1 = 12;
-                                                all1 = (byte)(bOld1 + bNew1);
-                                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                                bOld1 = all1;
-                                                on = true;
-                                                Thread.Sleep(250); //schnelle Blinkfolge
 
-                                                mySharedMem9 = myReader.GetCurrentData();
-                                                bNew1 = 12;
-                                                all1 = (byte)(bOld1 - bNew1);
-                                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                                bOld1 = all1;
-                                                on = false;
-                                                Thread.Sleep(250); //schnelle Blinkfolge
-                                            }
-                                            
+                                        TWP_Shp -= 12;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        Launch_blinking_active = false;
+                                        Wait(250); //fast blinktime
 
-                                            if (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch) != BlinkBits.Launch)
-                                            {
-                                                if (on == true) { all1 = (byte)(bOld1 - bNew1); }
-                                                if (on != true) { all1 = (byte)(bOld1); }
-                                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                                on = false;
-                                                //   break;
-                                            }
+                                    }
 
-                                            _prevLaunch = ((BlinkBits)mySharedMem9.blinkBits &
-                                                BlinkBits.Launch) == BlinkBits.Launch;
-                                            on = false;
-                                        }
+                                    if (Launch_blinking == OFF)
+                                    {
+                                        if (Launch_blinking_active) { TWP_Shp -= 12; } 
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        Launch_blinking_active = false;
+
                                     }
                                 }
                             }
+
+                            _prevLaunch_blinking = Launch_blinking;
+                                
+                            
                         }
                     }
                 }
         }
 
-        public void Blink_SysTest()  // WORKS! 28.09.2019 LE. 
+        public void Blink_SysTest()  // WORKS! 28.02.2020 LE. 
         {
-            using (Reader myReader = new F4SharedMem.Reader())
+           using (Reader myReader = new F4SharedMem.Reader())
 
                 while (_keepRunning == true)
                 {
@@ -1591,57 +1584,46 @@ namespace WindowsFormsApplication1
                             {
                                 FlightData myBlink_SysTest = myReader.GetCurrentData();
 
-                                if (_SysTest == true) // while
+                               if (SysTest_active==true)
                                 {
 
                                     for (int i = 0; i < 4; i++)
                                     {
 
-                                      //  myBlink_SysTest = myReader.GetCurrentData();
-                                        blinkNew1 = 15;
-                                        blinkAll1 = (byte)(blinkOld1 + blinkNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkAll1);
-                                        blinkOld1 = 15;
-                                     //   on = true;
+                                        blinkTWP_Shp = 15;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
 
-                                        blinkNew2 = 255;
-                                        blinkAll2 = (byte)(blinkOld2 + blinkNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkAll2);
-                                        blinkOld2 = 255;
-                                        Thread.Sleep(250); //schnelle Blinkfolge
+                                        blinkTWP = 255;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
 
-                                        blinkNew2 = 180;
-                                        blinkAll2 = (byte)(blinkOld2 - blinkNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkAll2);
-                                        blinkOld2 = 0;
+                                        Wait(250);
 
-                                      //  myBlink_SysTest = myReader.GetCurrentData();
-                                        blinkNew1 = 14;
-                                        blinkAll1 = (byte)(blinkOld1 - blinkNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkAll1);
-                                        blinkOld1 = 0;
-                                   //     on = false;
-                                        Thread.Sleep(250); //schnelle Blinkfolge
+                                        blinkTWP_Shp = 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
+
+                                        blinkTWP = 75;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
+
+                                        Wait(250);
 
                                         if (i == 3)
                                         {
-                                            // Nach dreimaligem Testblinken
-                                            // den ursprünglichen Zustand mit allen Tastkombinationen
-                                            // wieder herstellen: 
+                                            // leave loop after blinking three times,
+                                            // restore all lights to their ex-status (before they've entered the loop).
 
-                                            _SysTest = false;
-                                            blinkNew1 = 0;
-                                            if ((myBlink_SysTest.lightBits2 & 0x8) != 0) { blinkNew1 += 3; } else { blinkNew1 += 1; }
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkNew1);
-                                            blinkNew1 = 0;
-
-                                            blinkNew2 = 0;
-                                            if ((myBlink_SysTest.lightBits2 & 0x1) != 0) { blinkNew2 += 192; } else { blinkNew2 += 64; }
-                                            if ((myBlink_SysTest.lightBits2 & 0x4) != 0) { blinkNew2 += 32; } else { blinkNew2 += 16; }
-                                            if ((myBlink_SysTest.lightBits2 & 0x20) != 0) { blinkNew2 += 4; } else { blinkNew2 += 8; }
-                                            if ((myBlink_SysTest.lightBits3 & 0x1000000) != 0) { blinkNew2 += 3; } else { blinkNew2 += 1; }
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkNew2);
-                                            blinkNew2 = 0;
+                                            blinkTWP_Shp = 0;
+                                            if (Unk_active) { blinkTWP_Shp += 3; } else { blinkTWP_Shp += 1; }
+                                            Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
+                                            blinkTWP_Shp = 0;
+                                          
+                                            blinkTWP = 0;
+                                            if (HandOff_active) { blinkTWP += 192; } else { blinkTWP += 64; }
+                                            if (PriMode_active) { blinkTWP += 32; } else { blinkTWP += 16; }
+                                            if (TgtSep_active) { blinkTWP += 4; } else { blinkTWP += 8; }
+                                            if (SysTest_active) { blinkTWP += 3; } else { blinkTWP += 1; }
+                                            Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
+                                            blinkTWP = 0;
+                                            SysTest_active = false;
                                         }
                                     }
 
@@ -1654,7 +1636,7 @@ namespace WindowsFormsApplication1
                     }
 
                 }
-
+                
         }
 
         public void SimOutput()
@@ -1677,8 +1659,8 @@ namespace WindowsFormsApplication1
                             myBupUhfFreq = myCurrentData.BupUhfFreq;
 
                             // Define for better reading of status:
-                            int ON = 1;
-                            int OFF = 0;
+                           // int ON = 1;
+                          //  int OFF = 0;
 
                             
 
@@ -2191,17 +2173,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
                                         == LightBits.ENG_FIRE)
                                     {
-                                        bNew = 2;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        // bNew = 2;
+                                        // byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 2;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all); ;
-                                        bOld = all;
+                                        //bNew = 2;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right); ;
+                                        //bOld = all;
                                     }
                                 }
                                 _prevENG_FIRE = ((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
@@ -2216,17 +2200,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
                                         == LightBits2.ENGINE)
                                     {
-                                        bNew = 1;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //New = 1;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 1;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        // bNew = 1;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                 }
                                 _prevENGINE = ((LightBits2)myCurrentData.lightBits2 &
@@ -2241,17 +2227,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
                                         == LightBits.HYD)
                                     {
-                                        bNew = 4;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        // bNew = 4;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 4;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 4;
+                                        // byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                 }
                                 _prevHYD = ((LightBits)myCurrentData.lightBits & LightBits.HYD) 
@@ -2266,17 +2254,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
                                         == LightBits.FLCS)
                                     {
-                                        bNew = 8;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 8;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 8;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 8;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                 }
                                 _prevFLCS = ((LightBits)myCurrentData.lightBits & LightBits.FLCS) 
@@ -2291,17 +2281,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
                                         == LightBits3.DbuWarn)
                                     {
-                                        bNew = 16;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 16;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 16;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 16;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right-=16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                 }
                                 _prevDbuWarn = ((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn) 
@@ -2316,17 +2308,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
                                         == LightBits.T_L_CFG)
                                     {
-                                        bNew = 32;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 32;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 32;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        // bNew = 32;
+                                        // byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                       // bOld = all;
                                     }
                                 }
                                 _prevT_L_CFG = ((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG) 
@@ -2341,17 +2335,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.CAN) 
                                         == LightBits.CAN)
                                     {
-                                        bNew = 128;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 128;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 128;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 128;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                 }
                                 _prevCAN = ((LightBits)myCurrentData.lightBits & LightBits.CAN)
@@ -2366,17 +2362,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
                                         == LightBits.OXY_BROW)
                                     {
-                                        bNew = 64;
-                                        byte all = (byte)(bOld + bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 64;
+                                        //byte all = (byte)(bOld + bNew);
+                                        Eyebrow_Right += 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        bNew = 64;
-                                        byte all = (byte)(bOld - bNew);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, all);
-                                        bOld = all;
+                                        //bNew = 64;
+                                        //byte all = (byte)(bOld - bNew);
+                                        Eyebrow_Right -= 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                       // bOld = all;
                                     }
                                 }
                                 _prevOXY_BROW = ((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW) 
@@ -2397,17 +2395,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
                                         == LightBits.FltControlSys)
                                     {
-                                        bNew1 = 1;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                      //  bNew1 = 1;
+                                      //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 1;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 1;
+                                        // byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                       // bOld1 = all1;
                                     }
                                 }
                                 _prevFltControlSys = ((LightBits)myCurrentData.lightBits & LightBits.FltControlSys) 
@@ -2422,17 +2422,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
                                         == LightBits3.Elec_Fault)
                                     {
-                                        bNew1 = 2;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                      //  bNew1 = 2;
+                                      //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                        //bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 2;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 2;
+                                        //  byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                       // bOld1 = all1;
                                     }
                                 }
                                 _prevElec_Fault = ((LightBits3)myCurrentData.lightBits3 & 
@@ -2451,20 +2453,21 @@ namespace WindowsFormsApplication1
                                         if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
                                             == LightBits2.PROBEHEAT)
                                         {
-                                            bNew1 = 4;
-                                            all1 = (byte)(bOld1 + bNew1);
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                            bOld1 = all1;
-                                            // on = true;
+                                            // bNew1 = 4;
+                                            // all1 = (byte)(bOld1 + bNew1);
+                                            CautionPanel_Row1 += 4;
+                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                           // bOld1 = all1;
+                                           
                                         }
                                         else
                                         {
-                                            bNew1 = 4;
-                                            all1 = (byte)(bOld1 - bNew1);
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                            bOld1 = all1;
-                                            //  on = false;
-
+                                            // bNew1 = 4;
+                                            //  all1 = (byte)(bOld1 - bNew1);
+                                            CautionPanel_Row1 -= 4;
+                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                           // bOld1 = all1;
+                                           
                                         }
                                         _prevPROBEHEAT = ((LightBits2)myCurrentData.lightBits2 &
                                             LightBits2.PROBEHEAT) == LightBits2.PROBEHEAT;
@@ -2482,17 +2485,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
                                     == LightBits3.cadc)
                                     {
-                                        bNew1 = 8;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        //  bNew1 = 8;
+                                        //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 8;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 8;
+                                        // byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                 }
                                 _prevcadc = ((LightBits3)myCurrentData.lightBits3 &
@@ -2507,17 +2512,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
                                     == LightBits.CONFIG)
                                     {
-                                        bNew1 = 16;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 16;
+                                        //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                       // bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 16;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 16;
+                                        // byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                       // bOld1 = all1;
                                     }
                                 }
                                 _prevCONFIG = ((LightBits)myCurrentData.lightBits &
@@ -2532,17 +2539,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
                                     == LightBits3.ATF_Not_Engaged)
                                     {
-                                        bNew1 = 32;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 32;
+                                        //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 32;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        //  bNew1 = 32;
+                                        //  byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                 }
                                 _prevATF_Not_Engaged = ((LightBits3)myCurrentData.lightBits3 &
@@ -2557,17 +2566,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
                                     == LightBits2.FwdFuelLow)
                                     {
-                                        bNew1 = 64;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 64;
+                                        //  byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 64;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        //   bNew1 = 64;
+                                        //  byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                     //   bOld1 = all1;
                                     }
                                 }
                                 _prevFwdFuelLow = ((LightBits2)myCurrentData.lightBits2 &
@@ -2582,17 +2593,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
                                     == LightBits2.AftFuelLow)
                                     {
-                                        bNew1 = 128;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 128;
+                                        // byte all1 = (byte)(bOld1 + bNew1);
+                                        CautionPanel_Row1 += 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                      //  bOld1 = all1;
                                     }
                                     else
                                     {
-                                        bNew1 = 128;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, all1);
-                                        bOld1 = all1;
+                                        // bNew1 = 128;
+                                        // byte all1 = (byte)(bOld1 - bNew1);
+                                        CautionPanel_Row1 -= 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                       // bOld1 = all1;
                                     }
                                 }
                                 _prevAftFuelLow = ((LightBits2)myCurrentData.lightBits2 &
@@ -2609,17 +2622,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
                                     == LightBits.EngineFault)
                                     {
-                                        bNew2 = 1;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 1;
+                                        //byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                     else
                                     {
-                                        bNew2 = 1;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 1;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                 }
                                 _prevEngineFault = ((LightBits)myCurrentData.lightBits &
@@ -2634,17 +2649,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
                                     == LightBits2.SEC)
                                     {
-                                        bNew2 = 2;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 2;
+                                        //byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                     else
                                     {
-                                        bNew2 = 2;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 2;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                 }
                                 _prevSEC = ((LightBits2)myCurrentData.lightBits2 &
@@ -2659,17 +2676,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
                                     == LightBits2.FUEL_OIL_HOT)
                                     {
-                                        bNew2 = 4;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 4;
+                                        //byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                     else
                                     {
-                                        bNew2 = 4;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 4;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                 }
                                 _prevFUEL_OIL_HOT = ((LightBits2)myCurrentData.lightBits2 &
@@ -2690,17 +2709,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.Overheat)
                                     == LightBits.Overheat)
                                     {
-                                        bNew2 = 16;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 16;
+                                        //byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                     else
                                     {
-                                        bNew2 = 16;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 16;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                 }
                                 _prevOverheat = ((LightBits)myCurrentData.lightBits &
@@ -2721,17 +2742,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
                                     == LightBits2.BUC)
                                     {
-                                        bNew2 = 64;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 64;
+                                        //byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                     else
                                     {
-                                        bNew2 = 64;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 64;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
                                     }
                                 }
                                 _prevBUC = ((LightBits2)myCurrentData.lightBits2 &
@@ -2748,17 +2771,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.Avionics)
                                     == LightBits.Avionics)
                                     {
-                                        bNew3 = 1;
-                                        byte all3 = (byte)(bOld3 + bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        // bNew3 = 1;
+                                        // byte all3 = (byte)(bOld3 + bNew3);
+                                        CautionPanel_Row3 += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                     else
                                     {
-                                        bNew3 = 1;
-                                        byte all3 = (byte)(bOld3 - bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        // bNew3 = 1;
+                                        // byte all3 = (byte)(bOld3 - bNew3);
+                                        CautionPanel_Row3 -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                 }
                                 _prevAvionics = ((LightBits)myCurrentData.lightBits &
@@ -2773,17 +2798,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
                                     == LightBits.EQUIP_HOT)
                                     {
-                                        bNew3 = 2;
-                                        byte all3 = (byte)(bOld3 + bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        //bNew3 = 2;
+                                        //byte all3 = (byte)(bOld3 + bNew3);
+                                        CautionPanel_Row3 += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                     else
                                     {
-                                        bNew3 = 2;
-                                        byte all3 = (byte)(bOld3 - bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        //bNew3 = 2;
+                                        //byte all3 = (byte)(bOld3 - bNew3);
+                                        CautionPanel_Row3 -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                 }
                                 _prevEQUIP_HOT = ((LightBits)myCurrentData.lightBits &
@@ -2798,17 +2825,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
                                     == LightBits.RadarAlt)
                                     {
-                                        bNew3 = 4;
-                                        byte all3 = (byte)(bOld3 + bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                       // bNew3 = 4;
+                                       // byte all3 = (byte)(bOld3 + bNew3);
+                                        CautionPanel_Row3 += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                     else
                                     {
-                                        bNew3 = 4;
-                                        byte all3 = (byte)(bOld3 - bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        //bNew3 = 4;
+                                        // byte all3 = (byte)(bOld3 - bNew3);
+                                        CautionPanel_Row3 -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
                                     }
                                 }
                                 _prevRadarAlt = ((LightBits)myCurrentData.lightBits &
@@ -2823,17 +2852,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.IFF)
                                     == LightBits.IFF)
                                     {
-                                        bNew3 = 8;
-                                        byte all3 = (byte)(bOld3 + bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        // bNew3 = 8;
+                                        //byte all3 = (byte)(bOld3 + bNew3);
+                                        CautionPanel_Row3 += 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                       // bOld3 = all3;
                                     }
                                     else
                                     {
-                                        bNew3 = 8;
-                                        byte all3 = (byte)(bOld3 - bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        //bNew3 = 8;
+                                        //byte all3 = (byte)(bOld3 - bNew3);
+                                        CautionPanel_Row3 -= 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                       // bOld3 = all3;
                                     }
                                 }
                                 _prevIFF = ((LightBits)myCurrentData.lightBits &
@@ -2856,17 +2887,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
                                     == LightBits2.SEAT_ARM)
                                     {
-                                        bNew4 = 1;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //  bNew4 = 1;
+                                        //  byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                      //  bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 1;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 1;
+                                        // byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                      //  bOld4 = all4;
                                     }
                                 }
                                 _prevSEAT_ARM = ((LightBits2)myCurrentData.lightBits2 &
@@ -2881,17 +2914,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
                                     == LightBits.NWSFail)
                                     {
-                                        bNew4 = 2;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 2;
+                                        //byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 2;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 2;
+                                        //byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                 }
                                 _prevNWSFail = ((LightBits)myCurrentData.lightBits &
@@ -2906,17 +2941,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
                                     == LightBits2.ANTI_SKID)
                                     {
-                                        bNew4 = 4;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 4;
+                                        // byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 4;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 4;
+                                        // byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                       // bOld4 = all4;
                                     }
                                 }
                                 _prevANTI_SKID = ((LightBits2)myCurrentData.lightBits2 &
@@ -2931,17 +2968,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.Hook)
                                     == LightBits.Hook)
                                     {
-                                        bNew4 = 8;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 8;
+                                        //byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 8;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 8;
+                                        // byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                       // bOld4 = all4;
                                     }
                                 }
                                 _prevHook = ((LightBits)myCurrentData.lightBits &
@@ -2956,17 +2995,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
                                     == LightBits2.OXY_LOW)
                                     {
-                                        bNew4 = 16;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 16;
+                                        // byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                       // bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 16;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 16;
+                                        // byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 16;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                       // bOld4 = all4;
                                     }
                                 }
                                 _prevOXY_LOW = ((LightBits2)myCurrentData.lightBits2 &
@@ -2981,17 +3022,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
                                     == LightBits.CabinPress)
                                     {
-                                        bNew4 = 32;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 32;
+                                        //byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                     else
                                     {
-                                        bNew4 = 32;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 32;
+                                        //byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 32;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
                                     }
                                 }
                                 _prevCabinPress = ((LightBits)myCurrentData.lightBits &
@@ -3011,18 +3054,20 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
                                     == LightBits.MasterCaution)
                                     {
-                                        bNew5 = 1;
-                                        byte all5 = (byte)(bOld5 + bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5);
-                                        bOld5 = all5;
+                                        // bNew5 = 1;
+                                        // byte all5 = (byte)(bOld5 + bNew5);
+                                        Misc += 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                       // bOld5 = all5;
                                     }
                                     else
                                     {
-                                        Wait(10);
-                                        bNew5 = 1;
-                                        byte all5 = (byte)(bOld5 - bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5); ;
-                                        bOld5 = all5;
+                                        // Wait(10);
+                                        //  bNew5 = 1;
+                                        //  byte all5 = (byte)(bOld5 - bNew5);
+                                        Misc -= 1;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                      //  bOld5 = all5;
                                     }
                                 }
 
@@ -3038,17 +3083,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.TF)
                                     == LightBits.TF)
                                     {
-                                        bNew5 = 64;
-                                        byte all5 = (byte)(bOld5 + bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5);
-                                        bOld5 = all5;
+                                        // bNew5 = 64;
+                                        // byte all5 = (byte)(bOld5 + bNew5);
+                                        Misc += 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                        // bOld5 = all5;
                                     }
                                     else
                                     {
-                                        bNew5 = 64;
-                                        byte all5 = (byte)(bOld5 - bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5); ;
-                                        bOld5 = all5;
+                                        // bNew5 = 64;
+                                        // byte all5 = (byte)(bOld5 - bNew5);
+                                        Misc -= 64;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                       // bOld5 = all5;
                                     }
                                 }
 
@@ -3066,54 +3113,62 @@ namespace WindowsFormsApplication1
                                     == LightBits.AllLampBitsOn)
                                     {
                                         // 2nd ROW "INLET ICING", "-------"
-                                        bNew2 = 168;
-                                        byte all2 = (byte)(bOld2 + bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        // bNew2 = 168;
+                                        // byte all2 = (byte)(bOld2 + bNew2);
+                                        CautionPanel_Row2 += 168;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        // bOld2 = all2;
 
                                         //3rd ROW "NUCLEAR", "------", "-----", "-----"
-                                        bNew3 = 240;
-                                        byte all3 = (byte)(bOld3 + bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        // bNew3 = 240;
+                                        //byte all3 = (byte)(bOld3 + bNew3);
+                                        CautionPanel_Row3 += 240;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
 
                                         //4th ROW "-----", "-----"
-                                        bNew4 = 192;
-                                        byte all4 = (byte)(bOld4 + bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        //bNew4 = 192;
+                                        //byte all4 = (byte)(bOld4 + bNew4);
+                                        CautionPanel_Row4 += 192;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        //bOld4 = all4;
 
                                         // LEFT WARNING LIGHTS "-------", "-------", "-------"
-                                        bNew5 = 176;
-                                        byte all5 = (byte)(bOld5 + bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5);
-                                        bOld5 = all5;
+                                        //bNew5 = 176;
+                                        //byte all5 = (byte)(bOld5 + bNew5);
+                                        Misc += 176;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                       // bOld5 = all5;
                                     }
                                     else
                                     {
                                         // 2nd ROW "INLET ICING", "-------"
-                                        bNew2 = 168;
-                                        byte all2 = (byte)(bOld2 - bNew2);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, all2);
-                                        bOld2 = all2;
+                                        //bNew2 = 168;
+                                        //byte all2 = (byte)(bOld2 - bNew2);
+                                        CautionPanel_Row2 -= 168;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                        //bOld2 = all2;
 
                                         //3rd ROW "NUCLEAR", "------", "-----", "-----"
-                                        bNew3 = 240;
-                                        byte all3 = (byte)(bOld3 - bNew3);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, all3);
-                                        bOld3 = all3;
+                                        //bNew3 = 240;
+                                        // byte all3 = (byte)(bOld3 - bNew3);
+                                        CautionPanel_Row3 -= 240;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                        //bOld3 = all3;
 
                                         //4th ROW "-----", "-----"
-                                        bNew4 = 192;
-                                        byte all4 = (byte)(bOld4 - bNew4);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, all4);
-                                        bOld4 = all4;
+                                        // bNew4 = 192;
+                                        // byte all4 = (byte)(bOld4 - bNew4);
+                                        CautionPanel_Row4 -= 192;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                        // bOld4 = all4;
 
                                         // LEFT WARNING LIGHTS "-------", "-------", "-------"
-                                        bNew5 = 176;
-                                        byte all5 = (byte)(bOld5 - bNew5);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all5);
-                                        bOld5 = all5;
+                                        // bNew5 = 176;
+                                        // byte all5 = (byte)(bOld5 - bNew5);
+                                        Misc -= 176;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                       // bOld5 = all5;
                                     }
                                 }
                                 _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits &
@@ -3133,17 +3188,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
                                     == LightBits2.TFR_ENGAGED)
                                     {
-                                        bNew6 = 4;
-                                        byte all6 = (byte)(bOld6 + bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6);
-                                        bOld6 = all6;
+                                        // bNew6 = 4;
+                                        // byte all6 = (byte)(bOld6 + bNew6);
+                                        Misc += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                      //  bOld6 = all6;
                                     }
                                     else
                                     {
-                                        bNew6 = 4;
-                                        byte all6 = (byte)(bOld6 - bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6); ;
-                                        bOld6 = all6;
+                                        // bNew6 = 4;
+                                        //  byte all6 = (byte)(bOld6 - bNew6);
+                                        Misc -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                        // bOld6 = all6;
                                     }
                                 }
 
@@ -3159,17 +3216,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
                                     == LightBits.TFR_STBY)
                                     {
-                                        bNew6 = 2;
-                                        byte all6 = (byte)(bOld6 + bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6);
-                                        bOld6 = all6;
+                                        // bNew6 = 2;
+                                        // byte all6 = (byte)(bOld6 + bNew6);
+                                        Misc += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                       // bOld6 = all6;
                                     }
                                     else
                                     {
-                                        bNew6 = 2;
-                                        byte all6 = (byte)(bOld6 - bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6); ;
-                                        bOld6 = all6;
+                                        // bNew6 = 2;
+                                        // byte all6 = (byte)(bOld6 - bNew6);
+                                        Misc -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                        // bOld6 = all6;
                                     }
                                 }
 
@@ -3185,17 +3244,19 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
                                     == LightBits2.EcmPwr)
                                     {
-                                        bNew6 = 8;
-                                        byte all6 = (byte)(bOld6 + bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6);
-                                        bOld6 = all6;
+                                        //  bNew6 = 8;
+                                        //  byte all6 = (byte)(bOld6 + bNew6);
+                                        Misc += 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                     //   bOld6 = all6;
                                     }
                                     else
                                     {
-                                        bNew6 = 8;
-                                        byte all6 = (byte)(bOld6 - bNew6);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, all6); ;
-                                        bOld6 = all6;
+                                        // bNew6 = 8;
+                                        //  byte all6 = (byte)(bOld6 - bNew6);
+                                        Misc -= 8;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                       // bOld6 = all6;
                                     }
                                 }
 
@@ -3270,12 +3331,7 @@ namespace WindowsFormsApplication1
                                 // LightBits2              THREAT WARNING PRIME                                     //
                                 // --------------------------------------------------------------------- works! --- //
                                 // Define short-definition of lightbits:
-                                int HandOff = myCurrentData.lightBits2 & 0x1;
-                                int Launch = myCurrentData.lightBits2 & 0x2;
-                                int PriMode = myCurrentData.lightBits2 & 0x4;
-                                int Naval = myCurrentData.lightBits2 & 0x8;
-                                int Unk = myCurrentData.lightBits2 & 0x10;
-                                int TgtSep = myCurrentData.lightBits2 & 0x20;
+                              
 
 
                                 // -------------------------------------------------------------------------------- //
@@ -3339,235 +3395,168 @@ namespace WindowsFormsApplication1
                                     }
                                 }
 
-                                // -------------------------------------------------------------------------------- //
-                                //                         THREAT WARNING PRIME                                     //
-                                // --------------------------------------------------------------------- works! --- //
-                                // ---------------
-                                // HANDOFF
-                                // ---------------
-                                // Upper indicator:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                    == LightBits2.HandOff != _prevHandOff)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff) 
-                                        == LightBits2.HandOff)
-                                    {
-                                        bNew7 = 128;
-                                        byte all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7);
-                                        bOld7 = all7;
-                                        HandOff = ON;
-                                    }
-                                    else
-                                    {
-                                        bNew7 = 128;
-                                        byte all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        HandOff = OFF;
-                                    }
-                                }
-
-                                _prevHandOff = ((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                  == LightBits2.HandOff;
+                                // ----------------------------------------------------------------------------------//
+                                //                           TWP - Threat Warning Prime                              //
+                                // ----------------------------------------------------------------------------------//
+                                // Define short-definition of lightbits:
+                                int HandOff = myCurrentData.lightBits2 & 0x1;
+                                int Launch = myCurrentData.lightBits2 & 0x2;
+                                int PriMode = myCurrentData.lightBits2 & 0x4;
+                                int Naval = myCurrentData.lightBits2 & 0x8;
+                                int Unk = myCurrentData.lightBits2 & 0x10;
+                                int TgtSep = myCurrentData.lightBits2 & 0x20;
+                                int SysTest = myCurrentData.lightBits3 & 0x1000000;
 
                                 // ---------------
                                 // HANDOFF, PRIORITY MODE & SYS TEST LOWER INDICATOR
                                 // ---------------
                                 // Lower indicator,
                                 // just goes on when system is powerd:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                  == LightBits2.AuxPwr != _prevAuxPwr)
+                                if (_prevAuxPwr != AuxPwr)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                    == LightBits2.AuxPwr)
-                                    { 
-                                        bNew7 = 89; /*      89 = 64 (Handoff "On")                */
-                                                    /*         + 16 (Priority "Open")             */
-                                                    /*         +  8 (TGT SEP, lower "TGT SEP)     */
-                                                    /*         +  1 (SysTest "SysTest")           */
-                                        byte all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7);
-                                        bOld7 = all7;
-                                        HandOff_Power = ON;
-
-                                        bNew1 = 1; 
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                        bOld1 = all1;
-                                    }
-                                    else
+                                    if (AuxPwr != OFF)
                                     {
-                                        bNew7 = 89;  /*      89 = 64 (Handoff "On")                */
-                                                     /*         + 16 (Priority "Open")             */
-                                                     /*         +  8 (TGT SEP, lower "TGT SEP)     */
-                                                     /*         +  1 (SysTest "SysTest")           */
-                                        byte all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        HandOff_Power = OFF;
+                                        TWP += 64; // HANDOFF "ON"
+                                        TWP += 16; // PRIORITY "OPEN"
+                                        TWP += 8;  // TGT SEP, lower Half "ON"
+                                        TWP += 1;  // SysTest, lower Half "SysTest" ON
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
 
-                                        bNew1 = 1;   /*        1 = 1(Ship indicator)                */
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                        bOld1 = all1;
+                                        TWP_Shp += 1; // UNKNOWN, lower Half "ON" (Naval)
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+
+                                    }
+
+                                    if (AuxPwr == OFF)
+                                    {
+                                        TWP -= 64; // HANDOFF "ON"
+                                        TWP -= 16; // PRIORITY "OPEN"
+                                        TWP -= 8;  // TGT SEP, lower Half "ON"
+                                        TWP -= 1;  // SysTest, lower Half "SysTest" ON
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+
+                                        TWP_Shp -= 1; // UNKNOWN, lower Half "ON" (Naval)
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        
                                     }
                                 }
+                                _prevAuxPwr = AuxPwr;
+                               
+                                // ---------------
+                                // HANDOFF
+                                // ---------------
+                                // Upper indicator:
+                                if (_prevHandOff != HandOff)
+                                {
+                                    if (HandOff != OFF)
+                                    {
+                                        TWP += 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        HandOff_active = true;
+                                    }
 
-                                _prevAuxPwr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                  == LightBits2.AuxPwr;
+                                    if (HandOff == OFF)
+                                    {
+                                        TWP -= 128;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        HandOff_active = false;
+                                    }
+                                }
+                                _prevHandOff = HandOff;
 
                                 // ---------------
                                 // PRIORITY MODE
                                 // ---------------
                                 // Upper indicator, PRIORITY:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                    == LightBits2.PriMode != _prevPriMode)
+                                if (_prevPriMode != PriMode)
                                 {
-
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                    == LightBits2.PriMode)
+                                    if (PriMode != OFF)
                                     {
-                                        // Oberen Indicator "PRIORITY" einschalten:
-                                        bNew7 = 32;
-                                        byte all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7);
-                                        bOld7 = all7;
-                                        PriMode_Priority = ON;
+                                        TWP -= 16; // Unteren Indicator "OPEN" ausschalten
+                                        TWP += 32; // Oberen Indicator "PRIORITY" einschalten
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        PriMode_active = true;
 
-                                        // Unteren Indicator "OPEN" ausschalten:
-                                        bNew7 = 16;
-                                        all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        PriMode_Open = OFF;
                                     }
 
-                                    else
+                                    if (PriMode == OFF)
                                     {
-                                        // Oberen Indicator "PRIORITY" ausschalten: 
-                                        bNew7 = 32;
-                                        byte all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        PriMode_Priority = OFF;
-
-                                        // Unteren Indicator "OPEN" einschalten:
-                                        bNew7 = 16;
-                                        all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        PriMode_Open = ON;
+                                        TWP -= 32; // Oberen Indicator "PRIORITY" ausschalten
+                                        TWP += 16; // Unteren Indicator "OPEN" einschalten
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        PriMode_active = false;
                                     }
                                 }
-
-                                _prevPriMode = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                  == LightBits2.PriMode;
-
-                               /* 
-                                
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.AllLampBits3OnExceptCarapace) 
-                                    == LightBits3.AllLampBits3OnExceptCarapace)
-                                {
-                                    byte all7 = 32;
-                                    all7 = (byte)(bOld7 + bNew7);
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                    bOld7 = all7;
-                                } 
-                                
-                               */
+                                _prevPriMode = PriMode;
 
                                 // ---------------
                                 //  TGT SEP
                                 // ---------------
                                 // TGP SEP - upper indicator "TGT SEP", 
                                 // goes on when switch is pushed:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                    == LightBits2.TgtSep != _prevTgtSep)
+                                if (_prevTgtSep != TgtSep)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                        == LightBits2.TgtSep)
+                                    if (TgtSep != OFF)
                                     {
-                                        bNew7 = 4;
-                                        byte all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7);
-                                        bOld7 = all7;
-                                        TgtSep = ON;
+                                        TWP += 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        TgtSep_active = true;
                                     }
-                                    else
+
+                                    if (TgtSep == OFF)
                                     {
-                                        bNew7 = 4;
-                                        byte all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
-                                        TgtSep = OFF;
+                                        TWP -= 4;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        TgtSep_active = false;
                                     }
                                 }
-
-                                _prevTgtSep = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                  == LightBits2.TgtSep;
+                                _prevTgtSep = TgtSep;
 
                                 // ---------------
                                 //  SYS TEST - PERFORMING TEST
                                 // ---------------
                                 // SysTest - upper indicator "ON", 
                                 // goes on when system performing a test:
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
-                                    == LightBits3.SysTest != _prevSysTest)
+                                if (_prevSysTest != SysTest)
                                 {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
-                                        == LightBits3.SysTest)
+                                    if (SysTest != OFF)
                                     {
-                                        _SysTest = true;
-                                        bNew7 = 2;
-                                        byte all7 = (byte)(bOld7 + bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7);
-                                        bOld7 = all7;
-
+                                        TWP += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        SysTest_active = true;
                                     }
 
-                                    else
+                                    if (SysTest == OFF)
                                     {
-                                        _SysTest = false;
-                                        bNew7 = 2;
-                                        all7 = (byte)(bOld7 - bNew7);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, all7); ;
-                                        bOld7 = all7;
+                                        TWP -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                        SysTest_active = false;
                                     }
-
                                 }
-
-                                _prevSysTest = ((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
-                                 == LightBits3.SysTest;
-
+                                _prevSysTest = SysTest;
+                               
+                              
                                 // ---------------
                                 //  UNKNOWN / SHIP 
                                 // ---------------
                                 // UNKNOWN / SHP - upper indicator "UNKNOWN", 
-                                // goes on when switch is depressed:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                    == LightBits2.Unk != _prevUnk)
+                                if (_prevUnk != Unk)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                        == LightBits2.Unk)
+                                    if (Unk != OFF)
                                     {
-                                        bNew1 = 2;
-                                        byte all1 = (byte)(bOld1 + bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1);
-                                        bOld1 = all1;
+                                        TWP_Shp += 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        Unk_active = true;
                                     }
 
-                                    else
+                                    if (Unk == OFF)
                                     {
-                                        bNew1 = 2;
-                                        byte all1 = (byte)(bOld1 - bNew1);
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, all1); ;
-                                        bOld1 = all1;
+                                        TWP_Shp -= 2;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                        Unk_active = false;
                                     }
                                 }
-
-                                _prevUnk = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                  == LightBits2.Unk;
+                                _prevUnk = Unk;
 
                                 // -------------------------------------------------------------------------------- //
                                 //                         HSI BITS                                                 //
@@ -3746,13 +3735,13 @@ namespace WindowsFormsApplication1
                                 if (_prevSwitchState[0] != Switch[0])
                                 {
 
-                                    if (Switch[0] == ON)
+                                    if (Switch[0] == _ON)
                                     {
                                         F4.SimSeatOn();
                                         _prevSwitchState[0] = Switch[0];
 
                                     }
-                                    if (Switch[0] == OFF)
+                                    if (Switch[0] == _OFF)
                                     {
                                         F4.SimSeatOff();
                                         _prevSwitchState[1] = Switch[1];
