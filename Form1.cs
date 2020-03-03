@@ -584,6 +584,9 @@ namespace WindowsFormsApplication1
         // SWITCHES Abfragen: 
         private Thread SwitchesThread;
 
+        // Sonstiges:
+       // private Thread WaitThread;
+
        private static Device _phccDevice = new Device();
       
         // Verfügbare COM-Ports auslesen und in Combo-Box zur Verfügung stellen:
@@ -765,6 +768,8 @@ namespace WindowsFormsApplication1
                     this.SimOutputThread = new Thread(new ThreadStart(SimOutput));
                    
                     this.SwitchesThread = new Thread(new ThreadStart(Switches));
+
+                    //this.WaitThread = new Thread(new ParameterizedThreadStart(Wait));
 
                     //  DataThread.Start();                 /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
                     //  TestingDiversesThread.Start();      /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
@@ -1465,46 +1470,40 @@ namespace WindowsFormsApplication1
                    {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
-
                             FlightData mySharedMem8 = myReader.GetCurrentData();
 
+                            //if (ProbeHeat_blinking == true)
+                            //{
+
                             if ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                   == BlinkBits.PROBEHEAT) != _prevProbeHeat_blinking)
-
+                              == BlinkBits.PROBEHEAT) != _prevProbeHeat_blinking)
                             {
-                                if (FltControlSys_active) { CautionPanel_Row1_ProbeHeat_blinking += 1; }
-                                if (Elec_Fault_active) { CautionPanel_Row1_ProbeHeat_blinking += 2; }
-                                if (ProbeHeat_active) { CautionPanel_Row1_ProbeHeat_blinking += 4; }
-                                if (cadc_active) { CautionPanel_Row1_ProbeHeat_blinking += 8; }
-                                if (CONFIG_active) { CautionPanel_Row1_ProbeHeat_blinking += 16; }
-                                if (ATF_Not_Engaged_active) { CautionPanel_Row1_ProbeHeat_blinking += 32; }
-                                if (FwdFuelLow_active) { CautionPanel_Row1_ProbeHeat_blinking += 64; }
-
                                 while (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                    == BlinkBits.PROBEHEAT)
+                                 == BlinkBits.PROBEHEAT)
                                 {
                                     // Check if it's time to leave "while loop":
                                     mySharedMem8 = myReader.GetCurrentData();
+                                    ProbeHeat_blinking = true;
 
-                                    CautionPanel_Row1_ProbeHeat_blinking += 4;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1_ProbeHeat_blinking);
+                                    CautionPanel_Row1 += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                     ProbeHeat_blinking_active = true;
-                                    Wait(125); //125, fast blinktime
+                                    Wait(50); //125, fast blinktime
 
-                                    CautionPanel_Row1_ProbeHeat_blinking -= 4;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1_ProbeHeat_blinking);
+                                    CautionPanel_Row1 -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                     ProbeHeat_blinking_active = false;
-                                    Wait(125); //125, fast blinktime
+                                    Wait(50); //125, fast blinktime
                                 }
                                 if (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                  == 0)
+                                   != BlinkBits.PROBEHEAT)
                                 {
-                                    if (ProbeHeat_blinking_active) { CautionPanel_Row1_ProbeHeat_blinking -= 4; };
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1_ProbeHeat_blinking);
+                                    // if (ProbeHeat_blinking_active=true) { CautionPanel_Row1 -= 4; }
+                                    //  Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                     ProbeHeat_blinking_active = false;
-                                    CautionPanel_Row1_ProbeHeat_blinking = 0;
+                                    ProbeHeat_blinking = false;
                                 }
-                                _prevProbeHeat_blinking = ((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT) 
+                                _prevProbeHeat_blinking = ((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
                                 == BlinkBits.PROBEHEAT;
                             }
                         }
@@ -1688,9 +1687,8 @@ namespace WindowsFormsApplication1
                             
                             if (((myCurrentData.hsiBits & 0x80000000) == 0) && (Reset_PHCC_when_in_UI == 1))
                             {
-
                                 byte zero = 0;
-                               
+
                                 // EYEBROW & CAUTION Panel reset:
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, zero);
@@ -1704,7 +1702,7 @@ namespace WindowsFormsApplication1
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 5, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, zero);
                                 Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, zero);
-                                                               
+
                                 // UHF, sechststellige Backup-Frequency löschen: 
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, zero);
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, zero);
@@ -1723,9 +1721,8 @@ namespace WindowsFormsApplication1
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
                                 Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, zero);
 
-                               // Port3_PHCC_Input_Output.Reset();
-                              
                                 Reset_PHCC_when_in_UI = 0;
+                               
                             }
 
                             //label4.Invoke(new Action<string>(s => { label4.Text = s; label4.ForeColor = Color.Red; }), myCurrentData.pilotsStatus[0].ToString());
@@ -1858,11 +1855,11 @@ namespace WindowsFormsApplication1
                                         if (myBupUhfFreqHunderttausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 235);
                                         _prevmyBupUhfFreqHunderttausender = myBupUhfFreqHunderttausender;
                                     }
-                                   
+
                                     myBupUhfFreq = _prevmyBupUhfFreq;
 
                                 }
-                            
+
                                 //----------------------------------------------//
                                 // --> FEHLT NOCH, muss implementiert werden!   //
                                 // --> LED-Status für folgende CMDS LEDs:       //
@@ -1958,27 +1955,30 @@ namespace WindowsFormsApplication1
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                        Thread.Sleep(5);
+                                        // Thread.Sleep(5);
+                                        Wait(5);
                                         _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
                                         ChaffLow = true;
                                         _prevChaffWasLow = ChaffLow;
                                     }
 
-                                    
-                                    if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow==true))
+
+                                    if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow == true))
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
                                         ChaffLow = true;
                                     }
-                                   
+
                                     if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
                                         ChaffLow = false;
                                     }
@@ -1989,17 +1989,19 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
                                         _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         FlareLow = true;
                                         _prevFlareWasLow = FlareLow;
                                     }
 
-                                    if (((myCurrentData.lightBits2 & 0x800) !=0) && (_prevFlareWasLow == true)) 
+                                    if (((myCurrentData.lightBits2 & 0x800) != 0) && (_prevFlareWasLow == true))
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
                                         _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         FlareLow = true;
                                     }
 
@@ -2007,7 +2009,8 @@ namespace WindowsFormsApplication1
                                     {
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
-                                        Thread.Sleep(5);
+                                        // Thread.Sleep(5);
+                                        Wait(5);
                                         _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
                                         FlareLow = false;
                                     }
@@ -2024,7 +2027,8 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         AutoDegree = true;
                                     }
 
@@ -2040,7 +2044,8 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
                                         Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
-                                        Thread.Sleep(5);
+                                        //Thread.Sleep(5);
+                                        Wait(5);
                                         AutoDegree = false;
                                     }
 
@@ -2118,7 +2123,7 @@ namespace WindowsFormsApplication1
                                 //                              STATUS LIGHTS                                       //
                                 //               --> Need to crosscheck with "Flightdata.h" <<--                    //
                                 //////////////////////////////////////////////////////////////////////////////////////
-                               
+
                                 // -------------------------------------------------------------------------------- //
                                 //                          WARNING LIGHTS                                          //      
                                 //                                                                                  //
@@ -2132,7 +2137,6 @@ namespace WindowsFormsApplication1
                                 //                          WARNING LIGHTS                                          //      
                                 //                          RIGHT  EYEBROW                                          //
                                 // -------------------------------------------------------------------------------- //
-
                                 // ---------------
                                 //   ENGINE FIRE
                                 // ---------------
@@ -2142,24 +2146,18 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
                                         == LightBits.ENG_FIRE)
                                     {
-                                        // bNew = 2;
-                                        // byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 2;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 2;
-                                        //byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right); ;
-                                        //bOld = all;
+                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
                                     }
-                                }
-                                _prevENG_FIRE = ((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
-                                  == LightBits.ENG_FIRE;
 
+                                    _prevENG_FIRE = ((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
+                                    == LightBits.ENG_FIRE;
+                                }
                                 // ---------------
                                 //  ENGINE FAULT
                                 // ---------------
@@ -2169,24 +2167,17 @@ namespace WindowsFormsApplication1
                                     if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
                                         == LightBits2.ENGINE)
                                     {
-                                        //New = 1;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 1;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        // bNew = 1;
-                                        //byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 1;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
+                                    _prevENGINE = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
+                                    == LightBits2.ENGINE;
                                 }
-                                _prevENGINE = ((LightBits2)myCurrentData.lightBits2 &
-                                   LightBits2.ENGINE) == LightBits2.ENGINE;
-
                                 // ---------------
                                 //  HYD FAULT
                                 // ---------------
@@ -2196,24 +2187,17 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
                                         == LightBits.HYD)
                                     {
-                                        // bNew = 4;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 4;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 4;
-                                        // byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 4;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
-                                }
-                                _prevHYD = ((LightBits)myCurrentData.lightBits & LightBits.HYD) 
+                                    _prevHYD = ((LightBits)myCurrentData.lightBits & LightBits.HYD)
                                     == LightBits.HYD;
-
+                                }
                                 // ---------------
                                 //  FLCS FAULT
                                 // ---------------
@@ -2223,24 +2207,17 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
                                         == LightBits.FLCS)
                                     {
-                                        //bNew = 8;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 8;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 8;
-                                        //byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 8;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
-                                }
-                                _prevFLCS = ((LightBits)myCurrentData.lightBits & LightBits.FLCS) 
+                                    _prevFLCS = ((LightBits)myCurrentData.lightBits & LightBits.FLCS)
                                     == LightBits.FLCS;
-
+                                }
                                 // ---------------
                                 //  DBU FAULT
                                 // ---------------
@@ -2250,24 +2227,17 @@ namespace WindowsFormsApplication1
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
                                         == LightBits3.DbuWarn)
                                     {
-                                        //bNew = 16;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 16;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 16;
-                                        //byte all = (byte)(bOld - bNew);
-                                        Eyebrow_Right-=16;
+                                        Eyebrow_Right -= 16;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
-                                }
-                                _prevDbuWarn = ((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn) 
+                                    _prevDbuWarn = ((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
                                     == LightBits3.DbuWarn;
-
+                                }
                                 // ---------------
                                 //  T_L_CFG FAULT
                                 // ---------------
@@ -2277,51 +2247,37 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
                                         == LightBits.T_L_CFG)
                                     {
-                                        //bNew = 32;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 32;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        // bNew = 32;
-                                        // byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 32;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                       // bOld = all;
                                     }
-                                }
-                                _prevT_L_CFG = ((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG) 
+                                    _prevT_L_CFG = ((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
                                     == LightBits.T_L_CFG;
-
+                                }
                                 // ---------------
                                 //   CAN FAULT
                                 // ---------------
                                 if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
                                     == LightBits.CAN != _prevCAN)
                                 {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.CAN) 
+                                    if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
                                         == LightBits.CAN)
                                     {
-                                        //bNew = 128;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 128;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                       // bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 128;
-                                        //byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 128;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
+                                    _prevCAN = ((LightBits)myCurrentData.lightBits & LightBits.CAN)
+                                    == LightBits.CAN;
                                 }
-                                _prevCAN = ((LightBits)myCurrentData.lightBits & LightBits.CAN)
-                                   == LightBits.CAN;
-
                                 // ---------------
                                 //  OXY BROW FAULT
                                 // ---------------
@@ -2331,29 +2287,23 @@ namespace WindowsFormsApplication1
                                     if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
                                         == LightBits.OXY_BROW)
                                     {
-                                        //bNew = 64;
-                                        //byte all = (byte)(bOld + bNew);
                                         Eyebrow_Right += 64;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                        //bOld = all;
                                     }
                                     else
                                     {
-                                        //bNew = 64;
-                                        //byte all = (byte)(bOld - bNew);
                                         Eyebrow_Right -= 64;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                       // bOld = all;
                                     }
-                                }
-                                _prevOXY_BROW = ((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW) 
+                                    _prevOXY_BROW = ((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
                                     == LightBits.OXY_BROW;
+                                }
 
                                 // -------------------------------------------------------------------------------- //
                                 //                          CAUTION PANEL                                           //      
                                 // -------------------------------------------------------------------------------- //
                                 //int FltControlSys = (myCurrentData.lightBits & 0x40000);
-                                                                              
+
                                 //int Elec_Fault = (myCurrentData.lightBits3 & 0x400);
                                 //int PROBEHEAT = (myCurrentData.lightBits2 & 0x1000000);
                                 //int CONFIG = (myCurrentData.lightBits & 0x40);
@@ -2377,19 +2327,19 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                         FltControlSys_active = true;
                                     }
-                                   else
+                                    else
                                     {
                                         CautionPanel_Row1 -= 1;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                         FltControlSys_active = false;
                                     }
-                                    _prevFltControlSys = ((LightBits)myCurrentData.lightBits & LightBits.FltControlSys) 
+                                    _prevFltControlSys = ((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
                                     == LightBits.FltControlSys;
                                 }
                                 // ---------------
                                 //  ELEC FAULT                     /* Maybe blinking in future, but not implemented in BMS 4.34 yet. 10.05.2019 LE. */
                                 // ---------------
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault) 
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
                                     == LightBits3.Elec_Fault != _prevElec_Fault)
                                 {
                                     if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
@@ -2399,43 +2349,72 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                         Elec_Fault_active = true;
                                     }
-                                   else
-                                   {
+                                    else
+                                    {
                                         CautionPanel_Row1 -= 2;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
                                         Elec_Fault_active = false;
-                                   }
-                                  _prevElec_Fault = ((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault) 
-                                  == LightBits3.Elec_Fault;
+                                    }
+                                    _prevElec_Fault = ((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
+                                    == LightBits3.Elec_Fault;
                                 }
                                 // ---------------
                                 //  PROBE HEAT FAULT
                                 // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                       == LightBits2.PROBEHEAT != _prevProbeHeat)
-                                {
-                                    // Nur ausführen, wenn Probeheat nicht "blinkt":
-                                    if ((((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
-                                        == BlinkBits.PROBEHEAT) == false)
-                                    {
+                                // Not neccessary, because extra Thread "ProbeHeat_Blinking"!
+                                //--------------------------------------------------------------
+                                //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //       == LightBits2.PROBEHEAT != _prevProbeHeat)
+                                //{
+                                //    // Nur ausführen, wenn Probeheat nicht "blinkt":
+                                //    if ((((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
+                                //        == BlinkBits.PROBEHEAT) == false)
+                                //    {
+                                //        if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //            == LightBits2.PROBEHEAT)
+                                //        {
+                                //            CautionPanel_Row1 += 4;
+                                //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                //            ProbeHeat_active = true;
+                                //        }
+                                //        else
+                                //        {
+                                //            CautionPanel_Row1 -= 4;
+                                //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                //            ProbeHeat_active = false;
+                                //        }
+                                //    }
+                                //    _prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //    == LightBits2.PROBEHEAT;
+                                //}
+                                //if ((((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //       == LightBits2.PROBEHEAT != _prevProbeHeat) && (((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
+                                //       != BlinkBits.PROBEHEAT))
+                                //{
+                                //    ProbeHeat_blinking = false;
 
-                                        if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                            == LightBits2.PROBEHEAT)
-                                        {
-                                            CautionPanel_Row1 += 4;
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                            ProbeHeat_active = true;
-                                        }
-                                        else
-                                        {
-                                            CautionPanel_Row1 -= 4;
-                                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                            ProbeHeat_active = false;
-                                        }
-                                    }
-                                    _prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                    == LightBits2.PROBEHEAT;
-                                }
+                                //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //       == LightBits2.PROBEHEAT)
+                                //    {
+                                //        CautionPanel_Row1 += 4;
+                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                //        ProbeHeat_active = true;
+                                //    }
+                                //    else
+                                //    {
+                                //        CautionPanel_Row1 -= 4;
+                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                //        ProbeHeat_active = false;
+                                //    }
+                                //_prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                                //== LightBits2.PROBEHEAT;
+                                //}
+                                //else
+                                //{
+                                //    ProbeHeat_blinking = true;
+                                //}
+                               
+                            
                                 // ---------------
                                 //  C ADC FAULT
                                 // ---------------
@@ -2930,15 +2909,15 @@ namespace WindowsFormsApplication1
                                         // 2nd ROW "INLET ICING", "-------"
                                         CautionPanel_Row2 += 168;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                       
+
                                         //3rd ROW "NUCLEAR", "------", "-----", "-----"
                                         CautionPanel_Row3 += 240;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                       
+
                                         //4th ROW "-----", "-----"
                                         CautionPanel_Row4 += 192;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                       
+
                                         // LEFT WARNING LIGHTS "-------", "-------", "-------"
                                         Misc += 176;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
@@ -2948,22 +2927,22 @@ namespace WindowsFormsApplication1
                                         // 2nd ROW "INLET ICING", "-------"
                                         CautionPanel_Row2 -= 168;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                       
+
                                         //3rd ROW "NUCLEAR", "------", "-----", "-----"
                                         CautionPanel_Row3 -= 240;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                        
+
                                         //4th ROW "-----", "-----"
                                         CautionPanel_Row4 -= 192;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                        
+
                                         // LEFT WARNING LIGHTS "-------", "-------", "-------"
                                         Misc -= 176;
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
                                     }
+                                    _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn) 
+                                    == LightBits.AllLampBitsOn;
                                 }
-                                _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits &
-                                   LightBits.AllLampBitsOn) == LightBits.AllLampBitsOn;
 
                                 // -------------------------------------------------------------------------------- //
                                 //                         LEFT AUX CONSOLE                                         //      
@@ -3226,7 +3205,7 @@ namespace WindowsFormsApplication1
                                         HandOff_active = false;
                                     }
                                     _prevHandOff = ((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                   == LightBits2.HandOff;
+                                    == LightBits2.HandOff;
                                 }
                                 // ---------------
                                 // PRIORITY MODE
@@ -3358,7 +3337,6 @@ namespace WindowsFormsApplication1
                                         _prevMiddleMarker = MiddleMarker;
                                         Thread.Sleep(5);
                                     }
-
                                     if (MiddleMarker == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
@@ -3366,7 +3344,6 @@ namespace WindowsFormsApplication1
                                         Thread.Sleep(5);
                                     }
                                 }
-
                                 if (_prevFlying != Flying)
                                 {
                                     if (Flying == OFF)
@@ -3375,7 +3352,6 @@ namespace WindowsFormsApplication1
                                         _prevFlying = Flying;
                                         Thread.Sleep(5);
                                     }
-
                                     if (Flying == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
@@ -3383,30 +3359,11 @@ namespace WindowsFormsApplication1
                                         Thread.Sleep(5);
                                     }
                                 }
-                                //else {
-                                //if ((myCurrentData.hsiBits & 0x80000000) == 0)
-                                //{
-                                //        byte zero = 0;
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, zero);
-
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 4, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 5, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, zero);
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, zero);
-                                //    }
                             }
                         }
-
                     }
                 }
             }
-
-
         }
 
         private void Switches()
@@ -3639,12 +3596,12 @@ namespace WindowsFormsApplication1
 
         // Testbutton im Interface
 
-        public void Wait(int ms)
+        public void Wait(object ms)
         {
             // Warteschleife - offensichtlich besser als "Thread.Sleep()"??? 14.07.2017
-
+            int mSec = Convert.ToInt32(ms);
             DateTime start = DateTime.Now;
-            while ((DateTime.Now - start).TotalMilliseconds < ms)
+            while ((DateTime.Now - start).TotalMilliseconds < mSec)
                 Application.DoEvents();
         }
 
