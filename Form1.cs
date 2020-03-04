@@ -96,8 +96,8 @@ namespace WindowsFormsApplication1
         SerialPort Port1_Arduino_EngineGauges;     // VERSUCHSAUFBAU für mehrere Arduino-Karten.
         SerialPort Port2_Arduino_SpeedBrake;
         private static Device Port3_PHCC_Input_Output = new Device();
-        
-     
+
+
 
         //public string[,] keycombo = new string[,] { }; // OFFENSICHTLICH NICHT VERWENDET!
 
@@ -169,10 +169,10 @@ namespace WindowsFormsApplication1
             this.label4.Text = "";
             this.label6.Text = "";
 
-          //   SpeechSynthesizer readerSpeech = new SpeechSynthesizer();
-          //   readerSpeech = new SpeechSynthesizer();
-         //    readerSpeech.Rate = -2;
-         //    readerSpeech.Speak("Welcome back Stryker, software started. All systems are working fine. Have a good flight sir - and always clear skies.");
+            //   SpeechSynthesizer readerSpeech = new SpeechSynthesizer();
+            //   readerSpeech = new SpeechSynthesizer();
+            //    readerSpeech.Rate = -2;
+            //    readerSpeech.Speak("Welcome back Stryker, software started. All systems are working fine. Have a good flight sir - and always clear skies.");
 
             //if (port1 != null)
             //    port1.Close(); 
@@ -187,9 +187,9 @@ namespace WindowsFormsApplication1
             //port2 = new SerialPort("COM4", 115200); //9600 
 
             Port3_PHCC_Input_Output.PortName = "COM1";
-            
-            
-            
+
+
+
             //myDevice.PortName = "COM1";
             //myDevice.SerialPort.WriteTimeout = 500;
             //myDevice.SerialPort.ReadTimeout = 500;
@@ -310,7 +310,7 @@ namespace WindowsFormsApplication1
 
         // CAUTIION PANEL 
         // 1st ROW (starts from left):
-        public bool _prevFltControlSys=false;
+        public bool _prevFltControlSys = false;
         public bool _prevElec_Fault = false;
         public bool _prevProbeHeat = false;
         public bool _prevProbeHeat_blinking = false;
@@ -370,8 +370,8 @@ namespace WindowsFormsApplication1
         // CAUTION PANEL
         // other:
         public bool _prevAllLampBitsOn;
-        
-       // MISC PANEL & LEFT EYEBROW - WARNING LIGHTS:
+
+        // MISC PANEL & LEFT EYEBROW - WARNING LIGHTS:
         public bool _prevTFR_ENGAGED;
         public bool _prevTFR_STBY;
         public bool _prevECM;
@@ -513,13 +513,13 @@ namespace WindowsFormsApplication1
         public int myBupUhfFreqZehner;
         public int myBupUhfFreqEiner;
 
-        public int _prevmyBupUhfFreqHunderttausender=9;
-        public int _prevmyBupUhfFreqZehntausender=9;
-        public int _prevmyBupUhfFreqTausender=9;
-        public int _prevmyBupUhfFreqHunderter=9;
-        public int _prevmyBupUhfFreqZehner=9;
-        public int _prevmyBupUhfFreqEiner=9;
-        
+        public int _prevmyBupUhfFreqHunderttausender = 9;
+        public int _prevmyBupUhfFreqZehntausender = 9;
+        public int _prevmyBupUhfFreqTausender = 9;
+        public int _prevmyBupUhfFreqHunderter = 9;
+        public int _prevmyBupUhfFreqZehner = 9;
+        public int _prevmyBupUhfFreqEiner = 9;
+
         // Allgemeine Zählervariable:
         public int i = 0;
 
@@ -585,10 +585,10 @@ namespace WindowsFormsApplication1
         private Thread SwitchesThread;
 
         // Sonstiges:
-       // private Thread WaitThread;
+        // private Thread WaitThread;
 
-       private static Device _phccDevice = new Device();
-      
+        //   private static Device _phccDevice = new Device();
+
         // Verfügbare COM-Ports auslesen und in Combo-Box zur Verfügung stellen:
         public void getAvaiblePorts()
         {
@@ -596,9 +596,9 @@ namespace WindowsFormsApplication1
             comboBox1.Items.AddRange(ports);
             button2.Enabled = false;
 
-           
-            
-          
+
+
+
 
         }
 
@@ -660,12 +660,12 @@ namespace WindowsFormsApplication1
                     {
 
                         Port3_PHCC_Input_Output = new Device("COM1");
-                        
-                      //  _phccDevice = new Device("COM1");
-                      //  _phccDevice.SerialPort.BaudRate = (115200);
+
+                        //  _phccDevice = new Device("COM1");
+                        //  _phccDevice.SerialPort.BaudRate = (115200);
                         Baudrate = Port3_PHCC_Input_Output.SerialPort.BaudRate.ToString();
 
-                       FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
+                        FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
 
                         this.label1.Text = "Self-Test running...";
                         this.label2.Text = "";
@@ -703,7 +703,8 @@ namespace WindowsFormsApplication1
                         }
 
                         this.label2.ForeColor = Color.Green;
-                        this.label2.Text = "PHCC communication started! " + Baudrate + FirmwareVersion; ;
+                        this.label2.Text = "PHCC communication started! " + Baudrate + FirmwareVersion;
+                      
                         //  Wait(1000);
                         //   this.label2.Text = "PHCC Firmware Version: " + firmwareVersion;
                         Wait(1000);
@@ -766,12 +767,12 @@ namespace WindowsFormsApplication1
                     this.Blink_MissileLaunchThread = new Thread(new ThreadStart(Blink_MissileLaunch));
                     this.Blink_SysTestThread = new Thread(new ThreadStart(Blink_SysTest));
                     this.SimOutputThread = new Thread(new ThreadStart(SimOutput));
-                   
+
                     this.SwitchesThread = new Thread(new ThreadStart(Switches));
 
                     //this.WaitThread = new Thread(new ParameterizedThreadStart(Wait));
 
-                    //  DataThread.Start();                 /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
+                    DataThread.Start();                 /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
                     //  TestingDiversesThread.Start();      /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
 
                     //  OilThread.Start();                  /* vorübergehend abgeschaltet! */
@@ -805,8 +806,8 @@ namespace WindowsFormsApplication1
 
                     try
                     {
-                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
-                        Thread.Sleep(5);
+                        // Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
+                        //   Thread.Sleep(5);
 
                         // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 3, 0);
                         //  Thread.Sleep(5);
@@ -989,6 +990,24 @@ namespace WindowsFormsApplication1
                 }
 
         }
+        //public bool CheckRunning()
+        //{
+        //    using (Reader myReader = new F4SharedMem.Reader())
+
+        //        while (_keepRunning == true)
+        //        {
+        //            if (myReader.IsFalconRunning == true)
+        //            {
+        //                while ((myReader.IsFalconRunning) && (_keepRunning))
+        //                {
+        //                    return true;
+        //                }
+        //                if myRader.Is
+        //            }
+        //            else { return false; }
+        //        }
+        //    if (_keepRunning == false){ return false; }
+        //}
 
         public void Data()
         {
@@ -997,106 +1016,143 @@ namespace WindowsFormsApplication1
 
             using (Reader myReader = new F4SharedMem.Reader())
 
-                while (_keepRunning == true)
-                {
-                    if (myReader.IsFalconRunning == true)
-                    {
+             // while (_keepRunning == true)
+             //   {
+             //      if (myReader.IsFalconRunning == true)
+              //      {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
-                            FlightData myFlightData = new FlightData();
-                            FlightData mySharedMem0 = myReader.GetCurrentData();
-                            // IntellivibeData <--- Status des Fliegers abfragen!
-                            //---------------------------------------------------
+                            //  FlightData myFlightData = new FlightData();
+                            FlightData mySharedMemTest = myReader.GetCurrentData();
+                          
+                            int TimeInSeconds = mySharedMemTest.currentTime;
+                            int Days = TimeInSeconds / 86400;
+                            int   Hours = TimeInSeconds % 86400 / 3600;
+                            int    Minutes = TimeInSeconds % 3600 / 60;
+                            int  Seconds = TimeInSeconds % 60;
+                            // Rohdaten / Integer anzeigen:
+                            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), TimeInSeconds.ToString());
 
-                            //byte[] pilotsStatus = mySharedMem0.pilotsStatus.ToArray();
-                            //Byte flags = pilotsStatus[0];
-                            //String bin = Convert.ToString(flags, 2);  //    10110 (binär)
-
-                            byte[] myArr = (byte[])mySharedMem0.pilotsStatus.ToArray();
-                            //this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), myArr[0].ToString());
-                            //if (myArr[0] == 0)
-                            //{
-                            //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI");
-
-                            //}   
-
-                            //    if (myArr[0] == 1)
-                            //    {
-                            //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading");
-
-                            //    }
-                            //    if (myArr[0] == 2)
-                            //    {
-                            //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Ready and Waiting...");
-
-                            //    }
-                            if (myArr[0] == 3)
+                            if (Hours < 10) // Null voranstellen
                             {
-                                this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
-
+                                this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), "0" + Hours.ToString());
                             }
-                            //    if (myArr[0] == 4)
-                            //    {
-                            //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
-
-                            //    }
-                            //    if (myArr[0] == 4)
-                            //    {
-                            //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown");
-
-                            //    }
-
-                            //if ((mySharedMem0.hsiBits & 0x80000000) == 0)
-                            //{
-                            //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }),"in UI");
-                            //    break;
-                            // }
-
-                            Application.DoEvents();
-
-                            //if ((pilotsStatus[0] != 0)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI"); }
-                            //if ((pilotsStatus[0] != 1)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading"); }
-                            //if ((pilotsStatus[0] != 2)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Waiting"); }
-                            //if ((pilotsStatus[0] != 4)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying"); }
-                            //if ((pilotsStatus[4] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Dead"); }
-                            //if ((pilotsStatus[5] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown"); }
-                            //switch (pilotsStatus[0])
-                            //{
-                            //    case 0:
-                            //        {
-                            //            
-                            //            break;
-                            //        }
-                            //    case 1:
-                            //        {
-                            //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "LOADING");
-                            //            break;
-                            //        }
-                            //    case 2:
-                            //        {
-                            //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "WAITING");
-                            //            break;
-                            //        }
-                            //    case 3:
-                            //        {
-                            //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
-                            //            break;
-                            //        }
-                            //    case 4:
-                            //        {
-                            //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
-                            //            break;
-                            //        }
-                            //    case 5:
-                            //        {
-                            //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "UNKNOWN");
-                            //            break;
-                            //        }
-                            //}
+                            else
+                            {
+                                this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), Hours.ToString());
+                            }
+                            if (Minutes < 10) // Null voranstellen
+                            {
+                                this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), "0" + Minutes.ToString());
+                            }
+                            else
+                            {
+                                    this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), Minutes.ToString());
+                            }
+                            if (Seconds < 10) // Null voranstellen
+                            {
+                                this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), "0" + Seconds.ToString());
+                            }
+                            else
+                            {
+                                this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), Seconds.ToString());
+                            }
                         }
+
+                        // IntellivibeData <--- Status des Fliegers abfragen!
+                        //---------------------------------------------------
+
+                        //byte[] pilotsStatus = mySharedMem0.pilotsStatus.ToArray();
+                        //Byte flags = pilotsStatus[0];
+                        //String bin = Convert.ToString(flags, 2);  //    10110 (binär)
+
+                        // byte[] myArr = (byte[])mySharedMem0.pilotsStatus.ToArray();
+                        //this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), myArr[0].ToString());
+                        //if (myArr[0] == 0)
+                        //{
+                        //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI");
+
+                        //}   
+
+                        //    if (myArr[0] == 1)
+                        //    {
+                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading");
+
+                        //    }
+                        //    if (myArr[0] == 2)
+                        //    {
+                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Ready and Waiting...");
+
+                        //    }
+                        //  if (myArr[0] == 3)
+                        //  {
+                        //       this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
+
+                        //    }
+                        //    if (myArr[0] == 4)
+                        //    {
+                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
+
+                        //    }
+                        //    if (myArr[0] == 4)
+                        //    {
+                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown");
+
+                        //    }
+
+                        //if ((mySharedMem0.hsiBits & 0x80000000) == 0)
+                        //{
+                        //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }),"in UI");
+                        //    break;
+                        // }
+
+                        //    Application.DoEvents();
+
+                        //if ((pilotsStatus[0] != 0)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI"); }
+                        //if ((pilotsStatus[0] != 1)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading"); }
+                        //if ((pilotsStatus[0] != 2)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Waiting"); }
+                        //if ((pilotsStatus[0] != 4)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying"); }
+                        //if ((pilotsStatus[4] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Dead"); }
+                        //if ((pilotsStatus[5] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown"); }
+                        //switch (pilotsStatus[0])
+                        //{
+                        //    case 0:
+                        //        {
+                        //            
+                        //            break;
+                        //        }
+                        //    case 1:
+                        //        {
+                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "LOADING");
+                        //            break;
+                        //        }
+                        //    case 2:
+                        //        {
+                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "WAITING");
+                        //            break;
+                        //        }
+                        //    case 3:
+                        //        {
+                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
+                        //            break;
+                        //        }
+                        //    case 4:
+                        //        {
+                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
+                        //            break;
+                        //        }
+                        //    case 5:
+                        //        {
+                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "UNKNOWN");
+                        //            break;
+                        //        }
+                        //}
                     }
-                }
-        }
+
+
+             //   }
+      //  }
+        
 
         public void Oil()
         {
@@ -1464,51 +1520,58 @@ namespace WindowsFormsApplication1
         { // WORKS! 16.05.2019 LE.
             using (Reader myReader = new F4SharedMem.Reader())
 
-               while (_keepRunning == true)
-               {
-                    if (myReader.IsFalconRunning == true)
-                   {
+               //while (_keepRunning == true)
+               //{
+               //     if (myReader.IsFalconRunning == true)
+               //    {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
                             FlightData mySharedMem8 = myReader.GetCurrentData();
 
-                            //if (ProbeHeat_blinking == true)
-                            //{
+                    //if (ProbeHeat_blinking == true)
+                    //{
 
-                            if ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                              == BlinkBits.PROBEHEAT) != _prevProbeHeat_blinking)
-                            {
-                                while (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                 == BlinkBits.PROBEHEAT)
-                                {
-                                    // Check if it's time to leave "while loop":
-                                    mySharedMem8 = myReader.GetCurrentData();
-                                    ProbeHeat_blinking = true;
+                   // if ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                   //   == BlinkBits.PROBEHEAT) != _prevProbeHeat_blinking)
+                  //  {
+                        while (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                         == BlinkBits.PROBEHEAT)
+                        {
+                            // Check if it's time to leave "while loop":
+                            mySharedMem8 = myReader.GetCurrentData();
+                            ProbeHeat_blinking = true;
 
-                                    CautionPanel_Row1 += 4;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                    ProbeHeat_blinking_active = true;
-                                    Wait(50); //125, fast blinktime
+                            CautionPanel_Row1 += 4;
+                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            ProbeHeat_blinking_active = true;
+                            Thread.Sleep(125); //125, fast blinktime
+                        Application.DoEvents();
 
-                                    CautionPanel_Row1 -= 4;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                    ProbeHeat_blinking_active = false;
-                                    Wait(50); //125, fast blinktime
-                                }
-                                if (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                   != BlinkBits.PROBEHEAT)
-                                {
-                                    // if (ProbeHeat_blinking_active=true) { CautionPanel_Row1 -= 4; }
-                                    //  Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                    ProbeHeat_blinking_active = false;
-                                    ProbeHeat_blinking = false;
-                                }
-                                _prevProbeHeat_blinking = ((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                                == BlinkBits.PROBEHEAT;
-                            }
-                        }
+                            CautionPanel_Row1 -= 4;
+                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            ProbeHeat_blinking_active = false;
+                            Thread.Sleep(125); //125, fast blinktime
+                        Application.DoEvents();
                     }
-               }
+                     //   _prevProbeHeat_blinking = ((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                     //       == BlinkBits.PROBEHEAT;
+                    }
+                       // if (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                     //      != BlinkBits.PROBEHEAT)
+                     //   {
+                            // if (ProbeHeat_blinking_active=true) { CautionPanel_Row1 -= 4; }
+                            //  Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+
+                         //   ProbeHeat_blinking_active = false;
+                        //    ProbeHeat_blinking = false;
+                            //   }
+                           
+                       // }  
+                          //  }
+                       // }
+               //     }
+               //}
+           
         }
 
 
@@ -1516,10 +1579,10 @@ namespace WindowsFormsApplication1
         { // WORKS! 28.02.2020 LE.
             using (Reader myReader = new F4SharedMem.Reader())
 
-                while (_keepRunning == true)
-                {
-                    if (myReader.IsFalconRunning == true)
-                    {
+                //while (_keepRunning == true)
+                //{
+                //    if (myReader.IsFalconRunning == true)
+                //    {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
                             FlightData mySharedMem9 = myReader.GetCurrentData();
@@ -1544,6 +1607,7 @@ namespace WindowsFormsApplication1
                                         Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
                                         Launch_blinking_active = false;
                                         Wait(250); //fast blinktime
+                                      //  Application.DoEvents();
                                     }
                                     if (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
                                        == 0)
@@ -1557,18 +1621,18 @@ namespace WindowsFormsApplication1
                                 }
                             }
                         }
-                    }
-                }
+                //    }
+                //}
         }
 
         public void Blink_SysTest()  // WORKS! 28.02.2020 LE. 
         {
             using (Reader myReader = new F4SharedMem.Reader())
 
-                while (_keepRunning == true)
-                {
-                    if (myReader.IsFalconRunning == true)
-                    {
+                //while (_keepRunning == true)
+                //{
+                //    if (myReader.IsFalconRunning == true)
+                //    {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
                             if (SysTest_active == true)
@@ -1580,14 +1644,16 @@ namespace WindowsFormsApplication1
 
                                     blinkTWP = 255;
                                     Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
-                                    Wait(250);
+                                    Thread.Sleep(250);
+                                    Application.DoEvents();
 
                                     blinkTWP_Shp = 1;
                                     Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
 
                                     blinkTWP = 75;
                                     Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
-                                    Wait(250);
+                                    Thread.Sleep(250);
+                                    Application.DoEvents();
 
                                     if (i == 3)
                                     {
@@ -1610,18 +1676,18 @@ namespace WindowsFormsApplication1
                                 }
                             }
                         }
-                    }
-                }
+                //    }
+                //}
         }
 
         public void SimOutput()
         {
             using (Reader myReader = new F4SharedMem.Reader())  //Neue Instanz von Reader, um die Daten von FalconBMS auslesen zu kÃƒÂ¶nnen.
             {
-                while (_keepRunning == true)
-                {
-                    if (myReader.IsFalconRunning == true)
-                    {
+             //   while (_keepRunning == true)
+              //  {
+              //      if (myReader.IsFalconRunning == true)
+              //      {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
                             FlightData myFlightData = new FlightData();
@@ -1860,231 +1926,265 @@ namespace WindowsFormsApplication1
 
                                 }
 
-                                //----------------------------------------------//
-                                // --> FEHLT NOCH, muss implementiert werden!   //
-                                // --> LED-Status für folgende CMDS LEDs:       //
-                                //                                              //
-                                //     GO           0x80                        //
-                                //     NOGO         0x100                       //
-                                //     RDY          0x200     (Dispense Rdy)    //
-                                //----------------------------------------------//
+                        //----------------------------------------------//
+                        // --> FEHLT NOCH, muss implementiert werden!   //
+                        // --> LED-Status für folgende CMDS LEDs:       //
+                        //                                              //
+                        //     GO           0x80                        //
+                        //     NOGO         0x100                       //
+                        //     RDY          0x200     (Dispense Rdy)    //
+                        //----------------------------------------------//
 
-                                //----------------------------------------------//
-                                //      Einzelne Anzeige löschen:               //
-                                //                                              //
-                                //  Subadresse eingeben                         //
-                                //  Databyte: 32                                //
-                                //                                              //
-                                //----------------------------------------------//
+                        //----------------------------------------------//
+                        //      Einzelne Anzeige löschen:               //
+                        //                                              //
+                        //  Subadresse eingeben                         //
+                        //  Databyte: 32                                //
+                        //                                              //
+                        //----------------------------------------------//
 
-                                // Normale Zahlenwerte anzeigen für
-                                // verbleibenden Caff- / Flare-Vorrat:
-                                //                                    if (myCurrentData.cmdsMode == 0)
-                                if (myCurrentData.cmdsMode != 0)
+                        // Normale Zahlenwerte anzeigen für
+                        // verbleibenden Caff- / Flare-Vorrat:
+                        //                                    if (myCurrentData.cmdsMode == 0)
+                        if (myCurrentData.cmdsMode != 0)
+                        {
+                            if (_prevFlareEinerState != myFlareEiner)
+                            {
+                                if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
+                                if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
+                                if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
+                                if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
+                                if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
+                                if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
+                                if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
+                                if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
+                                if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
+                                if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
+                                if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
+                                // Thread.Sleep(5);
+                                _prevFlareEinerState = myFlareEiner;
+                            }
+
+
+                            if (_prevFlareZehnerState != myFlareZehner)
+                            {
+                                if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
+                                if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
+                                if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
+                                if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
+                                if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
+                                if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
+                                if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
+                                if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
+                                if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
+                                if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
+                                // Thread.Sleep(5);
+                                _prevFlareZehnerState = myFlareZehner;
+                            }
+
+                            if (_prevChaffEinerState != myChaffEiner)
+                            {
+                                if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
+                                if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
+                                if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
+                                if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
+                                if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
+                                if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
+                                if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
+                                if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
+                                if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
+                                if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                // Thread.Sleep(5);
+                                _prevChaffEinerState = myChaffEiner;
+                            }
+
+                            if (_prevChaffZehnerState != myChaffZehner)
+                            {
+                                if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
+                                if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
+                                if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
+                                if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
+                                if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
+                                if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
+                                if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
+                                if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
+                                if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
+                                if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
+                                //Thread.Sleep(5);
+                                _prevChaffZehnerState = myChaffZehner;
+                            }
+
+
+                            // Show "L0", when low on Chaffs:
+                            if (ChaffLow == false)
+                            {
+                                if ((myCurrentData.lightBits2 & 0x400) != 0)
+                                //  if (((myCurrentData.lightBits2 & 0x400) != 0) && (ChaffLow == false))
                                 {
-                                    if (_prevFlareEinerState != myFlareEiner)
-                                    {
-                                        if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                        if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
-                                        if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
-                                        if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
-                                        if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
-                                        if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
-                                        if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
-                                        if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
-                                        if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
-                                        if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
-                                        if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                        // Thread.Sleep(5);
-                                        _prevFlareEinerState = myFlareEiner;
-                                    }
-
-
-                                    if (_prevFlareZehnerState != myFlareZehner)
-                                    {
-                                        if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
-                                        if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
-                                        if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
-                                        if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
-                                        if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
-                                        if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
-                                        if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
-                                        if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
-                                        if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
-                                        if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
-                                        // Thread.Sleep(5);
-                                        _prevFlareZehnerState = myFlareZehner;
-                                    }
-
-                                    if (_prevChaffEinerState != myChaffEiner)
-                                    {
-                                        if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                        if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
-                                        if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
-                                        if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
-                                        if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
-                                        if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
-                                        if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
-                                        if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
-                                        if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
-                                        if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
-                                        if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                        // Thread.Sleep(5);
-                                        _prevChaffEinerState = myChaffEiner;
-                                    }
-
-                                    if (_prevChaffZehnerState != myChaffZehner)
-                                    {
-                                        if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
-                                        if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
-                                        if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
-                                        if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
-                                        if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
-                                        if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
-                                        if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
-                                        if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
-                                        if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
-                                        if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
-                                        //Thread.Sleep(5);
-                                        _prevChaffZehnerState = myChaffZehner;
-                                    }
-
-
-                                    // Show "L0", when low on Chaffs:
-                                    if (((myCurrentData.lightBits2 & 0x400) != 0) && (ChaffLow == false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                        // Thread.Sleep(5);
-                                        Wait(5);
-                                        _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                        ChaffLow = true;
-                                        _prevChaffWasLow = ChaffLow;
-                                    }
-
-
-                                    if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow == true))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                        ChaffLow = true;
-                                    }
-
-                                    if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                        ChaffLow = false;
-                                    }
-
-                                    // Show "L0", when low on Flares:
-                                    if (((myCurrentData.lightBits2 & 0x800) != 0) && (FlareLow == false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
-                                        _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        FlareLow = true;
-                                        _prevFlareWasLow = FlareLow;
-                                    }
-
-                                    if (((myCurrentData.lightBits2 & 0x800) != 0) && (_prevFlareWasLow == true))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
-                                        _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        FlareLow = true;
-                                    }
-
-                                    if (((myCurrentData.lightBits2 & 0x800) == 0) && (FlareLow == true))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
-                                        // Thread.Sleep(5);
-                                        Wait(5);
-                                        _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                        FlareLow = false;
-                                    }
-
-                                    // Show "AUTO DEGR":
-                                    if (((myCurrentData.lightBits2 & 0x100) != 0) && (AutoDegree == false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
-                                        // Thread.Sleep(5);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        AutoDegree = true;
-                                    }
-
-                                    // Remove "AUTO DEGR":
-                                    if (((myCurrentData.lightBits2 & 0x100) == 0) && (AutoDegree == true))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
-                                        // Thread.Sleep(5);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
-                                        //Thread.Sleep(5);
-                                        Wait(5);
-                                        AutoDegree = false;
-                                    }
-
-                                    // Lighten up "GO":
-                                    if (((myCurrentData.lightBits2 & 0x40) != 0) && ((myCurrentData.lightBits2 & 0x200) == 0))// && ( _prevGo==false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 4);
-                                        _prevGo = true;
-                                        _prevNoGo = false;
-                                        _prevDispenseReady = false;
-                                    }
-
-                                    // Lighten up "NOGO":
-                                    if (((myCurrentData.lightBits2 & 0x80) != 0))//&& ( _prevNoGo == false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 8);
-                                        _prevGo = false;
-                                        _prevNoGo = true;
-                                        _prevDispenseReady = false;
-                                    }
-
-                                    // Lighten up "DISPENSE READY":
-                                    if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) == 0))// && ( _prevDispenseReady==false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 3);
-                                        _prevGo = false;
-                                        _prevNoGo = false;
-                                        _prevDispenseReady = true;
-                                    }
-
-                                    // Lighten up "GO" and "DISPENSE READY":
-                                    if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) != 0))// && (_prevDispenseReady == false) && (_prevGo == false))
-                                    {
-                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
-                                        _prevGo = true;
-                                        _prevNoGo = false;
-                                        _prevDispenseReady = true;
-                                    }
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                    // Thread.Sleep(5);
+                                    Wait(5);
+                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
+                                    ChaffLow = true;
+                                    _prevChaffWasLow = true;
                                 }
+                            }
+                            if (_prevChaffWasLow == true)
+                            {
+                                //if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow == true))
+                                if ((myCurrentData.lightBits2 & 0x400) != 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
+                                    ChaffLow = true;
+                                }
+                            }
+                            if (ChaffLow == true)
+                            {
+                                //  if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
+                                if ((myCurrentData.lightBits2 & 0x400) == 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
+                                    ChaffLow = false;
+                                }
+                            }
+                            if (FlareLow == false)
+                            {
+                                // Show "L0", when low on Flares:
+                                //  if (((myCurrentData.lightBits2 & 0x800) != 0) && (FlareLow == false))
+                                if ((myCurrentData.lightBits2 & 0x800) != 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
+                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    FlareLow = true;
+                                    _prevFlareWasLow = true;
+                                }
+                            }
+                            if (_prevFlareWasLow == true)
+                            {
+                                //  if (((myCurrentData.lightBits2 & 0x800) != 0) && (_prevFlareWasLow == true))
+                                if ((myCurrentData.lightBits2 & 0x800) != 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
+                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    FlareLow = true;
+                                }
+                            }
+                            if (FlareLow == true) {
+                                //if (((myCurrentData.lightBits2 & 0x800) == 0) && (FlareLow == true))
+                                if ((myCurrentData.lightBits2 & 0x800) == 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
+                                    // Thread.Sleep(5);
+                                    Wait(5);
+                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
+                                    FlareLow = false;
+                                }
+                            }
+                            if (AutoDegree == false) {
+                                // Show "AUTO DEGR":
+                                //  if (((myCurrentData.lightBits2 & 0x100) != 0) && (AutoDegree == false))
+                                if ((myCurrentData.lightBits2 & 0x100) != 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
+                                    // Thread.Sleep(5);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    AutoDegree = true;
+                                } }
+
+                            if (AutoDegree == true) {
+                                // Remove "AUTO DEGR":
+                                //if (((myCurrentData.lightBits2 & 0x100) == 0) && (AutoDegree == true))
+                                if ((myCurrentData.lightBits2 & 0x100) == 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
+                                    // Thread.Sleep(5);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
+                                    //Thread.Sleep(5);
+                                    Wait(5);
+                                    AutoDegree = false;
+                                } }
+
+                            if ((myCurrentData.lightBits2 & 0x40) != 0)
+                            {
+
+                                if ((myCurrentData.lightBits2 & 0x200) == 0)
+                                // Lighten up "GO":
+                                // if (((myCurrentData.lightBits2 & 0x40) != 0) && ((myCurrentData.lightBits2 & 0x200) == 0))// && ( _prevGo==false))
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 4);
+                                    _prevGo = true;
+                                    _prevNoGo = false;
+                                    _prevDispenseReady = false;
+                                } }
+
+                            // Lighten up "NOGO":
+                            if (((myCurrentData.lightBits2 & 0x80) != 0))//&& ( _prevNoGo == false))
+                            {
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 8);
+                                _prevGo = false;
+                                _prevNoGo = true;
+                                _prevDispenseReady = false;
+                            }
+                            if ((myCurrentData.lightBits2 & 0x200) != 0)
+                            {
+                                // Lighten up "DISPENSE READY":
+                                // if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) == 0))// && ( _prevDispenseReady==false))
+                                if ((myCurrentData.lightBits2 & 0x40) == 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 3);
+                                    _prevGo = false;
+                                    _prevNoGo = false;
+                                    _prevDispenseReady = true;
+                                }
+                                if ((myCurrentData.lightBits2 & 0x40) != 0)
+                                {
+                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
+                                    _prevGo = true;
+                                    _prevNoGo = false;
+                                    _prevDispenseReady = true;
+                                }
+                            } }
+                          
+                                    // Lighten up "GO" and "DISPENSE READY":
+                                    //if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) != 0))// && (_prevDispenseReady == false) && (_prevGo == false))
+                                    //{
+                                    //    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
+                                    //    _prevGo = true;
+                                    //    _prevNoGo = false;
+                                    //    _prevDispenseReady = true;
+                                    //}
+                               
                                 // }
                                 // Reset CMDS-display & LED when CMDS power is off:
                                 if (myCurrentData.cmdsMode == 0)
@@ -2858,8 +2958,9 @@ namespace WindowsFormsApplication1
                                 // ---------------
                                 //  MASTER CAUTION
                                 // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
-                                    == LightBits.MasterCaution != _prevMasterCaution)
+                               if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
+                                  == LightBits.MasterCaution != _prevMasterCaution)
+                    
                                 {
                                     if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
                                     == LightBits.MasterCaution)
@@ -3126,14 +3227,14 @@ namespace WindowsFormsApplication1
                                     {
                                         // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
                                         _prevSpeedBrake = SpeedBrake;
-                                        Thread.Sleep(5);
+                                     //   Thread.Sleep(5);
                                     }
 
                                     if (SpeedBrake == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
                                         _prevSpeedBrake = SpeedBrake;
-                                        Thread.Sleep(5);
+                                     //   Thread.Sleep(5);
                                     }
                                 }
 
@@ -3318,14 +3419,14 @@ namespace WindowsFormsApplication1
                                     {
                                         // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
                                         _prevOuterMarker = OuterMarker;
-                                        Thread.Sleep(5);
+                                     //   Thread.Sleep(5);
                                     }
 
                                     if (OuterMarker == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
                                         _prevOuterMarker = OuterMarker;
-                                        Thread.Sleep(5);
+                                       // Thread.Sleep(5);
                                     }
                                 }
 
@@ -3335,13 +3436,13 @@ namespace WindowsFormsApplication1
                                     {
                                         // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
                                         _prevMiddleMarker = MiddleMarker;
-                                        Thread.Sleep(5);
+                                     //   Thread.Sleep(5);
                                     }
                                     if (MiddleMarker == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
                                         _prevMiddleMarker = MiddleMarker;
-                                        Thread.Sleep(5);
+                                      //  Thread.Sleep(5);
                                     }
                                 }
                                 if (_prevFlying != Flying)
@@ -3350,19 +3451,19 @@ namespace WindowsFormsApplication1
                                     {
                                         // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
                                         _prevFlying = Flying;
-                                        Thread.Sleep(5);
+                                      //  Thread.Sleep(5);
                                     }
                                     if (Flying == ON)
                                     {
                                         //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
                                         _prevFlying = Flying;
-                                        Thread.Sleep(5);
+                                      //  Thread.Sleep(5);
                                     }
-                                }
                             }
+                                }         // Wait(100);            //40
                         }
-                    }
-                }
+                   // }
+              //  }
             }
         }
 
@@ -3370,10 +3471,10 @@ namespace WindowsFormsApplication1
         {
             using (Reader myReader = new F4SharedMem.Reader())  //Neue Instanz von Reader, um die Daten von FalconBMS auslesen zu kÃƒÂ¶nnen.
             {
-                while (_keepRunning == true)
-                {
-                    if (myReader.IsFalconRunning == true)
-                    {
+                //while (_keepRunning == true)
+                //{
+                //    if (myReader.IsFalconRunning == true)
+                //    {
                         while ((myReader.IsFalconRunning) && (_keepRunning))
                         {
                             FlightData myCurrentSwitchData = myReader.GetCurrentData();
@@ -3473,14 +3574,18 @@ namespace WindowsFormsApplication1
 
                                     }
                                 }
+                        //Thread.Sleep(250); // Testweise eingefügt. 04.03.2020 LE.
+                        //SwitchesThread.Join();
 
+                        Thread.Sleep(250);
+                        Application.DoEvents();
                             }
                         }
 
                     }
-                    Application.DoEvents();
-                }
-            }
+           
+            //    }
+            //}
         }
 
 
@@ -3596,13 +3701,13 @@ namespace WindowsFormsApplication1
 
         // Testbutton im Interface
 
-        public void Wait(object ms)
+        public void Wait(int ms)
         {
             // Warteschleife - offensichtlich besser als "Thread.Sleep()"??? 14.07.2017
-            int mSec = Convert.ToInt32(ms);
+          
             DateTime start = DateTime.Now;
-            while ((DateTime.Now - start).TotalMilliseconds < mSec)
-                Application.DoEvents();
+            while ((DateTime.Now - start).TotalMilliseconds < ms) {   Application.DoEvents(); }
+              
         }
 
        

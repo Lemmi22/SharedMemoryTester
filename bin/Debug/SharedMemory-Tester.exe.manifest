@@ -352,14 +352,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharedMemory-Tester.exe" size="177152">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharedMemory-Tester.exe" size="177664">
       <assemblyIdentity name="SharedMemory-Tester" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>J6DO+7YHAjw/oFJeL7nIp1tpwfW4kXHLQBnl6miFJ2E=</dsig:DigestValue>
+        <dsig:DigestValue>SdsZ2oO9PBNAbQaP2uka1hw2oj2nb1ab7TCEJamOvgo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
