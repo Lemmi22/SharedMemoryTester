@@ -29,7 +29,7 @@ using System.Reflection;
 using Phcc;
 using System.Speech;
 using System.Speech.Synthesis;
-using Common.Serialization;
+
 using log4net;
 using Costura;
 using F4KeyFile;
@@ -89,7 +89,7 @@ namespace WindowsFormsApplication1
 
     public partial class Form1 : Form
     {
-        private ViewerState _viewerState;
+      
 
         // SerialPort port2;                       // Ansonsten port statt port1 ... 
         // auch unten bei den RPM-Write-Routinen!
@@ -158,8 +158,7 @@ namespace WindowsFormsApplication1
 
         public Form1()
         {
-            _viewerState = new ViewerState();
-
+            
             InitializeComponent();
             getAvaiblePorts();
 
@@ -186,7 +185,7 @@ namespace WindowsFormsApplication1
             //port1 = new SerialPort("COM13", 9600); //9600 
             //port2 = new SerialPort("COM4", 115200); //9600 
 
-            Port3_PHCC_Input_Output.PortName = "COM1";
+           // Port3_PHCC_Input_Output.PortName = "COM1";
 
 
 
@@ -382,14 +381,6 @@ namespace WindowsFormsApplication1
         public byte Misc;
 
         // TWP PANEL
-        //public int Launch;
-        //public int HandOff;
-        //public int PriMode;
-        //public int Naval;
-        //public int Unk;
-        //public int TgtSep;
-        //public int SysTest;
-
         public bool Launch_active;
         public bool Launch_blinking_active;
         public bool HandOff_active;
@@ -401,14 +392,14 @@ namespace WindowsFormsApplication1
 
         public bool _prevLaunch;
         public bool _prevLaunch_blinking;
-        public bool _prevHandOff; //war Bool
-        public bool _prevPriMode;
+        public bool _prevHandOff;
         public bool _prevNaval;
         public bool _prevUnk;
         public bool _prevTgtSep;
         public bool _prevSysTest;
+        public bool _prevPriMode;
 
-        public bool _prevAuxPwr; /* Variable für TWP SysTest "POWER ON" */ //war Bool
+        public bool _prevAuxPwr;    /* Variable für TWP SysTest "POWER ON" */ 
 
         public byte TWP;
         public byte TWP_Shp;
@@ -425,7 +416,6 @@ namespace WindowsFormsApplication1
         public byte blinkAll2 = 0;
 
         // Variablen für Lightbits, Lightbits2, Lightbits3 & HSI_Bits:
-
         public int _prevONGROUND = 0;
         public int _prevFlcs_ABCD = 0;
         public int _prevLEFlaps = 0;
@@ -584,25 +574,13 @@ namespace WindowsFormsApplication1
         // SWITCHES Abfragen: 
         private Thread SwitchesThread;
 
-        // Sonstiges:
-        // private Thread WaitThread;
-
-        //   private static Device _phccDevice = new Device();
-
         // Verfügbare COM-Ports auslesen und in Combo-Box zur Verfügung stellen:
         public void getAvaiblePorts()
         {
             String[] ports = SerialPort.GetPortNames();
             comboBox1.Items.AddRange(ports);
             button2.Enabled = false;
-
-
-
-
-
         }
-
-
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -661,37 +639,35 @@ namespace WindowsFormsApplication1
 
                         Port3_PHCC_Input_Output = new Device("COM1");
 
-                        //  _phccDevice = new Device("COM1");
-                        //  _phccDevice.SerialPort.BaudRate = (115200);
-                        Baudrate = Port3_PHCC_Input_Output.SerialPort.BaudRate.ToString();
-
-                        FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
-
                         this.label1.Text = "Self-Test running...";
                         this.label2.Text = "";
                         this.label3.Text = "";
                         this.label4.Text = "";
                         this.label6.Text = "";
-                        Wait(1500);
-                        try
-                        {
-                            // Port3_PHCC_Input_Output.Reset();
-                            // Port3_PHCC_Input_Output.SetIdle();
-                            // Wait(1500);
+                      
+                        try {
+                            //Baudrate = Port3_PHCC_Input_Output.SerialPort.BaudRate.ToString();
+                            //FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
+                     
+                            //Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
+                         
                         }
 
-                        catch
+                        catch //(Exception ex)
                         {
                             this.label1.Text = "Self-Test accomplished.";
-                            Wait(1000);
+                          
                             this.label6.ForeColor = Color.Red;
                             this.label6.Text = "Connection not established!";
-                            //  Wait(1000);
-                            this.label2.ForeColor = Color.Red;
-                            this.label2.Text = "PHCC has NO POWER!!!";
-                            Wait(500);
+                           
+                            this.label4.ForeColor = Color.Red;
+                            this.label4.Text = "PHCC NOT CONNECTED OR NO POWER!!!";
+                           // this.label2.Text=ex.Message.ToString();
+                         
+                          
 
-                            for (int z = 1; z <= 3;)
+
+                            for (int z = 1; z <= 9;)
                             {
                                 this.label3.Text = "";
                                 Wait(500);
@@ -699,6 +675,8 @@ namespace WindowsFormsApplication1
                                 Wait(500);
                                 z++;
                             }
+                          //  Application.Restart();
+                         //   Environment.Exit(0);
                             return;
                         }
 
@@ -3460,8 +3438,9 @@ namespace WindowsFormsApplication1
                                       //  Thread.Sleep(5);
                                     }
                             }
-                                }         // Wait(100);            //40
-                        }
+                                }          Thread.Sleep(50);
+                    Application.DoEvents();
+                                            }
                    // }
               //  }
             }
@@ -3577,7 +3556,7 @@ namespace WindowsFormsApplication1
                         //Thread.Sleep(250); // Testweise eingefügt. 04.03.2020 LE.
                         //SwitchesThread.Join();
 
-                        Thread.Sleep(250);
+                        Thread.Sleep(50);
                         Application.DoEvents();
                             }
                         }
@@ -3672,8 +3651,8 @@ namespace WindowsFormsApplication1
                             label1.Text = "Running PHCC-ENVIRONMENT only!";
                             progressBar1.Value = 0;
                             button2.Enabled = false;
-                            Application.Restart();
-                            Environment.Exit(0);
+                          //  Application.Restart();
+                          //  Environment.Exit(0);
                         }
                         else
                         {
@@ -3710,12 +3689,6 @@ namespace WindowsFormsApplication1
               
         }
 
-       
-
-
-       
-
-
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
@@ -3733,15 +3706,10 @@ namespace WindowsFormsApplication1
             Application.Restart();
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            LoadKeyFile();
-            button3.Enabled = false;
-           // label18.Invoke(new Action<string>(s => { label18.Text = s; label18.ForeColor = Color.Black; }), "BMS - Pitbuilder.key");
-        }
+      
         public void SendCallback(string callback)
         {
-            _viewerState.KeyFile.SendCallbackByName(callback);
+          //  _viewerState.KeyFile.SendCallbackByName(callback);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -3752,277 +3720,17 @@ namespace WindowsFormsApplication1
             SendCallback("SimTogglePaused");
             //SendCallback(Callbacks.SimTogglePaused.ToString());
 
-            string binding = Convert.ToString(_viewerState.KeyFile.GetBindingForCallback("SimTogglePaused"));
+           // string binding = Convert.ToString(_viewerState.KeyFile.GetBindingForCallback("SimTogglePaused"));
                 
-                label5.Invoke(new Action<string>(s => { label5.Text = s; label5.ForeColor = Color.Red; }),binding);
+           //     label5.Invoke(new Action<string>(s => { label5.Text = s; label5.ForeColor = Color.Red; }),binding);
 
         }
 
 
-        private static string GetKeyDescription(KeyWithModifiers keys)
-        {
-            if (keys == null) throw new ArgumentNullException("keys");
-            var keyScancodeDescriptionAttibute = Common.Generic.EnumAttributeReader.GetAttribute<F4KeyFile.DescriptionAttribute>((ScanCodes)keys.ScanCode);
-            var keyScanCodeName = keyScancodeDescriptionAttibute != null ? keyScancodeDescriptionAttibute.Description : keys.ScanCode.ToString();
-            var keyModifierDescriptionAttribute =
-                Common.Generic.EnumAttributeReader.GetAttribute<F4KeyFile.DescriptionAttribute>(keys.Modifiers);
-
-            var keyModifierNames = keyModifierDescriptionAttribute != null ? keyModifierDescriptionAttribute.Description : keys.Modifiers.ToString();
-
-            if (keys.Modifiers != KeyModifiers.None && keys.ScanCode > 0)
-            {
-                return (keyModifierNames + " " + keyScanCodeName).ToUpper();
-            }
-            if (keys.Modifiers == KeyModifiers.None && keys.ScanCode > 0)
-            {
-                return keyScanCodeName.ToUpper();
-            }
-            if (keys.Modifiers != KeyModifiers.None && keys.ScanCode <= 0)
-            {
-                return keyModifierNames.ToUpper();
-            }
-            if (keys.Modifiers == KeyModifiers.None && keys.ScanCode <= 0)
-            {
-                return "";
-            }
-            return "";
-        }
-
-        private void ParseKeyFile()
-        {
-            if (_viewerState.KeyFile == null) throw new InvalidOperationException();
-            progressBar2.Visible = true;
-            grid.Hide();
-            grid.Enabled = false;
-            grid.SuspendLayout();
-            //"Überflüssige" Spalten ausblenden:
-            this.grid.Columns["LineType"].Visible = false;
-            this.grid.Columns["kbUIVisibility"].Visible = false;
-            this.grid.Columns["SoundId"].Visible = false;
-            this.grid.Columns["diCallbackInvocationBehavior"].Visible = false;
-
-            foreach (DataGridViewColumn c in grid.Columns)
-            {
-                c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // None
-            }
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; //None
-            grid.Rows.Clear();
-         
-            if (_viewerState.KeyFile.Lines == null) return;
-            progressBar2.Maximum = _viewerState.KeyFile.Lines.Count() + 1;
-            progressBar2.Value = 0;
-            foreach (var line in _viewerState.KeyFile.Lines)
-            {
-                if (line is DirectInputBinding)
-                {
-                    PopulateGridWithDirectInputBindingLineData(line);
-                 
-                }
-                else if (line is KeyBinding)
-                {
-                    PopulateGridWithKeyBindingLineData(line);
-                }
-                else if (line is CommentLine || line is BlankLine || line is UnparsableLine)
-                {
-                    PopulateGridWithCommentLineOrBlankLineOrUnparseableLineData(line);
-                }
-              //  grid.Update();
-                progressBar2.Value++;
-                Application.DoEvents();
-            }
-            foreach (DataGridViewColumn c in grid.Columns)
-            {
-                c.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            grid.ResumeLayout();
-            grid.Enabled = true;
-            grid.Show();
-                  
-            progressBar2.Visible = false;
-        }
-
-        private void PopulateGridWithCommentLineOrBlankLineOrUnparseableLineData(ILineInFile line)
-        {
-            var newRowIndex = grid.Rows.Add();
-            var row = grid.Rows[newRowIndex];
-            row.Cells["LineNum"].Value = line.LineNum;
-           
-            if (line is CommentLine)
-            {
-                var commentLine = line as CommentLine;
-                row.Cells["LineType"].Value = "Comment Line";
-                row.Cells["Description"].Value = commentLine.Text ?? string.Empty;
-                              
-            }
-            else if (line is UnparsableLine)
-            {
-                var unparseableLine = line as UnparsableLine;
-                row.Cells["LineType"].Value = "Unparseable Line";
-                row.Cells["Description"].Value = unparseableLine.Text ?? string.Empty;
-            }
-            else if (line is BlankLine)
-            {
-                row.Cells["LineType"].Value = "Blank Line";
-            }
-        }
-
-        private void PopulateGridWithKeyBindingLineData(ILineInFile line)
-        {
-            var keyBinding = line as KeyBinding;
-            var newRowIndex = grid.Rows.Add();
-            var row = grid.Rows[newRowIndex];
-            if (keyBinding.Description.Contains("BMS - Pitbuilder")) { row.DefaultCellStyle.BackColor = Color.LightGray; }
-            if (keyBinding.Description.Contains("\""+"=")){ row.DefaultCellStyle.BackColor = Color.Gray; }
-            row.Cells["LineNum"].Value = keyBinding.LineNum;
-            row.Cells["LineType"].Value = "Key";
-            row.Cells["Callback"].Value = keyBinding.Callback;
-            row.Cells["SoundId"].Value = keyBinding.SoundId;
-            row.Cells["kbKey"].Value = GetKeyDescription(keyBinding.Key);
-            row.Cells["kbComboKey"].Value = GetKeyDescription(keyBinding.ComboKey);
-            row.Cells["kbUIVisibility"].Value = GetUIAccessibilityDescription(keyBinding.UIVisibility);
-            row.Cells["Description"].Value = !string.IsNullOrEmpty(keyBinding.Description)
-                ? RemoveLeadingAndTrailingQuotes(keyBinding.Description)
-                : string.Empty;
-
-           
-        }
-
-        private void PopulateGridWithDirectInputBindingLineData(ILineInFile line)
-        {
-            var diBinding = line as DirectInputBinding;
-            var newRowIndex = grid.Rows.Add();
-            var row = grid.Rows[newRowIndex];
-            row.Cells["LineNum"].Value = diBinding.LineNum;
-            row.Cells["Callback"].Value = diBinding.Callback;
-            row.Cells["diCallbackInvocationBehavior"].Value = string.Format("{0} / {1}", diBinding.CallbackInvocationBehavior,
-                diBinding.TriggeringEvent);
-            switch (diBinding.BindingType)
-            {
-                case DirectInputBindingType.POVDirection:
-                    row.Cells["LineType"].Value = "DirectInput POV";
-                    row.Cells["diButton"].Value = string.Format("POV # {0} ({1})", diBinding.POVHatNumber,
-                        diBinding.PovDirection);
-                    break;
-                case DirectInputBindingType.Button:
-                    row.Cells["LineType"].Value = "DirectInput Button";
-                    row.Cells["diButton"].Value = string.Format("DI Button # {0}", diBinding.ButtonIndex);
-                    break;
-            }
-            row.Cells["SoundId"].Value = diBinding.SoundId;
-            row.Cells["Description"].Value = !string.IsNullOrEmpty(diBinding.Description)
-                ? RemoveLeadingAndTrailingQuotes(diBinding.Description)
-                : string.Empty;
-        }
-
-        private static string GetUIAccessibilityDescription(UIVisibility accessibility)
-        {
-            switch (accessibility)
-            {
-                case UIVisibility.Locked:
-                    return "Locked (Visible, No Changes Allowed, Keys shown in green)";
-                case UIVisibility.VisibleWithChangesAllowed:
-                    return "Visible, Changes Allowed";
-                case UIVisibility.Headline:
-                    return "Headline (Visible, No Changes Allowed, Blue Background";
-                case UIVisibility.Hidden:
-                    return "Hidden";
-            }
-            return "Unknown";
-        }
-
-        private static string RemoveLeadingAndTrailingQuotes(string toRemove)
-        {
-            var toReturn = toRemove;
-            if (toReturn.StartsWith("\""))
-            {
-                toReturn = toReturn.Substring(1, toReturn.Length - 1);
-            }
-            if (toRemove.EndsWith("\""))
-            {
-                toReturn = toReturn.Substring(0, toReturn.Length - 1);
-            }
-            return toReturn;
-        }
-        private void LoadKeyFile()
-        {
-            LoadKeyFile(@"C:\Falcon BMS 4.33 U1\User\Config\BMS - Pitbuilder.key");
-        }
-        //private void LoadKeyFile()
-        //{
-        //    var dlgOpen = new OpenFileDialog
-        //    {
-        //        AddExtension = true,
-        //        AutoUpgradeEnabled = true,
-        //        CheckFileExists = true,
-        //        CheckPathExists = true,
-        //        DefaultExt = ".key",
-        //        Filter = "Falcon 4 Key Files (*.key)|*.key",
-        //        FilterIndex = 0,
-        //        DereferenceLinks = true,
-        //        Multiselect = false,
-        //        ReadOnlyChecked = false,
-        //        RestoreDirectory = true,
-        //        ShowHelp = false,
-        //        ShowReadOnly = false,
-        //        SupportMultiDottedExtensions = true,
-        //        Title = "Open Key File",
-        //        ValidateNames = true
-        //    };
-        //    var result = dlgOpen.ShowDialog(this);
-        //    if (result == DialogResult.Cancel)
-        //    {
-        //        return;
-        //    }
-        //    if (result == DialogResult.OK)
-        //    {
-        //        LoadKeyFile(dlgOpen.FileName);
-        //    }
-        //}
-
-        private void LoadKeyFile(string keyFileName)
-        {
-            if (string.IsNullOrEmpty(keyFileName)) throw new ArgumentNullException("keyFileName");
-            var file = new FileInfo(keyFileName);
-            if (!file.Exists) throw new FileNotFoundException(keyFileName);
-
-            var oldViewerState = (ViewerState)_viewerState.Clone();
-            try
-            {
-                _viewerState.Filename = keyFileName;
-                _viewerState.KeyFile = KeyFile.Load(keyFileName);
-                ParseKeyFile();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(string.Format("An error occurred while loading the file.\n\n {0}", e.Message),
-                                Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error,
-                                MessageBoxDefaultButton.Button1);
-                _viewerState = oldViewerState;
-            }
-        }
-        #region Nested type: ViewerState
-
-        [Serializable]
-        private class ViewerState : ICloneable
-        {
-            public KeyFile KeyFile;
-            public string Filename;
-
-            #region ICloneable Members
-
-            public object Clone()
-            {
-                return Util.DeepClone(this);
-            }
-
-            #endregion
-        }
+       
+    
 
 
-
-
-        #endregion
 
         private void button5_Click(object sender, EventArgs e)
         {
