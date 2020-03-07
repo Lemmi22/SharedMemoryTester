@@ -3241,170 +3241,6 @@ namespace WindowsFormsApplication1
                                 _prevECM = ((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
                                 == LightBits2.EcmPwr;
                             }
-                        }
-
-                        // ---------------
-                        // INDICATOR LIGHT TEST
-                        // turns every light and lamp on
-                        // ---------------
-                        if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
-                            == LightBits.AllLampBitsOn != _prevAllLampBitsOn)
-                        {
-                            if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
-                            == LightBits.AllLampBitsOn)
-                            {
-                                // perform light-test, turn every light on                  NOT COMPLETE    TO BE DONE!
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, 255); /* Caution Panel ROW_1 */
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, 255); /* Caution Panel ROW_2 */
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, 255); /* Caution Panel ROW_3 */
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, 255); /* Caution Panel ROW_4 */
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, 255); /* Right Eyebrow */
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, 255); /* Left Eyebrow, Master-Caution & Misc */
-                                Wait(5);
-                            }
-                            else
-                            {
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                Wait(5);
-                            }
-                            _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
-                            == LightBits.AllLampBitsOn;
-                        }
-                        // -------------------------------------------------------------------------------- //
-                        //                          CAUTION LIGHTS                                          //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-
-                        //int LEFlaps = (myCurrentData.lightBits & 0x80000);
-                        //int EngineFault = (myCurrentData.lightBits & 0x100000);
-                        //int Overheat = (myCurrentData.lightBits & 0x200000);
-                        //int FuelLow = (myCurrentData.lightBits & 0x400000);
-                        //int Avionics = (myCurrentData.lightBits & 0x800000);
-                        //int RadarAlt = (myCurrentData.lightBits & 0x1000000);
-                        //int IFF = (myCurrentData.lightBits & 0x2000000);
-                        //int ECM = (myCurrentData.lightBits & 0x4000000);
-                        //int Hook = (myCurrentData.lightBits & 0x8000000);
-                        //int NWSFail = (myCurrentData.lightBits & 0x1000000);
-                        //int CabinPress = (myCurrentData.lightBits & 0x2000000);
-                        //int AutoPilotOn = (myCurrentData.lightBits & 0x4000000);
-                        //int TFR_STBY = (myCurrentData.lightBits & 0x8000000);
-
-
-                        //int SEC = (myCurrentData.lightBits2 & 0x400000);
-                        //int OXY_LOW = (myCurrentData.lightBits2 & 0x800000);
-                        //int SEAT_ARM = (myCurrentData.lightBits2 & 0x2000000);
-                        //int BUC = (myCurrentData.lightBits2 & 0x4000000);
-                        //int FUEL_OIL_HOT = (myCurrentData.lightBits2 & 0x8000000);
-                        //long ANTI_SKID = (myCurrentData.lightBits2 & 0x10000000);
-                        //long TFR_ENGAGED = (myCurrentData.lightBits2 & 0x20000000);
-                        //long GEARHANDLE = (myCurrentData.lightBits2 & 0x40000000);
-
-
-
-                        //int Lef_Fault = (myCurrentData.lightBits3 & 0x800);
-                        //int OnGround = (myCurrentData.lightBits3 & 0x1000);
-                        //int FlcsBitRun = (myCurrentData.lightBits3 & 0x2000);
-                        //int FlcsBitFail = (myCurrentData.lightBits3 & 0x4000);
-                        //int NoseGearDown = (myCurrentData.lightBits3 & 0x10000);
-                        //int LeftGearDown = (myCurrentData.lightBits3 & 0x20000);
-                        //int RightGearDown = (myCurrentData.lightBits3 & 0x40000);
-                        //int ParkBrakeOn = (myCurrentData.lightBits3 & 0x100000);
-                        //int Power_Off = (myCurrentData.lightBits3 & 0x200000);
-
-
-                        //int EPUOn = (myCurrentData.lightBits2 & 0x100000);
-                        //int JFSOn = (myCurrentData.lightBits2 & 0x200000);
-
-
-
-
-
-                        // -------------------------------------------------------------------------------- //
-                        //                          AOA INDEXER                                             //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        //int AOA_Above = (myCurrentData.lightBits & 0x1000);
-                        //int AOA_OnPath = (myCurrentData.lightBits & 0x2000);
-                        //int AOA_Below = (myCurrentData.lightBits & 0x4000);
-
-                        //int RefuelRDY = (myCurrentData.lightBits & 0x8000);
-                        //int RefuelAR = (myCurrentData.lightBits & 0x10000);
-                        //int RefuelDSC = (myCurrentData.lightBits & 0x20000);
-
-
-                        // -------------------------------------------------------------------------------- //
-                        // LightBits2              THREAT WARNING PRIME                                     //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-
-
-
-                        // -------------------------------------------------------------------------------- //
-                        //                         AUX THREAT WARNING                                       //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        //int AuxSrch = (myCurrentData.lightBits2 & 0x1000);
-                        //int AuxAct = (myCurrentData.lightBits2 & 0x2000);
-                        //int AuxLow = (myCurrentData.lightBits2 & 0x4000);
-                        //int AuxPwr = (myCurrentData.lightBits2 & 0x8000);
-
-                        // -------------------------------------------------------------------------------- //
-                        //                         ECM                                                      //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        //int EcmPwr = (myCurrentData.lightBits2 & 0x10000);
-                        //int EcmFail = (myCurrentData.lightBits2 & 0x20000);
-
-                        // -------------------------------------------------------------------------------- //
-                        // LightBits3              ELEC PANEL                                               //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        //int FlcsPmg = (myCurrentData.lightBits3 & 0x1);
-                        //int MainGen = (myCurrentData.lightBits3 & 0x2);
-                        //int StbyGen = (myCurrentData.lightBits3 & 0x4);
-                        //int EpuGen = (myCurrentData.lightBits3 & 0x8);
-                        //int EpuPmg = (myCurrentData.lightBits3 & 0x10);
-                        //int ToFlcs = (myCurrentData.lightBits3 & 0x20);
-                        //int FlcsRly = (myCurrentData.lightBits3 & 0x40);
-                        //int BatFail = (myCurrentData.lightBits3 & 0x80);
-
-
-                        // -------------------------------------------------------------------------------- //
-                        //                         EPU PANEL                                                //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        //int Hydrazine = (myCurrentData.lightBits3 & 0x100);
-                        //int Air = (myCurrentData.lightBits3 & 0x200);
-
-
-                        // -------------------------------------------------------------------------------- //
-                        //                         LEFT AUX CONSOLE                                         //
-                        // --------------------------------------------------------------------- works! --- //
-                        // Define short-definition of lightbits:
-                        int SpeedBrake = (myCurrentData.lightBits3 & 0x800000);
-
-                            if (_prevSpeedBrake != SpeedBrake)
-                            {
-                                if (SpeedBrake == OFF)
-                                {
-                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
-                                    _prevSpeedBrake = SpeedBrake;
-                                    //   Thread.Sleep(5);
-                                }
-
-                                if (SpeedBrake == ON)
-                                {
-                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
-                                    _prevSpeedBrake = SpeedBrake;
-                                    //   Thread.Sleep(5);
-                                }
-                            }
-
                             // ----------------------------------------------------------------------------------//
                             //                           TWP - Threat Warning Prime                              //
                             // ----------------------------------------------------------------------------------//
@@ -3571,6 +3407,340 @@ namespace WindowsFormsApplication1
                                 _prevUnk = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
                                 == LightBits2.Unk;
                             }
+                        }
+
+                        // ---------------
+                        // INDICATOR LIGHT TEST
+                        // turns every light and lamp on
+                        // ---------------
+                        if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                            == LightBits.AllLampBitsOn != _prevAllLampBitsOn)
+                        {
+                            if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                            == LightBits.AllLampBitsOn)
+                            {
+                                // perform light-test, turn every light on                  NOT COMPLETE    TO BE DONE!
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, 255); /* Caution Panel ROW_1 */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, 255); /* Caution Panel ROW_2 */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, 255); /* Caution Panel ROW_3 */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, 255); /* Caution Panel ROW_4 */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, 255); /* Right Eyebrow */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, 255); /* Left Eyebrow, Master-Caution & Misc */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, 255); /* TWP, part I */
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, 255); /* TWP, part II */
+                                Wait(5);
+                            }
+                            else
+                            {
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp); 
+                                Wait(5);
+                            }
+                            _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                            == LightBits.AllLampBitsOn;
+                        }
+                        // -------------------------------------------------------------------------------- //
+                        //                          CAUTION LIGHTS                                          //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+
+                        //int LEFlaps = (myCurrentData.lightBits & 0x80000);
+                        //int EngineFault = (myCurrentData.lightBits & 0x100000);
+                        //int Overheat = (myCurrentData.lightBits & 0x200000);
+                        //int FuelLow = (myCurrentData.lightBits & 0x400000);
+                        //int Avionics = (myCurrentData.lightBits & 0x800000);
+                        //int RadarAlt = (myCurrentData.lightBits & 0x1000000);
+                        //int IFF = (myCurrentData.lightBits & 0x2000000);
+                        //int ECM = (myCurrentData.lightBits & 0x4000000);
+                        //int Hook = (myCurrentData.lightBits & 0x8000000);
+                        //int NWSFail = (myCurrentData.lightBits & 0x1000000);
+                        //int CabinPress = (myCurrentData.lightBits & 0x2000000);
+                        //int AutoPilotOn = (myCurrentData.lightBits & 0x4000000);
+                        //int TFR_STBY = (myCurrentData.lightBits & 0x8000000);
+
+
+                        //int SEC = (myCurrentData.lightBits2 & 0x400000);
+                        //int OXY_LOW = (myCurrentData.lightBits2 & 0x800000);
+                        //int SEAT_ARM = (myCurrentData.lightBits2 & 0x2000000);
+                        //int BUC = (myCurrentData.lightBits2 & 0x4000000);
+                        //int FUEL_OIL_HOT = (myCurrentData.lightBits2 & 0x8000000);
+                        //long ANTI_SKID = (myCurrentData.lightBits2 & 0x10000000);
+                        //long TFR_ENGAGED = (myCurrentData.lightBits2 & 0x20000000);
+                        //long GEARHANDLE = (myCurrentData.lightBits2 & 0x40000000);
+
+
+
+                        //int Lef_Fault = (myCurrentData.lightBits3 & 0x800);
+                        //int OnGround = (myCurrentData.lightBits3 & 0x1000);
+                        //int FlcsBitRun = (myCurrentData.lightBits3 & 0x2000);
+                        //int FlcsBitFail = (myCurrentData.lightBits3 & 0x4000);
+                        //int NoseGearDown = (myCurrentData.lightBits3 & 0x10000);
+                        //int LeftGearDown = (myCurrentData.lightBits3 & 0x20000);
+                        //int RightGearDown = (myCurrentData.lightBits3 & 0x40000);
+                        //int ParkBrakeOn = (myCurrentData.lightBits3 & 0x100000);
+                        //int Power_Off = (myCurrentData.lightBits3 & 0x200000);
+
+
+                        //int EPUOn = (myCurrentData.lightBits2 & 0x100000);
+                        //int JFSOn = (myCurrentData.lightBits2 & 0x200000);
+
+
+
+
+
+                        // -------------------------------------------------------------------------------- //
+                        //                          AOA INDEXER                                             //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        //int AOA_Above = (myCurrentData.lightBits & 0x1000);
+                        //int AOA_OnPath = (myCurrentData.lightBits & 0x2000);
+                        //int AOA_Below = (myCurrentData.lightBits & 0x4000);
+
+                        //int RefuelRDY = (myCurrentData.lightBits & 0x8000);
+                        //int RefuelAR = (myCurrentData.lightBits & 0x10000);
+                        //int RefuelDSC = (myCurrentData.lightBits & 0x20000);
+
+
+                        // -------------------------------------------------------------------------------- //
+                        // LightBits2              THREAT WARNING PRIME                                     //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+
+
+
+                        // -------------------------------------------------------------------------------- //
+                        //                         AUX THREAT WARNING                                       //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        //int AuxSrch = (myCurrentData.lightBits2 & 0x1000);
+                        //int AuxAct = (myCurrentData.lightBits2 & 0x2000);
+                        //int AuxLow = (myCurrentData.lightBits2 & 0x4000);
+                        //int AuxPwr = (myCurrentData.lightBits2 & 0x8000);
+
+                        // -------------------------------------------------------------------------------- //
+                        //                         ECM                                                      //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        //int EcmPwr = (myCurrentData.lightBits2 & 0x10000);
+                        //int EcmFail = (myCurrentData.lightBits2 & 0x20000);
+
+                        // -------------------------------------------------------------------------------- //
+                        // LightBits3              ELEC PANEL                                               //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        //int FlcsPmg = (myCurrentData.lightBits3 & 0x1);
+                        //int MainGen = (myCurrentData.lightBits3 & 0x2);
+                        //int StbyGen = (myCurrentData.lightBits3 & 0x4);
+                        //int EpuGen = (myCurrentData.lightBits3 & 0x8);
+                        //int EpuPmg = (myCurrentData.lightBits3 & 0x10);
+                        //int ToFlcs = (myCurrentData.lightBits3 & 0x20);
+                        //int FlcsRly = (myCurrentData.lightBits3 & 0x40);
+                        //int BatFail = (myCurrentData.lightBits3 & 0x80);
+
+
+                        // -------------------------------------------------------------------------------- //
+                        //                         EPU PANEL                                                //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        //int Hydrazine = (myCurrentData.lightBits3 & 0x100);
+                        //int Air = (myCurrentData.lightBits3 & 0x200);
+
+
+                        // -------------------------------------------------------------------------------- //
+                        //                         LEFT AUX CONSOLE                                         //
+                        // --------------------------------------------------------------------- works! --- //
+                        // Define short-definition of lightbits:
+                        int SpeedBrake = (myCurrentData.lightBits3 & 0x800000);
+
+                            if (_prevSpeedBrake != SpeedBrake)
+                            {
+                                if (SpeedBrake == OFF)
+                                {
+                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
+                                    _prevSpeedBrake = SpeedBrake;
+                                    //   Thread.Sleep(5);
+                                }
+
+                                if (SpeedBrake == ON)
+                                {
+                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
+                                    _prevSpeedBrake = SpeedBrake;
+                                    //   Thread.Sleep(5);
+                                }
+                            }
+
+                            //// ----------------------------------------------------------------------------------//
+                            ////                           TWP - Threat Warning Prime                              //
+                            //// ----------------------------------------------------------------------------------//
+                            //// Define short-definition of lightbits:
+                            //// int HandOff = (myCurrentData.lightBits2 & 0x1);
+                            //// int Launch = (myCurrentData.lightBits2 & 0x2);
+                            //// int PriMode = (myCurrentData.lightBits2 & 0x4);
+                            //// int Naval = (myCurrentData.lightBits2 & 0x8);
+                            //// int Unk = (myCurrentData.lightBits2 & 0x10);
+                            //// int TgtSep = (myCurrentData.lightBits2 & 0x20);
+                            //// int SysTest = (myCurrentData.lightBits3 & 0x1000000);
+
+                            //// ---------------
+                            //// HANDOFF, PRIORITY MODE & SYS TEST LOWER INDICATOR
+                            //// ---------------
+                            //// Lower indicator,
+                            //// just goes on when system is powerd:
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
+                            //   == LightBits2.AuxPwr != _prevAuxPwr)
+                            //{
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
+                            //    == LightBits2.AuxPwr)
+                            //    {
+                            //        TWP += 64; // HANDOFF "ON"
+                            //        TWP += 16; // PRIORITY "OPEN"
+                            //        TWP += 8;  // TGT SEP, lower Half "ON"
+                            //        TWP += 1;  // SysTest, lower Half "SysTest" ON
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+
+                            //        TWP_Shp += 1; // UNKNOWN, lower Half "ON" (Naval)
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP -= 64; // HANDOFF "ON"
+                            //        TWP -= 16; // PRIORITY "OPEN"
+                            //        TWP -= 8;  // TGT SEP, lower Half "ON"
+                            //        TWP -= 1;  // SysTest, lower Half "SysTest" ON
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+
+                            //        TWP_Shp -= 1; // UNKNOWN, lower Half "ON" (Naval)
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+
+                            //    }
+                            //    _prevAuxPwr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
+                            //    == LightBits2.AuxPwr;
+                            //}
+                            //// ---------------
+                            //// HANDOFF
+                            //// ---------------
+                            //// Upper indicator:
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
+                            //   == LightBits2.HandOff != _prevHandOff)
+                            //{
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
+                            //    == LightBits2.HandOff)
+                            //    {
+                            //        TWP += 128;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        HandOff_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP -= 128;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        HandOff_active = false;
+                            //    }
+                            //    _prevHandOff = ((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
+                            //    == LightBits2.HandOff;
+                            //}
+                            //// ---------------
+                            //// PRIORITY MODE
+                            //// ---------------
+                            //// Upper indicator, PRIORITY:
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
+                            //      == LightBits2.PriMode != _prevPriMode)
+                            //{
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
+                            //    == LightBits2.PriMode)
+                            //    {
+                            //        TWP -= 16; // Unteren Indicator "OPEN" ausschalten
+                            //        TWP += 32; // Oberen Indicator "PRIORITY" einschalten
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        PriMode_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP -= 32; // Oberen Indicator "PRIORITY" ausschalten
+                            //        TWP += 16; // Unteren Indicator "OPEN" einschalten
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        PriMode_active = false;
+                            //    }
+                            //    _prevPriMode = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
+                            //    == LightBits2.PriMode;
+                            //}
+                            //// ---------------
+                            ////  TGT SEP
+                            //// ---------------
+                            //// TGP SEP - upper indicator "TGT SEP", 
+                            //// goes on when switch is pushed:
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
+                            //       == LightBits2.TgtSep != _prevTgtSep)
+                            //{
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
+                            //    == LightBits2.TgtSep)
+                            //    {
+                            //        TWP += 4;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        TgtSep_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP -= 4;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        TgtSep_active = false;
+                            //    }
+                            //    _prevTgtSep = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
+                            //    == LightBits2.TgtSep;
+                            //}
+                            //// ---------------
+                            ////  SYS TEST - PERFORMING TEST
+                            //// ---------------
+                            //// SysTest - upper indicator "ON", 
+                            //// goes on when system performing a test:
+                            //if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
+                            //        == LightBits3.SysTest != _prevSysTest)
+                            //{
+                            //    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
+                            //    == LightBits3.SysTest)
+                            //    {
+                            //        TWP += 2;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        SysTest_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP -= 2;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                            //        SysTest_active = false;
+                            //    }
+                            //    _prevSysTest = ((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
+                            //    == LightBits3.SysTest;
+                            //}
+                            //// ---------------
+                            ////  UNKNOWN / SHIP 
+                            //// ---------------
+                            //// UNKNOWN / SHP - upper indicator "UNKNOWN", 
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
+                            //         == LightBits2.Unk != _prevUnk)
+                            //{
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
+                            //    == LightBits2.Unk)
+                            //    {
+                            //        TWP_Shp += 2;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                            //        Unk_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        TWP_Shp -= 2;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                            //        Unk_active = false;
+                            //    }
+                            //    _prevUnk = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
+                            //    == LightBits2.Unk;
+                            //}
                             // -------------------------------------------------------------------------------- //
                             //                         HSI BITS                                                 //
                             //     -> Not all are necessary because using YAME suite!!! <-                      //
