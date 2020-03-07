@@ -36,7 +36,10 @@ using F4KeyFile;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
-
+#region PHCC Explanations
+/// <summary>
+/// Explanation about PHCC adresses and daughtercards
+/// </summary>
 // Adresses for PHCC-boards (hardcoded on PIC):
 //
 // PHCC-CMDS: 0x44
@@ -83,13 +86,14 @@ using Timer = System.Timers.Timer;
 //
 // OFF: 0
 // ON: 1
+# endregion
 
 namespace WindowsFormsApplication1
 {
 
     public partial class Form1 : Form
     {
-      
+
 
         // SerialPort port2;                       // Ansonsten port statt port1 ... 
         // auch unten bei den RPM-Write-Routinen!
@@ -158,7 +162,7 @@ namespace WindowsFormsApplication1
 
         public Form1()
         {
-            
+
             InitializeComponent();
             getAvaiblePorts();
 
@@ -185,7 +189,7 @@ namespace WindowsFormsApplication1
             //port1 = new SerialPort("COM13", 9600); //9600 
             //port2 = new SerialPort("COM4", 115200); //9600 
 
-           // Port3_PHCC_Input_Output.PortName = "COM1";
+            // Port3_PHCC_Input_Output.PortName = "COM1";
 
 
 
@@ -282,14 +286,21 @@ namespace WindowsFormsApplication1
         public int _prevChaffZehnerState = 99;
         public int _prevFlareEinerState = 99;
         public int _prevFlareZehnerState = 99;
-        public bool AutoDegree = false;
-        public bool FlareLow = false;
-        public bool ChaffLow = false;
+        public bool Degr = false;
+        public bool FlareLo = false;
+        public bool ChaffLo = false;
         public bool _prevGo = false;
         public bool _prevNoGo = false;
-        public bool _prevDispenseReady = false;
-        public bool _prevChaffWasLow = false;
-        public bool _prevFlareWasLow = false;
+        public bool _prevRdy = false;
+        public bool _prevDegr = false;
+        public bool _prevFlareLo = false;
+        public bool _prevChaffLo = false;
+        public int CmdsModes = 0;
+        public int _prevCmdsModes = 99;
+        public byte StatusLight;
+
+        //   public bool _prevChaffWasLow = false;
+        //   public bool _prevFlareWasLow = false;
 
         // RIGHT EYEBROW - WARNING LIGHTS:
         public bool _prevENG_FIRE;
@@ -335,48 +346,48 @@ namespace WindowsFormsApplication1
 
         // CAUTIION PANEL 
         // 2nd ROW (starts from left):
-        public bool _prevEngineFault;
-        public bool _prevSEC;
-        public bool _prevFUEL_OIL_HOT;
-        public bool _prevInlet_Icing;
-        public bool _prevOverheat;
-        public bool _prevEEC;
-        public bool _prevBUC;
+        public bool _prevEngineFault = false;
+        public bool _prevSEC = false;
+        public bool _prevFUEL_OIL_HOT = false;
+        public bool _prevInlet_Icing = false;
+        public bool _prevOverheat = false;
+        public bool _prevEEC = false;
+        public bool _prevBUC = false;
 
         public byte CautionPanel_Row2;
 
         // CAUTIION PANEL 
         // 3rd ROW (starts from left):
-        public bool _prevAvionics;
-        public bool _prevEQUIP_HOT;
-        public bool _prevRadarAlt;
-        public bool _prevIFF;
-        public bool _prevNuclear;
+        public bool _prevAvionics = false;
+        public bool _prevEQUIP_HOT = false;
+        public bool _prevRadarAlt = false;
+        public bool _prevIFF = false;
+        public bool _prevNuclear = false;
 
         public byte CautionPanel_Row3;
 
         // CAUTIION PANEL 
         // 4th ROW (starts from left):
-        public bool _prevSEAT_ARM;
-        public bool _prevNWSFail;
-        public bool _prevANTI_SKID;
-        public bool _prevHook;
-        public bool _prevOXY_LOW;
-        public bool _prevCabinPress;
+        public bool _prevSEAT_ARM = false;
+        public bool _prevNWSFail = false;
+        public bool _prevANTI_SKID = false;
+        public bool _prevHook = false;
+        public bool _prevOXY_LOW = false;
+        public bool _prevCabinPress = false;
 
         public byte CautionPanel_Row4;
 
         // CAUTION PANEL
         // other:
-        public bool _prevAllLampBitsOn;
+        public bool _prevAllLampBitsOn = false;
 
         // MISC PANEL & LEFT EYEBROW - WARNING LIGHTS:
-        public bool _prevTFR_ENGAGED;
-        public bool _prevTFR_STBY;
-        public bool _prevECM;
+        public bool _prevTFR_ENGAGED = false;
+        public bool _prevTFR_STBY = false;
+        public bool _prevECM = false;
 
-        public bool _prevMasterCaution;
-        public bool _prevTF;
+        public bool _prevMasterCaution = false;
+        public bool _prevTF = false;
 
         public byte Misc;
 
@@ -390,16 +401,16 @@ namespace WindowsFormsApplication1
         public bool TgtSep_active;
         public bool SysTest_active;
 
-        public bool _prevLaunch;
-        public bool _prevLaunch_blinking;
-        public bool _prevHandOff;
-        public bool _prevNaval;
-        public bool _prevUnk;
-        public bool _prevTgtSep;
-        public bool _prevSysTest;
-        public bool _prevPriMode;
+        public bool _prevLaunch = false;
+        public bool _prevLaunch_blinking = false;
+        public bool _prevHandOff = false;
+        public bool _prevNaval = false;
+        public bool _prevUnk = false;
+        public bool _prevTgtSep = false;
+        public bool _prevSysTest = false;
+        public bool _prevPriMode = false;
 
-        public bool _prevAuxPwr;    /* Variable für TWP SysTest "POWER ON" */ 
+        public bool _prevAuxPwr;    /* Variable für TWP SysTest "POWER ON" */
 
         public byte TWP;
         public byte TWP_Shp;
@@ -470,8 +481,8 @@ namespace WindowsFormsApplication1
         public int _prevOuterMarker = 0;
         public int _prevMiddleMarker = 0;
         public int _prevFlying = 0;
-        public int _prevChaffLow = 0;
-        public int _prevFlareLow = 0;
+        // public int _prevChaffLow = 0;
+        //  public int _prevFlareLow = 0;
 
         public byte UHFPresetEiner;
         public byte UHFPresetZehner;
@@ -515,6 +526,8 @@ namespace WindowsFormsApplication1
 
         public string Baudrate;
         public string FirmwareVersion;
+
+        public bool isFlying = false;
 
         // ----------------------------------------------------------------------------------//
         //       Nur erforderlich, wenn als Anwendung auf einem Single-PC konzipiert!        // 
@@ -573,6 +586,8 @@ namespace WindowsFormsApplication1
         // PHCC Threads,
         // SWITCHES Abfragen: 
         private Thread SwitchesThread;
+
+        private Thread CheckFlyingThread;
 
         // Verfügbare COM-Ports auslesen und in Combo-Box zur Verfügung stellen:
         public void getAvaiblePorts()
@@ -644,27 +659,28 @@ namespace WindowsFormsApplication1
                         this.label3.Text = "";
                         this.label4.Text = "";
                         this.label6.Text = "";
-                      
-                        try {
+
+                        try
+                        {
                             //Baudrate = Port3_PHCC_Input_Output.SerialPort.BaudRate.ToString();
                             //FirmwareVersion = Port3_PHCC_Input_Output.FirmwareVersion;
-                     
+
                             //Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
-                         
+
                         }
 
                         catch //(Exception ex)
                         {
                             this.label1.Text = "Self-Test accomplished.";
-                          
+
                             this.label6.ForeColor = Color.Red;
                             this.label6.Text = "Connection not established!";
-                           
+
                             this.label4.ForeColor = Color.Red;
                             this.label4.Text = "PHCC NOT CONNECTED OR NO POWER!!!";
-                           // this.label2.Text=ex.Message.ToString();
-                         
-                          
+                            // this.label2.Text=ex.Message.ToString();
+
+
 
 
                             for (int z = 1; z <= 9;)
@@ -675,14 +691,14 @@ namespace WindowsFormsApplication1
                                 Wait(500);
                                 z++;
                             }
-                          //  Application.Restart();
-                         //   Environment.Exit(0);
+                            //  Application.Restart();
+                            //   Environment.Exit(0);
                             return;
                         }
 
                         this.label2.ForeColor = Color.Green;
                         this.label2.Text = "PHCC communication started! " + Baudrate + FirmwareVersion;
-                      
+
                         //  Wait(1000);
                         //   this.label2.Text = "PHCC Firmware Version: " + firmwareVersion;
                         Wait(1000);
@@ -716,41 +732,41 @@ namespace WindowsFormsApplication1
                             label6.Invoke(new Action<string>(s => { label6.Text = s; label6.ForeColor = Color.Red; }), "Datalink disabled...");
                             label1.Invoke(new Action<string>(s => { label1.Text = s; label1.ForeColor = Color.Red; }), "Falcon NOT active");
                         }
-                    this.DataThread = new Thread(new ThreadStart(Data));
-                    this.TestingDiversesThread = new Thread(new ThreadStart(TestingDiverses));
+                    //this.DataThread = new Thread(new ThreadStart(Data));
+                    //this.TestingDiversesThread = new Thread(new ThreadStart(TestingDiverses));
 
-                    this.OilThread = new Thread(new ThreadStart(Oil));
-                    this.NozzleThread = new Thread(new ThreadStart(Nozzle));
-                    this.RPMThread = new Thread(new ThreadStart(RPM));
-                    this.FTITThread = new Thread(new ThreadStart(FTIT));
+                    //this.OilThread = new Thread(new ThreadStart(Oil));
+                    //this.NozzleThread = new Thread(new ThreadStart(Nozzle));
+                    //this.RPMThread = new Thread(new ThreadStart(RPM));
+                    //this.FTITThread = new Thread(new ThreadStart(FTIT));
 
-                    this.CompassThread = new Thread(new ThreadStart(Compass));
-                    this.FuelQtyThread = new Thread(new ThreadStart(FuelQty));
-                    this.HydAThread = new Thread(new ThreadStart(HydA));
-                    this.HydBThread = new Thread(new ThreadStart(HydB));
-                    this.LiquidOxyThread = new Thread(new ThreadStart(LiquidOxy));
-                    this.EpuFuelThread = new Thread(new ThreadStart(EpuFuel));
-                    this.CabinPressThread = new Thread(new ThreadStart(CabinPress));
-                    this.ClockThread = new Thread(new ThreadStart(Clock));
-                    this.TwaPanelThread = new Thread(new ThreadStart(TwaPanel));
+                    //this.CompassThread = new Thread(new ThreadStart(Compass));
+                    //this.FuelQtyThread = new Thread(new ThreadStart(FuelQty));
+                    //this.HydAThread = new Thread(new ThreadStart(HydA));
+                    //this.HydBThread = new Thread(new ThreadStart(HydB));
+                    //this.LiquidOxyThread = new Thread(new ThreadStart(LiquidOxy));
+                    //this.EpuFuelThread = new Thread(new ThreadStart(EpuFuel));
+                    //this.CabinPressThread = new Thread(new ThreadStart(CabinPress));
+                    //this.ClockThread = new Thread(new ThreadStart(Clock));
+                    //this.TwaPanelThread = new Thread(new ThreadStart(TwaPanel));
 
-                    this.SpeedBrakeThread = new Thread(new ThreadStart(Speedbrake));
+                    //this.SpeedBrakeThread = new Thread(new ThreadStart(Speedbrake));
 
-                    this.Blink_JetEngineStartPanelThread = new Thread(new ThreadStart(Blink_JetEngineStartPanel));
-                    this.TrimPanelThread = new Thread(new ThreadStart(TrimPanel));
+                    //this.Blink_JetEngineStartPanelThread = new Thread(new ThreadStart(Blink_JetEngineStartPanel));
+                    //this.TrimPanelThread = new Thread(new ThreadStart(TrimPanel));
 
-                    this.OxyPanelThread = new Thread(new ThreadStart(OxyPanel));
+                    //this.OxyPanelThread = new Thread(new ThreadStart(OxyPanel));
 
-                    this.Blink_ProbeHeatThread = new Thread(new ThreadStart(Blink_ProbeHeat));
-                    this.Blink_MissileLaunchThread = new Thread(new ThreadStart(Blink_MissileLaunch));
-                    this.Blink_SysTestThread = new Thread(new ThreadStart(Blink_SysTest));
-                    this.SimOutputThread = new Thread(new ThreadStart(SimOutput));
+                    //this.Blink_ProbeHeatThread = new Thread(new ThreadStart(Blink_ProbeHeat));
+                    //this.Blink_MissileLaunchThread = new Thread(new ThreadStart(Blink_MissileLaunch));
+                    //this.Blink_SysTestThread = new Thread(new ThreadStart(Blink_SysTest));
+                    //this.SimOutputThread = new Thread(new ThreadStart(SimOutput));
 
-                    this.SwitchesThread = new Thread(new ThreadStart(Switches));
-
+                    //this.SwitchesThread = new Thread(new ThreadStart(Switches));
+                    //this.CheckFlyingThread = new Thread(new ThreadStart(CheckFlying));
                     //this.WaitThread = new Thread(new ParameterizedThreadStart(Wait));
 
-                    DataThread.Start();                 /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
+                    //             DataThread.Start();                 /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
                     //  TestingDiversesThread.Start();      /* In Endversion NICHT ERFORDERLICH! - vorübergehend abgeschaltet! */
 
                     //  OilThread.Start();                  /* vorübergehend abgeschaltet! */
@@ -773,14 +789,15 @@ namespace WindowsFormsApplication1
                     // Blink_JetEngineStartPanelThread.Start();
                     // TrimPanelThread.Start();
 
-                    SimOutputThread.Start();
-                    Blink_ProbeHeatThread.Start();
-                    Blink_MissileLaunchThread.Start();
-                    Blink_SysTestThread.Start();
+                    //             SimOutputThread.Start();
+                    //             Blink_ProbeHeatThread.Start();
+                    //             Blink_MissileLaunchThread.Start();
+                    //             Blink_SysTestThread.Start();
 
-                    SwitchesThread.Start();
+                    //             SwitchesThread.Start();
 
-
+                    ConstructThreads();                   
+                    CheckFlyingThread.Start();
 
                     try
                     {
@@ -805,14 +822,403 @@ namespace WindowsFormsApplication1
             _prevSwitchState[1] = false;
 
         }
+        #region Construct Threads 
+        /// <summary>
+        /// create objects of every thread.
+        /// needed for first start of programm, 
+        /// needed for thread-restarting (Falcon BMS 2D / UI --> INGAME 3D).
+        /// </summary>
+        public void ConstructThreads()
+        {
 
-        //  catch (UnauthorizedAccessException)
-        //      {
-        //          label1.Text = "Unauthorized Access!";
-        //       }
 
-        // currently working
-        //    OuterMarker  = 0x01,	// defined in HsiBits    - slow flashing for outer marker
+            this.OilThread = new Thread(new ThreadStart(Oil));
+            this.NozzleThread = new Thread(new ThreadStart(Nozzle));
+            this.RPMThread = new Thread(new ThreadStart(RPM));
+            this.FTITThread = new Thread(new ThreadStart(FTIT));
+
+            this.CompassThread = new Thread(new ThreadStart(Compass));
+            this.FuelQtyThread = new Thread(new ThreadStart(FuelQty));
+            this.HydAThread = new Thread(new ThreadStart(HydA));
+            this.HydBThread = new Thread(new ThreadStart(HydB));
+            this.LiquidOxyThread = new Thread(new ThreadStart(LiquidOxy));
+            this.EpuFuelThread = new Thread(new ThreadStart(EpuFuel));
+            this.CabinPressThread = new Thread(new ThreadStart(CabinPress));
+            this.ClockThread = new Thread(new ThreadStart(Clock));
+            this.TwaPanelThread = new Thread(new ThreadStart(TwaPanel));
+
+            this.SpeedBrakeThread = new Thread(new ThreadStart(Speedbrake));
+
+            this.Blink_JetEngineStartPanelThread = new Thread(new ThreadStart(Blink_JetEngineStartPanel));
+            this.TrimPanelThread = new Thread(new ThreadStart(TrimPanel));
+
+            this.OxyPanelThread = new Thread(new ThreadStart(OxyPanel));
+
+            this.Blink_ProbeHeatThread = new Thread(new ThreadStart(Blink_ProbeHeat));
+            this.Blink_MissileLaunchThread = new Thread(new ThreadStart(Blink_MissileLaunch));
+            this.Blink_SysTestThread = new Thread(new ThreadStart(Blink_SysTest));
+
+            this.DataThread = new Thread(new ThreadStart(Data));
+            this.TestingDiversesThread = new Thread(new ThreadStart(TestingDiverses));
+            this.SimOutputThread = new Thread(new ThreadStart(SimOutput));
+
+            this.SwitchesThread = new Thread(new ThreadStart(Switches));
+            this.CheckFlyingThread = new Thread(new ThreadStart(CheckFlying));
+        }
+        #endregion
+
+        #region Set Values for Variables:
+        /// <summary>
+        /// set values to variables
+        /// </summary>
+                // Variablen für PHCC-Eingaben / Schalterstellungen:
+        public void SetVariables() {
+            _ON = true;
+            _OFF = false;
+            ON = 1;
+            OFF = 0;
+
+       
+      SpeedBrakePowerOff = true;
+      SpeedBrakeClosed = true;
+      SpeedBrakeOpen = false;
+      
+
+        // Variablen für Chaff- / Flare-Counter:
+    
+        _prevChaffEinerState = 99;
+        _prevChaffZehnerState = 99;
+        _prevFlareEinerState = 99;
+        _prevFlareZehnerState = 99;
+        Degr = false;
+        FlareLo = false;
+        ChaffLo = false;
+        _prevGo = false;
+        _prevNoGo = false;
+        _prevRdy = false;
+        _prevDegr = false;
+        _prevFlareLo = false;
+        _prevChaffLo = false;
+        CmdsModes = 0;
+        _prevCmdsModes = 9;
+        
+
+        // RIGHT EYEBROW - WARNING LIGHTS:
+        _prevENG_FIRE=false;
+        _prevENGINE=false;
+        _prevHYD=false;
+        _prevFLCS=false;
+        _prevDbuWarn=false;
+        _prevCAN=false;
+        _prevT_L_CFG=false;
+        _prevOXY_BROW=false;
+
+        Eyebrow_Right=0;
+
+        bOld = 0;
+        bNew = 0;
+        all = 0;
+
+        // CAUTIION PANEL 
+        // 1st ROW (starts from left):
+        _prevFltControlSys = false;
+        _prevElec_Fault = false;
+        _prevProbeHeat = false;
+        _prevProbeHeat_blinking = false;
+        ProbeHeat_blinking = false;
+        ProbeHeat_blinking_active = false;
+        _prevcadc = false;
+        _prevCONFIG = false;
+        _prevATF_Not_Engaged = false;
+        _prevFwdFuelLow = false;
+        _prevAftFuelLow = false;
+
+        FltControlSys_active=false;
+        Elec_Fault_active = false;
+        ProbeHeat_active = false;
+        cadc_active = false;
+        CONFIG_active = false;
+        ATF_Not_Engaged_active = false;
+        FwdFuelLow_active = false;
+        AftFuelLow_active = false;
+
+        CautionPanel_Row1=0;
+        CautionPanel_Row1_ProbeHeat_blinking=0;
+
+        // CAUTIION PANEL 
+        // 2nd ROW (starts from left):
+        _prevEngineFault = false;
+        _prevSEC = false;
+        _prevFUEL_OIL_HOT = false;
+        _prevInlet_Icing = false;
+        _prevOverheat = false;
+        _prevEEC = false;
+        _prevBUC = false;
+
+        CautionPanel_Row2=0;
+
+        // CAUTIION PANEL 
+        // 3rd ROW (starts from left):
+        _prevAvionics = false;
+        _prevEQUIP_HOT = false;
+        _prevRadarAlt = false;
+        _prevIFF = false;
+        _prevNuclear = false;
+
+        CautionPanel_Row3=0;
+
+        // CAUTIION PANEL 
+        // 4th ROW (starts from left):
+        _prevSEAT_ARM = false;
+        _prevNWSFail = false;
+        _prevANTI_SKID = false;
+        _prevHook = false;
+        _prevOXY_LOW = false;
+        _prevCabinPress = false;
+
+        CautionPanel_Row4=0;
+
+        // CAUTION PANEL
+        // other:
+        _prevAllLampBitsOn = false;
+
+        // MISC PANEL & LEFT EYEBROW - WARNING LIGHTS:
+         _prevTFR_ENGAGED = false;
+         _prevTFR_STBY = false;
+         _prevECM = false;
+
+         _prevMasterCaution = false;
+         _prevTF = false;
+
+        Misc=0;
+
+        // TWP PANEL
+        Launch_active = false;
+        Launch_blinking_active = false;
+        HandOff_active = false;
+        PriMode_active = false;
+        Naval_active = false;
+        Unk_active = false;
+        TgtSep_active = false;
+        SysTest_active = false;
+
+        _prevLaunch = false;
+        _prevLaunch_blinking = false;
+        _prevHandOff = false;
+        _prevNaval = false;
+        _prevUnk = false;
+        _prevTgtSep = false;
+        _prevSysTest = false;
+        _prevPriMode = false;
+
+        _prevAuxPwr = false;    /* Variable für TWP SysTest "POWER ON" */
+
+        TWP=0;
+        TWP_Shp=0;
+
+        blinkTWP=0;
+        blinkTWP_Shp=0;
+
+        blinkNew1 = 0;
+        blinkOld1 = 0;
+        blinkAll1 = 0;
+
+        blinkNew2 = 0;
+        blinkOld2 = 0;
+        blinkAll2 = 0;
+
+        // Variablen für Lightbits, Lightbits2, Lightbits3 & HSI_Bits:
+        _prevONGROUND = 0;
+        _prevFlcs_ABCD = 0;
+        _prevLEFlaps = 0;
+        _prevFuelLow = 0;
+
+        _prevAutoPilotOn = 0;
+
+        _prevAOA_Above = 0;
+        _prevAOA_OnPath = 0;
+        _prevAOA_Below = 0;
+
+        _prevRefuelRDY = 0;
+        _prevRefuelAR = 0;
+        _prevRefuelDSC = 0;
+
+        _prevAuxSrch = 0;
+        _prevAuxAct = 0;
+        _prevAuxLow = 0;
+
+        _prevEcmPwr = 0;
+        _prevEcmFail = 0;
+
+        _prevEPUOn = 0;
+        _prevJFSOn = 0;
+
+        _prevGEARHANDLE = 0;
+
+        _prevFlcsPmg = 0;
+        _prevMainGen = 0;
+        _prevStbyGen = 0;
+        _prevEpuGen = 0;
+        _prevEpuPmg = 0;
+        _prevToFlcs = 0;
+        _prevFlcsRly = 0;
+        _prevBatFail = 0;
+
+        _prevHydrazine = 0;
+        _prevAir = 0;
+
+        _prevLef_Fault = 0;
+        _prevOnGround = 0;
+        _prevFlcsBitRun = 0;
+        _prevFlcsBitFail = 0;
+        _prevNoseGearDown = 0;
+        _prevLeftGearDown = 0;
+        _prevRightGearDown = 0;
+        _prevParkBrakeOn = 0;
+        _prevPower_Off = 0;
+
+        _prevSpeedBrake = 0;
+
+        _prevOuterMarker = 0;
+        _prevMiddleMarker = 0;
+        _prevFlying = 0;
+        // public int _prevChaffLow = 0;
+        //  public int _prevFlareLow = 0;
+
+        UHFPresetEiner=0;
+        UHFPresetZehner=0;
+        _prevUHFPresetEiner=0;
+        _prevUHFPresetZehner=0;
+
+        _prevMCaution=false;
+
+        ENGINE_TEST = false;
+        SimSeatOn=false;
+
+        // UHF Radio:
+        myBupUhfPreset=9;
+        _prevmyBupUhfPreset = 9;
+
+        myBupUhfPresetEiner=9;
+        myBupUhfPresetZehner = 9;
+
+        _prevmyBupUhfPresetEiner = 9;
+        _prevmyBupUhfPresetZehner = 9;
+
+        myBupUhfFreq=9;
+        _prevmyBupUhfFreq = 9;
+
+        myBupUhfFreqHunderttausender=9;
+        myBupUhfFreqZehntausender=9;
+        myBupUhfFreqTausender=9;
+        myBupUhfFreqHunderter=9;
+        myBupUhfFreqZehner=9;
+        myBupUhfFreqEiner=9;
+
+        _prevmyBupUhfFreqHunderttausender = 9;
+        _prevmyBupUhfFreqZehntausender = 9;
+        _prevmyBupUhfFreqTausender = 9;
+        _prevmyBupUhfFreqHunderter = 9;
+        _prevmyBupUhfFreqZehner = 9;
+        _prevmyBupUhfFreqEiner = 9;
+
+        // Allgemeine Zählervariable:
+      int i = 0;
+
+       isFlying = false;
+            }
+        #endregion
+
+        #region Start Threads
+        /// <summary>
+        /// start the created threads.
+        /// needed for first start of programm, 
+        /// needed for thread-restarting (Falcon BMS 2D / UI --> INGAME 3D).
+        /// </summary>
+        public void StartThreads()
+        {
+            DataThread.Start();
+
+            Blink_ProbeHeatThread.Start();
+            Blink_MissileLaunchThread.Start();
+            Blink_SysTestThread.Start();
+
+            SimOutputThread.Start();
+        }
+        #endregion
+
+        #region Check Flying (Falcon 2D / UI or 3D)
+        /// <summary>
+        /// checks if Falcon BMS is in 2D / UI or INGAME 3D.
+        /// sets flag "isFlying" and passes it to every working thread.
+        /// </summary>
+        public void CheckFlying()
+        {
+            using (Reader myReader = new F4SharedMem.Reader())
+
+                while ((myReader.IsFalconRunning) && (_keepRunning))
+                {
+                    FlightData mySharedMemCheck = myReader.GetCurrentData();
+
+                    if ((mySharedMemCheck.hsiBits & 0x80000000) == 0)
+                    {
+                        isFlying = false;
+
+                        byte zero = 0;
+                        Thread.Sleep(250); // was 50
+
+                        // EYEBROW & CAUTION Panel reset:
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, zero);
+
+                        // MISC Panel-Lights & TWP LIGHTS reset:
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 4, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 5, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, zero);
+                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, zero);
+
+                        // UHF, sechststellige Backup-Frequency löschen: 
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, zero);
+
+                        // UHF, zweistellige Preset-Anzeige löschen:
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, zero);
+
+                        // CMDS, 
+                        // When loading screen appears, clear L0 chaffs / L0 flares from previous missions.
+                        // Statusanzeige & LED reset:
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
+                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, zero);
+
+                        Thread.Sleep(50);  //was 50
+
+                        SetVariables();
+                    }
+
+                    if ((mySharedMemCheck.hsiBits & 0x80000000) != 0)
+                    {
+                        isFlying = true;
+                        if (!DataThread.IsAlive)
+                        {
+                            ConstructThreads();
+                            StartThreads();
+                        }
+                    }
+                }
+        }
+        #endregion
+
+        // currently working:
+        //  OuterMarker  = 0x01,	// defined in HsiBits    - slow flashing for outer marker
         //	MiddleMarker = 0x02,	// defined in HsiBits    - fast flashing for middle marker
         //	PROBEHEAT    = 0x04,	// defined in LightBits2 - probeheat system is tested
         //	AuxSrch      = 0x08,	// defined in LightBits2 - search function in NOT activated and a search radar is painting ownship
@@ -827,6 +1233,10 @@ namespace WindowsFormsApplication1
         //	JFSOn_Slow   = 0x400,	// defined in LightBits3 - slow blinking: non-critical failure - 1x pro Sek.
         //	JFSOn_Fast   = 0x800,	// defined in LightBits3 - fast blinking: critical failure - 2x pro Sek.
 
+        #region TestingDiverses
+        /// <summary>
+        ///  Just for testing purposes
+        /// </summary>
 
         public void TestingDiverses()
         {
@@ -986,6 +1396,7 @@ namespace WindowsFormsApplication1
         //        }
         //    if (_keepRunning == false){ return false; }
         //}
+        #endregion
 
         public void Data()
         {
@@ -994,144 +1405,62 @@ namespace WindowsFormsApplication1
 
             using (Reader myReader = new F4SharedMem.Reader())
 
-             // while (_keepRunning == true)
-             //   {
-             //      if (myReader.IsFalconRunning == true)
-              //      {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
+                // while (_keepRunning == true)
+                //   {
+                //      if (myReader.IsFalconRunning == true)
+                //      {
+                try
+                {
+                    while (isFlying == true)
+                    // while ((myReader.IsFalconRunning) && (_keepRunning))
+                    {
+                        //  FlightData myFlightData = new FlightData();
+                        FlightData mySharedMemTest = myReader.GetCurrentData();
+
+                        int TimeInSeconds = mySharedMemTest.currentTime;
+                        int Days = TimeInSeconds / 86400;
+                        int Hours = TimeInSeconds % 86400 / 3600;
+                        int Minutes = TimeInSeconds % 3600 / 60;
+                        int Seconds = TimeInSeconds % 60;
+                        // Rohdaten / Integer anzeigen:
+                        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Thread started"); // TEST
+
+                        if (Hours < 10) // Null voranstellen
                         {
-                            //  FlightData myFlightData = new FlightData();
-                            FlightData mySharedMemTest = myReader.GetCurrentData();
-                          
-                            int TimeInSeconds = mySharedMemTest.currentTime;
-                            int Days = TimeInSeconds / 86400;
-                            int   Hours = TimeInSeconds % 86400 / 3600;
-                            int    Minutes = TimeInSeconds % 3600 / 60;
-                            int  Seconds = TimeInSeconds % 60;
-                            // Rohdaten / Integer anzeigen:
-                            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), TimeInSeconds.ToString());
-
-                            if (Hours < 10) // Null voranstellen
-                            {
-                                this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), "0" + Hours.ToString());
-                            }
-                            else
-                            {
-                                this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), Hours.ToString());
-                            }
-                            if (Minutes < 10) // Null voranstellen
-                            {
-                                this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), "0" + Minutes.ToString());
-                            }
-                            else
-                            {
-                                    this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), Minutes.ToString());
-                            }
-                            if (Seconds < 10) // Null voranstellen
-                            {
-                                this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), "0" + Seconds.ToString());
-                            }
-                            else
-                            {
-                                this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), Seconds.ToString());
-                            }
+                            this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), "0" + Hours.ToString());
                         }
-
-                        // IntellivibeData <--- Status des Fliegers abfragen!
-                        //---------------------------------------------------
-
-                        //byte[] pilotsStatus = mySharedMem0.pilotsStatus.ToArray();
-                        //Byte flags = pilotsStatus[0];
-                        //String bin = Convert.ToString(flags, 2);  //    10110 (binär)
-
-                        // byte[] myArr = (byte[])mySharedMem0.pilotsStatus.ToArray();
-                        //this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), myArr[0].ToString());
-                        //if (myArr[0] == 0)
-                        //{
-                        //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI");
-
-                        //}   
-
-                        //    if (myArr[0] == 1)
-                        //    {
-                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading");
-
-                        //    }
-                        //    if (myArr[0] == 2)
-                        //    {
-                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Ready and Waiting...");
-
-                        //    }
-                        //  if (myArr[0] == 3)
-                        //  {
-                        //       this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
-
-                        //    }
-                        //    if (myArr[0] == 4)
-                        //    {
-                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
-
-                        //    }
-                        //    if (myArr[0] == 4)
-                        //    {
-                        //        this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown");
-
-                        //    }
-
-                        //if ((mySharedMem0.hsiBits & 0x80000000) == 0)
-                        //{
-                        //    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }),"in UI");
-                        //    break;
-                        // }
-
-                        //    Application.DoEvents();
-
-                        //if ((pilotsStatus[0] != 0)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "in UI"); }
-                        //if ((pilotsStatus[0] != 1)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Loading"); }
-                        //if ((pilotsStatus[0] != 2)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Waiting"); }
-                        //if ((pilotsStatus[0] != 4)) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying"); }
-                        //if ((pilotsStatus[4] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Dead"); }
-                        //if ((pilotsStatus[5] & 1) != 0) { this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Unknown"); }
-                        //switch (pilotsStatus[0])
-                        //{
-                        //    case 0:
-                        //        {
-                        //            
-                        //            break;
-                        //        }
-                        //    case 1:
-                        //        {
-                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "LOADING");
-                        //            break;
-                        //        }
-                        //    case 2:
-                        //        {
-                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "WAITING");
-                        //            break;
-                        //        }
-                        //    case 3:
-                        //        {
-                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Flying");
-                        //            break;
-                        //        }
-                        //    case 4:
-                        //        {
-                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "DEAD");
-                        //            break;
-                        //        }
-                        //    case 5:
-                        //        {
-                        //            this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "UNKNOWN");
-                        //            break;
-                        //        }
-                        //}
+                        else
+                        {
+                            this.label7.Invoke(new Action<string>(s => { label7.Text = s; }), Hours.ToString());
+                        }
+                        if (Minutes < 10) // Null voranstellen
+                        {
+                            this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), "0" + Minutes.ToString());
+                        }
+                        else
+                        {
+                            this.label8.Invoke(new Action<string>(s => { label8.Text = s; }), Minutes.ToString());
+                        }
+                        if (Seconds < 10) // Null voranstellen
+                        {
+                            this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), "0" + Seconds.ToString());
+                        }
+                        else
+                        {
+                            this.label9.Invoke(new Action<string>(s => { label9.Text = s; }), Seconds.ToString());
+                        }
                     }
+                }
+                finally
+                {
+                    this.label10.Invoke(new Action<string>(s => { label10.Text = s; }), "Thread terminated!!!"); // TEST
+                }
+        }
 
-
-             //   }
-      //  }
-        
-
+        #region Engine Gauges
+        /// <summary>
+        /// running with Arduino.
+        /// </summary>
         public void Oil()
         {
             using (Reader myReader = new F4SharedMem.Reader())
@@ -1224,8 +1553,6 @@ namespace WindowsFormsApplication1
                     }
                 }
         }
-
-
 
         public void RPM()
         {
@@ -1367,18 +1694,9 @@ namespace WindowsFormsApplication1
                     }
                 }
         }
+        #endregion
 
-        public void Compass() { }
-        public void FuelQty() { }
-        public void HydA() { }
-        public void HydB() { }
-        public void LiquidOxy() { }
-        public void EpuFuel() { }
-        public void CabinPress() { }
-        public void Clock() { }
-
-        public void TwaPanel() { }
-
+        #region Speedbrake
         public void Speedbrake()
         {
             using (Reader myReader = new F4SharedMem.Reader())
@@ -1440,11 +1758,196 @@ namespace WindowsFormsApplication1
                     }
                 }
         }
+        #endregion
 
+        #region Blink Probeheat @ Caution-Panel
+        /// <summary>
+        /// blinking probeheat indicator at caution-panel
+        /// when probeheat-switch at test-panel is in position "test".
+        /// </summary>
+        public void Blink_ProbeHeat()
+        { // WORKS! 07.03..2020 LE.
+
+            using (Reader myReader = new F4SharedMem.Reader())
+                try
+                {
+                    while (isFlying == true)
+                    {
+                        FlightData mySharedMem8 = myReader.GetCurrentData();
+                        if ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                                                       == BlinkBits.PROBEHEAT) != _prevProbeHeat)
+                        {
+                            while ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
+                            == BlinkBits.PROBEHEAT) && (isFlying==true))
+                            {
+                                // Check if it's time to leave "while loop":
+                                mySharedMem8 = myReader.GetCurrentData();
+                                ProbeHeat_blinking = true;
+
+                                CautionPanel_Row1 += 4;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                ProbeHeat_blinking_active = true;
+                                Thread.Sleep(125); //125, fast blinktime
+                                Application.DoEvents();
+
+                                CautionPanel_Row1 -= 4;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                ProbeHeat_blinking_active = false;
+                                Thread.Sleep(125); //125, fast blinktime
+                                Application.DoEvents();
+                            }
+                            _prevProbeHeat = ((BlinkBits)mySharedMem8.blinkBits &
+                              BlinkBits.PROBEHEAT) == BlinkBits.PROBEHEAT;
+                        }
+                       
+                    }
+                }
+                finally
+                {
+                    //if (ProbeHeat_blinking_active == true)
+                    //{
+                    //    CautionPanel_Row1 -= 4;
+                    //    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                    //    ProbeHeat_blinking_active = false;
+                    //}
+                }
+        }
+        #endregion
+
+        #region Blink Missile-Launch @ TWP
+        /// <summary>
+        /// blinking missile-launch indicator, when pushed for performing test.
+        /// </summary>
+        public void Blink_MissileLaunch()
+        { // WORKS! 28.02.2020 LE.
+            using (Reader myReader = new F4SharedMem.Reader())
+
+                try
+                {
+                    while (isFlying == true)
+                    {
+                        FlightData mySharedMem9 = myReader.GetCurrentData();
+
+                        if (SysTest_active == false)
+                        {
+                            if ((((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
+                                == BlinkBits.Launch) != _prevLaunch_blinking)
+                            {
+                                while (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
+                                   == BlinkBits.Launch)
+                                {
+                                    // Check if it's time to leave the "while-loop":
+                                    mySharedMem9 = myReader.GetCurrentData();
+
+                                    TWP_Shp += 12;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                    Launch_blinking_active = true;
+                                    Wait(250); //fast blinktime
+
+                                    TWP_Shp -= 12;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                    Launch_blinking_active = false;
+                                    Wait(250); //fast blinktime
+                                               //  Application.DoEvents();
+                                }
+                                if (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
+                                   == 0)
+                                {
+                                    if (Launch_blinking_active) { TWP_Shp -= 12; }
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                    Launch_blinking_active = false;
+                                }
+                                _prevLaunch_blinking = ((BlinkBits)mySharedMem9.blinkBits &
+                                 BlinkBits.Launch) == BlinkBits.Launch;
+                            }
+                        }
+                    }
+                }
+                finally { }
+        }
+        #endregion
+
+        #region Blink SysTest @ TWP
+        /// <summary>
+        /// blinking indicators at TWP when performing test.
+        /// </summary>
+        public void Blink_SysTest()  // WORKS! 28.02.2020 LE. 
+        {
+            using (Reader myReader = new F4SharedMem.Reader())
+                try
+                {
+                    while (isFlying == true)
+                    {
+                        if (SysTest_active == true)
+                        {
+                            for (int i = 0; i < 4; i++)
+                            {
+                                blinkTWP_Shp = 15;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
+
+                                blinkTWP = 255;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
+                                Thread.Sleep(250);
+                                Application.DoEvents();
+
+                                blinkTWP_Shp = 1;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
+
+                                blinkTWP = 75;
+                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
+                                Thread.Sleep(250);
+                                Application.DoEvents();
+
+                                if (i == 3)
+                                {
+                                    // leave loop after blinking three times,
+                                    // restore all lights to their ex-status (before they've entered the loop).
+                                    blinkTWP_Shp = 0;
+                                    if (Unk_active) { blinkTWP_Shp += 3; } else { blinkTWP_Shp += 1; }
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
+                                    blinkTWP_Shp = 0;
+
+                                    blinkTWP = 0;
+                                    if (HandOff_active) { blinkTWP += 192; } else { blinkTWP += 64; }
+                                    if (PriMode_active) { blinkTWP += 32; } else { blinkTWP += 16; }
+                                    if (TgtSep_active) { blinkTWP += 4; } else { blinkTWP += 8; }
+                                    if (SysTest_active) { blinkTWP += 3; } else { blinkTWP += 1; }
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
+                                    blinkTWP = 0;
+                                    SysTest_active = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                finally { }
+        }
+
+        #endregion
+
+        #region Other Gauges ---> to be done!
+        public void Compass() { }
+        public void FuelQty() { }
+        public void HydA() { }
+        public void HydB() { }
+        public void LiquidOxy() { }
+        public void EpuFuel() { }
+        public void CabinPress() { }
+        public void Clock() { }
+        #endregion
+
+        #region OTHER THREADS ---> to be done!
+        /// <summary>
+        /// Other Threads uncomplete,                   TO BE DONE! 
+        /// 07.03.2020 LE
+        /// </summary>
         public void Blink_JetEngineStartPanel() { }
         public void TrimPanel() { }
 
         public void OxyPanel() { }
+
+        public void TwaPanel() { }
+
 
 
         // NOT IMPLEMENTED IN BMS,
@@ -1492,422 +1995,206 @@ namespace WindowsFormsApplication1
         //            _prevElec_Fault = ((LightBits3)mySharedMem8.lightBits3 &
         //            LightBits3.Elec_Fault) == LightBits3.Elec_Fault;
         //       }
-
-
-        public void Blink_ProbeHeat()
-        { // WORKS! 16.05.2019 LE.
-            using (Reader myReader = new F4SharedMem.Reader())
-
-               //while (_keepRunning == true)
-               //{
-               //     if (myReader.IsFalconRunning == true)
-               //    {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
-                        {
-                            FlightData mySharedMem8 = myReader.GetCurrentData();
-
-                    //if (ProbeHeat_blinking == true)
-                    //{
-
-                   // if ((((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                   //   == BlinkBits.PROBEHEAT) != _prevProbeHeat_blinking)
-                  //  {
-                        while (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                         == BlinkBits.PROBEHEAT)
-                        {
-                            // Check if it's time to leave "while loop":
-                            mySharedMem8 = myReader.GetCurrentData();
-                            ProbeHeat_blinking = true;
-
-                            CautionPanel_Row1 += 4;
-                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                            ProbeHeat_blinking_active = true;
-                            Thread.Sleep(125); //125, fast blinktime
-                        Application.DoEvents();
-
-                            CautionPanel_Row1 -= 4;
-                            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                            ProbeHeat_blinking_active = false;
-                            Thread.Sleep(125); //125, fast blinktime
-                        Application.DoEvents();
-                    }
-                     //   _prevProbeHeat_blinking = ((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                     //       == BlinkBits.PROBEHEAT;
-                    }
-                       // if (((BlinkBits)mySharedMem8.blinkBits & BlinkBits.PROBEHEAT)
-                     //      != BlinkBits.PROBEHEAT)
-                     //   {
-                            // if (ProbeHeat_blinking_active=true) { CautionPanel_Row1 -= 4; }
-                            //  Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-
-                         //   ProbeHeat_blinking_active = false;
-                        //    ProbeHeat_blinking = false;
-                            //   }
-                           
-                       // }  
-                          //  }
-                       // }
-               //     }
-               //}
-           
-        }
-
-
-        public void Blink_MissileLaunch()
-        { // WORKS! 28.02.2020 LE.
-            using (Reader myReader = new F4SharedMem.Reader())
-
-                //while (_keepRunning == true)
-                //{
-                //    if (myReader.IsFalconRunning == true)
-                //    {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
-                        {
-                            FlightData mySharedMem9 = myReader.GetCurrentData();
-
-                            if (SysTest_active == false)
-                            {
-                                if ((((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
-                                    == BlinkBits.Launch) != _prevLaunch_blinking)
-                                {
-                                    while (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
-                                       == BlinkBits.Launch)
-                                    {
-                                        // Check if it's time to leave the "while-loop":
-                                        mySharedMem9 = myReader.GetCurrentData();
-
-                                        TWP_Shp += 12;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                        Launch_blinking_active = true;
-                                        Wait(250); //fast blinktime
-
-                                        TWP_Shp -= 12;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                        Launch_blinking_active = false;
-                                        Wait(250); //fast blinktime
-                                      //  Application.DoEvents();
-                                    }
-                                    if (((BlinkBits)mySharedMem9.blinkBits & BlinkBits.Launch)
-                                       == 0)
-                                    {
-                                        if (Launch_blinking_active) { TWP_Shp -= 12; }
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                        Launch_blinking_active = false;
-                                    }
-                                    _prevLaunch_blinking = ((BlinkBits)mySharedMem9.blinkBits &
-                                     BlinkBits.Launch) == BlinkBits.Launch;
-                                }
-                            }
-                        }
-                //    }
-                //}
-        }
-
-        public void Blink_SysTest()  // WORKS! 28.02.2020 LE. 
-        {
-            using (Reader myReader = new F4SharedMem.Reader())
-
-                //while (_keepRunning == true)
-                //{
-                //    if (myReader.IsFalconRunning == true)
-                //    {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
-                        {
-                            if (SysTest_active == true)
-                            {
-                                for (int i = 0; i < 4; i++)
-                                {
-                                    blinkTWP_Shp = 15;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
-
-                                    blinkTWP = 255;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
-                                    Thread.Sleep(250);
-                                    Application.DoEvents();
-
-                                    blinkTWP_Shp = 1;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
-
-                                    blinkTWP = 75;
-                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
-                                    Thread.Sleep(250);
-                                    Application.DoEvents();
-
-                                    if (i == 3)
-                                    {
-                                        // leave loop after blinking three times,
-                                        // restore all lights to their ex-status (before they've entered the loop).
-                                        blinkTWP_Shp = 0;
-                                        if (Unk_active) { blinkTWP_Shp += 3; } else { blinkTWP_Shp += 1; }
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, blinkTWP_Shp);
-                                        blinkTWP_Shp = 0;
-
-                                        blinkTWP = 0;
-                                        if (HandOff_active) { blinkTWP += 192; } else { blinkTWP += 64; }
-                                        if (PriMode_active) { blinkTWP += 32; } else { blinkTWP += 16; }
-                                        if (TgtSep_active) { blinkTWP += 4; } else { blinkTWP += 8; }
-                                        if (SysTest_active) { blinkTWP += 3; } else { blinkTWP += 1; }
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, blinkTWP);
-                                        blinkTWP = 0;
-                                        SysTest_active = false;
-                                    }
-                                }
-                            }
-                        }
-                //    }
-                //}
-        }
+        #endregion
 
         public void SimOutput()
         {
             using (Reader myReader = new F4SharedMem.Reader())  //Neue Instanz von Reader, um die Daten von FalconBMS auslesen zu kÃƒÂ¶nnen.
-            {
-             //   while (_keepRunning == true)
-              //  {
-              //      if (myReader.IsFalconRunning == true)
-              //      {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
+              //   while (_keepRunning == true)
+                //  {
+                //      if (myReader.IsFalconRunning == true)
+                //      {
+                try
+                {
+                    while (isFlying == true)
+                    //   while ((myReader.IsFalconRunning) && (_keepRunning))
+                    {
+                        FlightData myFlightData = new FlightData();
+                        FlightData myCurrentData = myReader.GetCurrentData();
+                   
+                        myChaffCount = myCurrentData.ChaffCount;
+                        myFlareCount = myCurrentData.FlareCount;
+
+                        myBupUhfPreset = myCurrentData.BupUhfPreset;
+                        myBupUhfFreq = myCurrentData.BupUhfFreq;
+
+                        //////////////////////////////////////////////////////////////////////////////////////
+                        //                                UHF BACKUP-RADIO                                  //
+                        //               --> Need to crosscheck with "Flightdata.h" <<--                    //
+                        //////////////////////////////////////////////////////////////////////////////////////
+                        // -------------------------------------------------------------------------------- //
+                        //                7segment-displays for preset / frequencies                        //
+                        // --------------------------------------------------------------------- works! --- //
+                        int BupUhfPresetEinertemp = myBupUhfPreset % 10;
+                        int BupUhfPresetZehnertemp = myBupUhfPreset % 100;
+
+                        myBupUhfPresetEiner = BupUhfPresetEinertemp;
+                        myBupUhfPresetZehner = BupUhfPresetZehnertemp / 10;
+
+                        int myBupUhfFreqEinertemp = myBupUhfFreq % 10;
+                        int myBupUhfFreqZehnertemp = myBupUhfFreq % 100;
+                        int myBupUhfFreqHundertertemp = myBupUhfFreq % 1000;
+                        int myBuhpUhfFreqTausendertemp = myBupUhfFreq % 10000;
+                        int myBuhpUhfFreqZehntausendertemp = myBupUhfFreq % 100000;
+                        int myBupUhfFreqHunderttausendertemp = myBupUhfFreq % 1000000;
+
+                        myBupUhfFreqEiner = myBupUhfFreqEinertemp;
+                        myBupUhfFreqZehner = myBupUhfFreqZehnertemp / 10;
+                        myBupUhfFreqHunderter = myBupUhfFreqHundertertemp / 100;
+                        myBupUhfFreqTausender = myBuhpUhfFreqTausendertemp / 1000;
+                        myBupUhfFreqZehntausender = myBuhpUhfFreqZehntausendertemp / 10000;
+                        myBupUhfFreqHunderttausender = myBupUhfFreqHunderttausendertemp / 100000;
+
+                        //////////////////////////////////////////////////////////////////////////////////////
+                        //                                CMDS LIGHTS                                       //
+                        //               --> Need to crosscheck with "Flightdata.h" <<--                    //
+                        //////////////////////////////////////////////////////////////////////////////////////
+                        // -------------------------------------------------------------------------------- //
+                        //                Osram Displays (Chaff / Flare / L0 /  AUTO DEGR)                  //
+                        // --------------------------------------------------------------------- works! --- //
+
+                        int myFlareCount2 = (int)myFlareCount;
+                        int myChaffCount2 = (int)myChaffCount;
+
+                        int myChaffEinertemp = myChaffCount2 % 10;
+                        int myChaffZehnertemp = myChaffCount2 % 100;
+
+                        int myFlareEinertemp = myFlareCount2 % 10;
+                        int myFlareZehnertemp = myFlareCount2 % 100;
+
+                        int myChaffEiner = myChaffEinertemp;
+                        int myChaffZehner = myChaffZehnertemp / 10;
+
+                        int myFlareEiner = myFlareEinertemp;
+                        int myFlareZehner = myFlareZehnertemp / 10;
+                        
+                        label4.Invoke(new Action<string>(s => { label4.Text = s; label4.ForeColor = Color.Red; }), myCurrentData.pilotsStatus[0].ToString());
+
+                        if (myBupUhfPreset != _prevmyBupUhfPreset)
                         {
-                            FlightData myFlightData = new FlightData();
-                            FlightData myCurrentData = myReader.GetCurrentData();
-                            myChaffCount = myCurrentData.ChaffCount;
-                            myFlareCount = myCurrentData.FlareCount;
-
-                            myBupUhfPreset = myCurrentData.BupUhfPreset;
-                            myBupUhfFreq = myCurrentData.BupUhfFreq;
-
-                            //////////////////////////////////////////////////////////////////////////////////////
-                            //                                UHF BACKUP-RADIO                                  //
-                            //               --> Need to crosscheck with "Flightdata.h" <<--                    //
-                            //////////////////////////////////////////////////////////////////////////////////////
-                            // -------------------------------------------------------------------------------- //
-                            //                7segment-displays for preset / frequencies                        //
-                            // --------------------------------------------------------------------- works! --- //
-                            int BupUhfPresetEinertemp = myBupUhfPreset % 10;
-                            int BupUhfPresetZehnertemp = myBupUhfPreset % 100;
-
-                            myBupUhfPresetEiner = BupUhfPresetEinertemp;
-                            myBupUhfPresetZehner = BupUhfPresetZehnertemp / 10;
-
-                            int myBupUhfFreqEinertemp = myBupUhfFreq % 10;
-                            int myBupUhfFreqZehnertemp = myBupUhfFreq % 100;
-                            int myBupUhfFreqHundertertemp = myBupUhfFreq % 1000;
-                            int myBuhpUhfFreqTausendertemp = myBupUhfFreq % 10000;
-                            int myBuhpUhfFreqZehntausendertemp = myBupUhfFreq % 100000;
-                            int myBupUhfFreqHunderttausendertemp = myBupUhfFreq % 1000000;
-
-                            myBupUhfFreqEiner = myBupUhfFreqEinertemp;
-                            myBupUhfFreqZehner = myBupUhfFreqZehnertemp / 10;
-                            myBupUhfFreqHunderter = myBupUhfFreqHundertertemp / 100;
-                            myBupUhfFreqTausender = myBuhpUhfFreqTausendertemp / 1000;
-                            myBupUhfFreqZehntausender = myBuhpUhfFreqZehntausendertemp / 10000;
-                            myBupUhfFreqHunderttausender = myBupUhfFreqHunderttausendertemp / 100000;
-
-                            //////////////////////////////////////////////////////////////////////////////////////
-                            //                                CMDS LIGHTS                                       //
-                            //               --> Need to crosscheck with "Flightdata.h" <<--                    //
-                            //////////////////////////////////////////////////////////////////////////////////////
-                            // -------------------------------------------------------------------------------- //
-                            //                Osram Displays (Chaff / Flare / L0 /  AUTO DEGR)                  //
-                            // --------------------------------------------------------------------- works! --- //
-
-                            int myFlareCount2 = (int)myFlareCount;
-                            int myChaffCount2 = (int)myChaffCount;
-
-                            int myChaffEinertemp = myChaffCount2 % 10;
-                            int myChaffZehnertemp = myChaffCount2 % 100;
-
-                            int myFlareEinertemp = myFlareCount2 % 10;
-                            int myFlareZehnertemp = myFlareCount2 % 100;
-
-                            int myChaffEiner = myChaffEinertemp;
-                            int myChaffZehner = myChaffZehnertemp / 10;
-
-                            int myFlareEiner = myFlareEinertemp;
-                            int myFlareZehner = myFlareZehnertemp / 10;
-
-
-
-                            
-                            if (((myCurrentData.hsiBits & 0x80000000) == 0) && (Reset_PHCC_when_in_UI == 1))
+                            if (myBupUhfPresetEiner != _prevmyBupUhfPresetEiner)
                             {
-                                byte zero = 0;
-
-                                // EYEBROW & CAUTION Panel reset:
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, zero);
-
-                                // MISC Panel-Lights & TWP LIGHTS reset:
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 4, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 5, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, zero);
-                                Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, zero);
-
-                                // UHF, sechststellige Backup-Frequency löschen: 
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, zero);
-
-                                // UHF, zweistellige Preset-Anzeige löschen:
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, zero);
-
-                                // CMDS, 
-                                // When loading screen appears, clear L0 chaffs / L0 flares from previous missions.
-                                // Statusanzeige & LED reset:
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, zero);
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, zero);
-
-                                Reset_PHCC_when_in_UI = 0;
-                               
+                                if (myBupUhfPresetEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 238);
+                                if (myBupUhfPresetEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 96);
+                                if (myBupUhfPresetEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 205);
+                                if (myBupUhfPresetEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 233);
+                                if (myBupUhfPresetEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 99);
+                                if (myBupUhfPresetEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 171);
+                                if (myBupUhfPresetEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 175);
+                                if (myBupUhfPresetEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 224);
+                                if (myBupUhfPresetEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 239);
+                                if (myBupUhfPresetEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 235);
+                                _prevmyBupUhfPresetEiner = myBupUhfPresetEiner;
                             }
 
-                            //label4.Invoke(new Action<string>(s => { label4.Text = s; label4.ForeColor = Color.Red; }), myCurrentData.pilotsStatus[0].ToString());
-                            //if (myCurrentData.pilotsStatus[0] == 3)
-                            //{
-
-                            label4.Invoke(new Action<string>(s => { label4.Text = s; label4.ForeColor = Color.Red; }), myCurrentData.pilotsStatus[0].ToString());
-                            if ((myCurrentData.hsiBits & 0x80000000) != 0)
+                            if (myBupUhfPresetZehner != _prevmyBupUhfPresetZehner)
                             {
+                                if (myBupUhfPresetZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 238);
+                                if (myBupUhfPresetZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 96);
+                                if (myBupUhfPresetZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 205);
+                                _prevmyBupUhfPresetZehner = myBupUhfPresetZehner;
+                            }
 
-                                Reset_PHCC_when_in_UI = 1;
+                            _prevmyBupUhfPreset = myBupUhfPreset;
 
-                                if (myBupUhfPreset != _prevmyBupUhfPreset)
-                                {
-                                    if (myBupUhfPresetEiner != _prevmyBupUhfPresetEiner)
-                                    {
-                                        if (myBupUhfPresetEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 238);
-                                        if (myBupUhfPresetEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 96);
-                                        if (myBupUhfPresetEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 205);
-                                        if (myBupUhfPresetEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 233);
-                                        if (myBupUhfPresetEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 99);
-                                        if (myBupUhfPresetEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 171);
-                                        if (myBupUhfPresetEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 175);
-                                        if (myBupUhfPresetEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 224);
-                                        if (myBupUhfPresetEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 239);
-                                        if (myBupUhfPresetEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 23, 235);
-                                        _prevmyBupUhfPresetEiner = myBupUhfPresetEiner;
-                                    }
+                        }
 
-                                    if (myBupUhfPresetZehner != _prevmyBupUhfPresetZehner)
-                                    {
-                                        if (myBupUhfPresetZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 238);
-                                        if (myBupUhfPresetZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 96);
-                                        if (myBupUhfPresetZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 22, 205);
-                                        _prevmyBupUhfPresetZehner = myBupUhfPresetZehner;
-                                    }
+                        if (myBupUhfFreq != _prevmyBupUhfFreq)
+                        {
+                            if (myBupUhfFreqEiner != _prevmyBupUhfFreqEiner)
+                            {
+                                if (myBupUhfFreqEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 238);
+                                if (myBupUhfFreqEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 96);
+                                if (myBupUhfFreqEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 205);
+                                if (myBupUhfFreqEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 233);
+                                if (myBupUhfFreqEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 99);
+                                if (myBupUhfFreqEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 171);
+                                if (myBupUhfFreqEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 175);
+                                if (myBupUhfFreqEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 224);
+                                if (myBupUhfFreqEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 239);
+                                if (myBupUhfFreqEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 235);
+                                _prevmyBupUhfFreqEiner = myBupUhfFreqEiner;
+                            }
 
-                                    _prevmyBupUhfPreset = myBupUhfPreset;
+                            if (myBupUhfFreqZehner != _prevmyBupUhfFreqZehner)
+                            {
+                                if (myBupUhfFreqZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 238);
+                                if (myBupUhfFreqZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 96);
+                                if (myBupUhfFreqZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 205);
+                                if (myBupUhfFreqZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 233);
+                                if (myBupUhfFreqZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 99);
+                                if (myBupUhfFreqZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 171);
+                                if (myBupUhfFreqZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 175);
+                                if (myBupUhfFreqZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 224);
+                                if (myBupUhfFreqZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 239);
+                                if (myBupUhfFreqZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 235);
+                                _prevmyBupUhfFreqZehner = myBupUhfFreqZehner;
+                            }
 
-                                }
+                            if (myBupUhfFreqHunderter != _prevmyBupUhfFreqHunderter)
+                            {
+                                if (myBupUhfFreqHunderter == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 238);
+                                if (myBupUhfFreqHunderter == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 96);
+                                if (myBupUhfFreqHunderter == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 205);
+                                if (myBupUhfFreqHunderter == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 233);
+                                if (myBupUhfFreqHunderter == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 99);
+                                if (myBupUhfFreqHunderter == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 171);
+                                if (myBupUhfFreqHunderter == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 175);
+                                if (myBupUhfFreqHunderter == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 224);
+                                if (myBupUhfFreqHunderter == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 239);
+                                if (myBupUhfFreqHunderter == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 235);
+                                _prevmyBupUhfFreqHunderter = myBupUhfFreqHunderter;
+                            }
 
-                                if (myBupUhfFreq != _prevmyBupUhfFreq)
-                                {
-                                    if (myBupUhfFreqEiner != _prevmyBupUhfFreqEiner)
-                                    {
-                                        if (myBupUhfFreqEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 238);
-                                        if (myBupUhfFreqEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 96);
-                                        if (myBupUhfFreqEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 205);
-                                        if (myBupUhfFreqEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 233);
-                                        if (myBupUhfFreqEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 99);
-                                        if (myBupUhfFreqEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 171);
-                                        if (myBupUhfFreqEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 175);
-                                        if (myBupUhfFreqEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 224);
-                                        if (myBupUhfFreqEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 239);
-                                        if (myBupUhfFreqEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 21, 235);
-                                        _prevmyBupUhfFreqEiner = myBupUhfFreqEiner;
-                                    }
+                            if (myBupUhfFreqTausender != _prevmyBupUhfFreqTausender)
+                            {
+                                if (myBupUhfFreqTausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 254);
+                                if (myBupUhfFreqTausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 112);
+                                if (myBupUhfFreqTausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 221);
+                                if (myBupUhfFreqTausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 249);
+                                if (myBupUhfFreqTausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 115);
+                                if (myBupUhfFreqTausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 187);
+                                if (myBupUhfFreqTausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 191);
+                                if (myBupUhfFreqTausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 240);
+                                if (myBupUhfFreqTausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 255);
+                                if (myBupUhfFreqTausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 251);
+                                _prevmyBupUhfFreqTausender = myBupUhfFreqTausender;
+                            }
 
-                                    if (myBupUhfFreqZehner != _prevmyBupUhfFreqZehner)
-                                    {
-                                        if (myBupUhfFreqZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 238);
-                                        if (myBupUhfFreqZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 96);
-                                        if (myBupUhfFreqZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 205);
-                                        if (myBupUhfFreqZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 233);
-                                        if (myBupUhfFreqZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 99);
-                                        if (myBupUhfFreqZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 171);
-                                        if (myBupUhfFreqZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 175);
-                                        if (myBupUhfFreqZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 224);
-                                        if (myBupUhfFreqZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 239);
-                                        if (myBupUhfFreqZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 20, 235);
-                                        _prevmyBupUhfFreqZehner = myBupUhfFreqZehner;
-                                    }
+                            if (myBupUhfFreqZehntausender != _prevmyBupUhfFreqZehntausender)
+                            {
+                                if (myBupUhfFreqZehntausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 238);
+                                if (myBupUhfFreqZehntausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 96);
+                                if (myBupUhfFreqZehntausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 205);
+                                if (myBupUhfFreqZehntausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 233);
+                                if (myBupUhfFreqZehntausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 99);
+                                if (myBupUhfFreqZehntausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 171);
+                                if (myBupUhfFreqZehntausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 175);
+                                if (myBupUhfFreqZehntausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 224);
+                                if (myBupUhfFreqZehntausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 239);
+                                if (myBupUhfFreqZehntausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 235);
+                                _prevmyBupUhfFreqZehntausender = myBupUhfFreqZehntausender;
+                            }
 
-                                    if (myBupUhfFreqHunderter != _prevmyBupUhfFreqHunderter)
-                                    {
-                                        if (myBupUhfFreqHunderter == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 238);
-                                        if (myBupUhfFreqHunderter == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 96);
-                                        if (myBupUhfFreqHunderter == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 205);
-                                        if (myBupUhfFreqHunderter == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 233);
-                                        if (myBupUhfFreqHunderter == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 99);
-                                        if (myBupUhfFreqHunderter == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 171);
-                                        if (myBupUhfFreqHunderter == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 175);
-                                        if (myBupUhfFreqHunderter == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 224);
-                                        if (myBupUhfFreqHunderter == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 239);
-                                        if (myBupUhfFreqHunderter == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 19, 235);
-                                        _prevmyBupUhfFreqHunderter = myBupUhfFreqHunderter;
-                                    }
-
-                                    if (myBupUhfFreqTausender != _prevmyBupUhfFreqTausender)
-                                    {
-                                        if (myBupUhfFreqTausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 254);
-                                        if (myBupUhfFreqTausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 112);
-                                        if (myBupUhfFreqTausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 221);
-                                        if (myBupUhfFreqTausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 249);
-                                        if (myBupUhfFreqTausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 115);
-                                        if (myBupUhfFreqTausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 187);
-                                        if (myBupUhfFreqTausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 191);
-                                        if (myBupUhfFreqTausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 240);
-                                        if (myBupUhfFreqTausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 255);
-                                        if (myBupUhfFreqTausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 18, 251);
-                                        _prevmyBupUhfFreqTausender = myBupUhfFreqTausender;
-                                    }
-
-                                    if (myBupUhfFreqZehntausender != _prevmyBupUhfFreqZehntausender)
-                                    {
-                                        if (myBupUhfFreqZehntausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 238);
-                                        if (myBupUhfFreqZehntausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 96);
-                                        if (myBupUhfFreqZehntausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 205);
-                                        if (myBupUhfFreqZehntausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 233);
-                                        if (myBupUhfFreqZehntausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 99);
-                                        if (myBupUhfFreqZehntausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 171);
-                                        if (myBupUhfFreqZehntausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 175);
-                                        if (myBupUhfFreqZehntausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 224);
-                                        if (myBupUhfFreqZehntausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 239);
-                                        if (myBupUhfFreqZehntausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 17, 235);
-                                        _prevmyBupUhfFreqZehntausender = myBupUhfFreqZehntausender;
-                                    }
-
-                                    if (myBupUhfFreqHunderttausender != _prevmyBupUhfFreqHunderttausender)
-                                    {
-                                        if (myBupUhfFreqHunderttausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 238);
-                                        if (myBupUhfFreqHunderttausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 96);
-                                        if (myBupUhfFreqHunderttausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 205);
-                                        if (myBupUhfFreqHunderttausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 233);
-                                        if (myBupUhfFreqHunderttausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 99);
-                                        if (myBupUhfFreqHunderttausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 171);
-                                        if (myBupUhfFreqHunderttausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 175);
-                                        if (myBupUhfFreqHunderttausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 224);
-                                        if (myBupUhfFreqHunderttausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 239);
-                                        if (myBupUhfFreqHunderttausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 235);
-                                        _prevmyBupUhfFreqHunderttausender = myBupUhfFreqHunderttausender;
-                                    }
-
-                                    myBupUhfFreq = _prevmyBupUhfFreq;
-
-                                }
+                            if (myBupUhfFreqHunderttausender != _prevmyBupUhfFreqHunderttausender)
+                            {
+                                if (myBupUhfFreqHunderttausender == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 238);
+                                if (myBupUhfFreqHunderttausender == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 96);
+                                if (myBupUhfFreqHunderttausender == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 205);
+                                if (myBupUhfFreqHunderttausender == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 233);
+                                if (myBupUhfFreqHunderttausender == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 99);
+                                if (myBupUhfFreqHunderttausender == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 171);
+                                if (myBupUhfFreqHunderttausender == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 175);
+                                if (myBupUhfFreqHunderttausender == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 224);
+                                if (myBupUhfFreqHunderttausender == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 239);
+                                if (myBupUhfFreqHunderttausender == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x30, 16, 235);
+                                _prevmyBupUhfFreqHunderttausender = myBupUhfFreqHunderttausender;
+                            }
+                            myBupUhfFreq = _prevmyBupUhfFreq;
+                        }
 
                         //----------------------------------------------//
-                        // --> FEHLT NOCH, muss implementiert werden!   //
-                        // --> LED-Status für folgende CMDS LEDs:       //
-                        //                                              //
+                        // Flightdata.h lightbits:                      //
                         //     GO           0x80                        //
                         //     NOGO         0x100                       //
                         //     RDY          0x200     (Dispense Rdy)    //
@@ -1923,1652 +2210,1618 @@ namespace WindowsFormsApplication1
 
                         // Normale Zahlenwerte anzeigen für
                         // verbleibenden Caff- / Flare-Vorrat:
-                        //                                    if (myCurrentData.cmdsMode == 0)
-                        if (myCurrentData.cmdsMode != 0)
-                        {
-                            if (_prevFlareEinerState != myFlareEiner)
+                        //    
+                       
+                            if (myCurrentData.cmdsMode != 0)
                             {
-                                if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
-                                if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
-                                if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
-                                if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
-                                if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
-                                if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
-                                if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
-                                if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
-                                if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
-                                if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                // Thread.Sleep(5);
-                                _prevFlareEinerState = myFlareEiner;
-                            }
-
-
-                            if (_prevFlareZehnerState != myFlareZehner)
-                            {
-                                if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
-                                if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
-                                if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
-                                if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
-                                if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
-                                if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
-                                if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
-                                if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
-                                if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
-                                if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
-                                // Thread.Sleep(5);
-                                _prevFlareZehnerState = myFlareZehner;
-                            }
-
-                            if (_prevChaffEinerState != myChaffEiner)
-                            {
-                                if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
-                                if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
-                                if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
-                                if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
-                                if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
-                                if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
-                                if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
-                                if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
-                                if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
-                                if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                // Thread.Sleep(5);
-                                _prevChaffEinerState = myChaffEiner;
-                            }
-
-                            if (_prevChaffZehnerState != myChaffZehner)
-                            {
-                                if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
-                                if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
-                                if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
-                                if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
-                                if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
-                                if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
-                                if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
-                                if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
-                                if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
-                                if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
-                                //Thread.Sleep(5);
-                                _prevChaffZehnerState = myChaffZehner;
-                            }
-
-
-                            // Show "L0", when low on Chaffs:
-                            if (ChaffLow == false)
-                            {
-                                if ((myCurrentData.lightBits2 & 0x400) != 0)
-                                //  if (((myCurrentData.lightBits2 & 0x400) != 0) && (ChaffLow == false))
+                                if (_prevFlareEinerState != myFlareEiner)
                                 {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                    // Thread.Sleep(5);
+                                    if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
+                                    if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
+                                    if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
+                                    if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
+                                    if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
+                                    if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
+                                    if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
+                                    if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
+                                    if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
+                                    if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
+                                    if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
                                     Wait(5);
-                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                    ChaffLow = true;
-                                    _prevChaffWasLow = true;
+                                    _prevFlareEinerState = myFlareEiner;
+                                }
+
+                                if (_prevFlareZehnerState != myFlareZehner)
+                                {
+                                    if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
+                                    if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
+                                    if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
+                                    if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
+                                    if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
+                                    if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
+                                    if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
+                                    if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
+                                    if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
+                                    if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
+                                    Wait(5);
+                                    _prevFlareZehnerState = myFlareZehner;
+                                }
+
+                                if (_prevChaffEinerState != myChaffEiner)
+                                {
+                                    if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                    if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
+                                    if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
+                                    if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
+                                    if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
+                                    if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
+                                    if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
+                                    if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
+                                    if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
+                                    if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
+                                    if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                    Wait(5);
+                                    _prevChaffEinerState = myChaffEiner;
+                                }
+
+                                if (_prevChaffZehnerState != myChaffZehner)
+                                {
+                                    if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
+                                    if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
+                                    if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
+                                    if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
+                                    if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
+                                    if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
+                                    if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
+                                    if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
+                                    if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
+                                    if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
+                                    Wait(5);
+                                    _prevChaffZehnerState = myChaffZehner;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                == LightBits2.FlareLo != _prevChaffLo)
+                                {
+                                    // Show "L0", when low on Chaffs:
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
+                                    == LightBits2.ChaffLo)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
+                                        Wait(5);
+                                }
+                                    _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
+                                    == LightBits2.ChaffLo;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                  == LightBits2.FlareLo != _prevFlareLo)
+                                {
+                                    // Show "L0", when low on Flares:
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                    == LightBits2.FlareLo)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
+                                        Wait(5);
+                                    }
+                                    _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                    == LightBits2.FlareLo;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                 == LightBits2.Degr != _prevDegr)
+                                {
+                                    // Show "AUTO DEGR":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                    == LightBits2.Degr)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
+                                        
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
+                                        
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
+                                        Wait(5);
+
+                                    }
+                                    _prevDegr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                    == LightBits2.Degr;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                == LightBits2.Go != _prevGo)
+                                {
+                                    // lighten up "GO":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                    == LightBits2.Go)
+                                    {
+                                        StatusLight = 4;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                    == LightBits2.Go;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                == LightBits2.NoGo != _prevNoGo)
+                                {
+                                    // lighten up "NOGO":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                    == LightBits2.NoGo)
+                                    {
+                                        StatusLight = 8;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevNoGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                    == LightBits2.NoGo;
+                                }
+
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                 == LightBits2.Rdy != _prevRdy)
+                                {
+                                    // lighten up "DISPENSE READY":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                    == LightBits2.Rdy)
+                                    {
+                                        StatusLight +=3;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        StatusLight -= 3;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevRdy = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                        == LightBits2.Rdy;
                                 }
                             }
-                            if (_prevChaffWasLow == true)
+
+                            // Reset CMDS-display & LED when CMDS power is off:
+                            if (myCurrentData.cmdsMode == 0)
                             {
-                                //if (((myCurrentData.lightBits2 & 0x400) != 0) && (_prevChaffWasLow == true))
-                                if ((myCurrentData.lightBits2 & 0x400) != 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                    ChaffLow = true;
-                                }
-                            }
-                            if (ChaffLow == true)
-                            {
-                                //  if (((myCurrentData.lightBits2 & 0x400) == 0) && (ChaffLow == true))
-                                if ((myCurrentData.lightBits2 & 0x400) == 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    _prevChaffLow = (myCurrentData.lightBits2 & 0x400);
-                                    ChaffLow = false;
-                                }
-                            }
-                            if (FlareLow == false)
-                            {
-                                // Show "L0", when low on Flares:
-                                //  if (((myCurrentData.lightBits2 & 0x800) != 0) && (FlareLow == false))
-                                if ((myCurrentData.lightBits2 & 0x800) != 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
-                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    FlareLow = true;
-                                    _prevFlareWasLow = true;
-                                }
-                            }
-                            if (_prevFlareWasLow == true)
-                            {
-                                //  if (((myCurrentData.lightBits2 & 0x800) != 0) && (_prevFlareWasLow == true))
-                                if ((myCurrentData.lightBits2 & 0x800) != 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
-                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    FlareLow = true;
-                                }
-                            }
-                            if (FlareLow == true) {
-                                //if (((myCurrentData.lightBits2 & 0x800) == 0) && (FlareLow == true))
-                                if ((myCurrentData.lightBits2 & 0x800) == 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
-                                    // Thread.Sleep(5);
-                                    Wait(5);
-                                    _prevFlareLow = (myCurrentData.lightBits2 & 0x800);
-                                    FlareLow = false;
-                                }
-                            }
-                            if (AutoDegree == false) {
-                                // Show "AUTO DEGR":
-                                //  if (((myCurrentData.lightBits2 & 0x100) != 0) && (AutoDegree == false))
-                                if ((myCurrentData.lightBits2 & 0x100) != 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
-                                    // Thread.Sleep(5);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    AutoDegree = true;
-                                } }
-
-                            if (AutoDegree == true) {
-                                // Remove "AUTO DEGR":
-                                //if (((myCurrentData.lightBits2 & 0x100) == 0) && (AutoDegree == true))
-                                if ((myCurrentData.lightBits2 & 0x100) == 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
-                                    // Thread.Sleep(5);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
-                                    //Thread.Sleep(5);
-                                    Wait(5);
-                                    AutoDegree = false;
-                                } }
-
-                            if ((myCurrentData.lightBits2 & 0x40) != 0)
-                            {
-
-                                if ((myCurrentData.lightBits2 & 0x200) == 0)
-                                // Lighten up "GO":
-                                // if (((myCurrentData.lightBits2 & 0x40) != 0) && ((myCurrentData.lightBits2 & 0x200) == 0))// && ( _prevGo==false))
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 4);
-                                    _prevGo = true;
-                                    _prevNoGo = false;
-                                    _prevDispenseReady = false;
-                                } }
-
-                            // Lighten up "NOGO":
-                            if (((myCurrentData.lightBits2 & 0x80) != 0))//&& ( _prevNoGo == false))
-                            {
-                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 8);
-                                _prevGo = false;
-                                _prevNoGo = true;
-                                _prevDispenseReady = false;
-                            }
-                            if ((myCurrentData.lightBits2 & 0x200) != 0)
-                            {
-                                // Lighten up "DISPENSE READY":
-                                // if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) == 0))// && ( _prevDispenseReady==false))
-                                if ((myCurrentData.lightBits2 & 0x40) == 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 3);
-                                    _prevGo = false;
-                                    _prevNoGo = false;
-                                    _prevDispenseReady = true;
-                                }
-                                if ((myCurrentData.lightBits2 & 0x40) != 0)
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
-                                    _prevGo = true;
-                                    _prevNoGo = false;
-                                    _prevDispenseReady = true;
-                                }
-                            } }
-                          
-                                    // Lighten up "GO" and "DISPENSE READY":
-                                    //if (((myCurrentData.lightBits2 & 0x200) != 0) && ((myCurrentData.lightBits2 & 0x40) != 0))// && (_prevDispenseReady == false) && (_prevGo == false))
-                                    //{
-                                    //    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 5);
-                                    //    _prevGo = true;
-                                    //    _prevNoGo = false;
-                                    //    _prevDispenseReady = true;
-                                    //}
-                               
-                                // }
-                                // Reset CMDS-display & LED when CMDS power is off:
-                                if (myCurrentData.cmdsMode == 0)
-                                {
-                                    if ((myCurrentData.lightBits2 & 0x800) != 0) FlareLow = false;
-                                    if ((myCurrentData.lightBits2 & 0x400) != 0) ChaffLow = false;
-                                    if ((myCurrentData.lightBits2 & 0x100) != 0) AutoDegree = false;
-                                    if ((myCurrentData.lightBits2 & 0x800) == 0) FlareLow = true;
-                                    if ((myCurrentData.lightBits2 & 0x400) == 0) ChaffLow = true;
-                                    if ((myCurrentData.lightBits2 & 0x100) == 0) AutoDegree = true;
-                                    _prevGo = false;
-                                    _prevNoGo = false;
-                                    _prevDispenseReady = false;
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 0);
-
-
-                                    //Thread.Sleep(5);
-
-                                    // Reset counter to make upper loop work again 
-                                    // once CMDS power is on again:
-                                    _prevChaffEinerState = _prevChaffEinerState - 1;
-                                    _prevChaffZehnerState = _prevChaffZehnerState - 1;
-                                    _prevFlareEinerState = _prevFlareEinerState - 1;
-                                    _prevFlareZehnerState = _prevFlareZehnerState - 1;
-                                }
-
-                                // When status "IS FLYING", perform a display-reset!
-                                // --> Needs to be tested, what happens and if necessary! <--
-                                //  if ((myCurrentData.hsiBits & 0x80000000) == 0)
-                                //   {
-                                //      Thread.Sleep(5);
-                                //   }
-
-                                //////////////////////////////////////////////////////////////////////////////////////
-                                //                              STATUS LIGHTS                                       //
-                                //               --> Need to crosscheck with "Flightdata.h" <<--                    //
-                                //////////////////////////////////////////////////////////////////////////////////////
-
-                                // -------------------------------------------------------------------------------- //
-                                //                          WARNING LIGHTS                                          //      
-                                //                                                                                  //
-                                // DOA_40DO:                                                                        //
-                                // Connector-numbers: 3, 4, 5, 6, 7                                                 //
-                                // Lamp-Bits: 0, 1, 2, 4, 8, 16, 32, 64, 128, 255                                   //      
-                                //                                                                                  //
-                                // --------------------------------------------------------------------- works! --- //
-
-                                // -------------------------------------------------------------------------------- //
-                                //                          WARNING LIGHTS                                          //      
-                                //                          RIGHT  EYEBROW                                          //
-                                // -------------------------------------------------------------------------------- //
-                                // ---------------
-                                //   ENGINE FIRE
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
-                                    == LightBits.ENG_FIRE != _prevENG_FIRE)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
-                                        == LightBits.ENG_FIRE)
-                                    {
-                                        Eyebrow_Right += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-
-                                    _prevENG_FIRE = ((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
-                                    == LightBits.ENG_FIRE;
-                                }
-                                // ---------------
-                                //  ENGINE FAULT
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
-                                    == LightBits2.ENGINE != _prevENGINE)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
-                                        == LightBits2.ENGINE)
-                                    {
-                                        Eyebrow_Right += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevENGINE = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
-                                    == LightBits2.ENGINE;
-                                }
-                                // ---------------
-                                //  HYD FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
-                                    == LightBits.HYD != _prevHYD)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
-                                        == LightBits.HYD)
-                                    {
-                                        Eyebrow_Right += 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevHYD = ((LightBits)myCurrentData.lightBits & LightBits.HYD)
-                                    == LightBits.HYD;
-                                }
-                                // ---------------
-                                //  FLCS FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
-                                    == LightBits.FLCS != _prevFLCS)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
-                                        == LightBits.FLCS)
-                                    {
-                                        Eyebrow_Right += 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevFLCS = ((LightBits)myCurrentData.lightBits & LightBits.FLCS)
-                                    == LightBits.FLCS;
-                                }
-                                // ---------------
-                                //  DBU FAULT
-                                // ---------------
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
-                                    == LightBits3.DbuWarn != _prevDbuWarn)
-                                {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
-                                        == LightBits3.DbuWarn)
-                                    {
-                                        Eyebrow_Right += 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevDbuWarn = ((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
-                                    == LightBits3.DbuWarn;
-                                }
-                                // ---------------
-                                //  T_L_CFG FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
-                                    == LightBits.T_L_CFG != _prevT_L_CFG)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
-                                        == LightBits.T_L_CFG)
-                                    {
-                                        Eyebrow_Right += 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevT_L_CFG = ((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
-                                    == LightBits.T_L_CFG;
-                                }
-                                // ---------------
-                                //   CAN FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
-                                    == LightBits.CAN != _prevCAN)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
-                                        == LightBits.CAN)
-                                    {
-                                        Eyebrow_Right += 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevCAN = ((LightBits)myCurrentData.lightBits & LightBits.CAN)
-                                    == LightBits.CAN;
-                                }
-                                // ---------------
-                                //  OXY BROW FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
-                                    == LightBits.OXY_BROW != _prevOXY_BROW)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
-                                        == LightBits.OXY_BROW)
-                                    {
-                                        Eyebrow_Right += 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    else
-                                    {
-                                        Eyebrow_Right -= 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
-                                    }
-                                    _prevOXY_BROW = ((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
-                                    == LightBits.OXY_BROW;
-                                }
-
-                                // -------------------------------------------------------------------------------- //
-                                //                          CAUTION PANEL                                           //      
-                                // -------------------------------------------------------------------------------- //
-                                //int FltControlSys = (myCurrentData.lightBits & 0x40000);
-
-                                //int Elec_Fault = (myCurrentData.lightBits3 & 0x400);
-                                //int PROBEHEAT = (myCurrentData.lightBits2 & 0x1000000);
-                                //int CONFIG = (myCurrentData.lightBits & 0x40);
-                                //int cadc = (myCurrentData.lightBits3 & 0x400000);
-                                //int ATFnotEngaged = (myCurrentData.lightBits3 & 0x10000000);
-                                //int FwdFuelLow = (myCurrentData.lightBits2 & 0x40000);
-                                //int AftFuelLow = (myCurrentData.lightBits2 & 0x80000);
-
-                                //-------------------------------
-                                // 1st ROW (beginning from left)
-                                // ---------------
-                                //  FLCS FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
-                                    == LightBits.FltControlSys != _prevFltControlSys)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
-                                        == LightBits.FltControlSys)
-                                    {
-                                        CautionPanel_Row1 += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        FltControlSys_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        FltControlSys_active = false;
-                                    }
-                                    _prevFltControlSys = ((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
-                                    == LightBits.FltControlSys;
-                                }
-                                // ---------------
-                                //  ELEC FAULT                     /* Maybe blinking in future, but not implemented in BMS 4.34 yet. 10.05.2019 LE. */
-                                // ---------------
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
-                                    == LightBits3.Elec_Fault != _prevElec_Fault)
-                                {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
-                                        == LightBits3.Elec_Fault)
-                                    {
-                                        CautionPanel_Row1 += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        Elec_Fault_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        Elec_Fault_active = false;
-                                    }
-                                    _prevElec_Fault = ((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
-                                    == LightBits3.Elec_Fault;
-                                }
-                                // ---------------
-                                //  PROBE HEAT FAULT
-                                // ---------------
-                                // Not neccessary, because extra Thread "ProbeHeat_Blinking"!
-                                //--------------------------------------------------------------
-                                //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //       == LightBits2.PROBEHEAT != _prevProbeHeat)
-                                //{
-                                //    // Nur ausführen, wenn Probeheat nicht "blinkt":
-                                //    if ((((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
-                                //        == BlinkBits.PROBEHEAT) == false)
-                                //    {
-                                //        if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //            == LightBits2.PROBEHEAT)
-                                //        {
-                                //            CautionPanel_Row1 += 4;
-                                //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                //            ProbeHeat_active = true;
-                                //        }
-                                //        else
-                                //        {
-                                //            CautionPanel_Row1 -= 4;
-                                //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                //            ProbeHeat_active = false;
-                                //        }
-                                //    }
-                                //    _prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //    == LightBits2.PROBEHEAT;
-                                //}
-                                //if ((((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //       == LightBits2.PROBEHEAT != _prevProbeHeat) && (((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
-                                //       != BlinkBits.PROBEHEAT))
-                                //{
-                                //    ProbeHeat_blinking = false;
-
-                                //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //       == LightBits2.PROBEHEAT)
-                                //    {
-                                //        CautionPanel_Row1 += 4;
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                //        ProbeHeat_active = true;
-                                //    }
-                                //    else
-                                //    {
-                                //        CautionPanel_Row1 -= 4;
-                                //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                //        ProbeHeat_active = false;
-                                //    }
-                                //_prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
-                                //== LightBits2.PROBEHEAT;
-                                //}
-                                //else
-                                //{
-                                //    ProbeHeat_blinking = true;
-                                //}
-                               
-                            
-                                // ---------------
-                                //  C ADC FAULT
-                                // ---------------
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
-                                    == LightBits3.cadc != _prevcadc)
-                                {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
-                                    == LightBits3.cadc)
-                                    {
-                                        CautionPanel_Row1 += 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        cadc_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        cadc_active = false;
-                                    }
-                                    _prevcadc = ((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc) 
-                                    == LightBits3.cadc;
-                                }
-                                // ---------------
-                                //  STORES FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
-                                    == LightBits.CONFIG != _prevCONFIG)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
-                                    == LightBits.CONFIG)
-                                    {
-                                        CautionPanel_Row1 += 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        CONFIG_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        CONFIG_active = false;
-                                    }
-                                    _prevCONFIG = ((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
-                                    == LightBits.CONFIG;
-                                }
-                                // ---------------
-                                //  ATF NOT ENGAGED
-                                // ---------------
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
-                                    == LightBits3.ATF_Not_Engaged != _prevATF_Not_Engaged)
-                                {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
-                                    == LightBits3.ATF_Not_Engaged)
-                                    {
-                                        CautionPanel_Row1 += 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        ATF_Not_Engaged_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        ATF_Not_Engaged_active = false;
-                                    }
-                                    _prevATF_Not_Engaged = ((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
-                                    == LightBits3.ATF_Not_Engaged;
-                                }
-                                // ---------------
-                                //  FWD FUEL LOW
-                                // ---------------
-                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
-                                     == LightBits2.FwdFuelLow != _prevFwdFuelLow)
-                                 {
-                                        if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
-                                         == LightBits2.FwdFuelLow)
-                                        {
-                                        CautionPanel_Row1 += 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        FwdFuelLow_active = true;
-                                        }
-                                        else
-                                        {
-                                        CautionPanel_Row1 -= 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        FwdFuelLow_active = false;
-                                        }
-                                    _prevFwdFuelLow = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow) 
-                                    == LightBits2.FwdFuelLow;
-                                 }
-                                // ---------------
-                                //  AFT FUEL LOW
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
-                                     == LightBits2.AftFuelLow != _prevAftFuelLow)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
-                                    == LightBits2.AftFuelLow)
-                                    {
-                                        CautionPanel_Row1 += 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        AftFuelLow_active = true;
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row1 -= 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
-                                        AftFuelLow_active = false;
-                                    }
-                                    _prevAftFuelLow = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
-                                    == LightBits2.AftFuelLow;
-                                }
-                                //-------------------------------
-                                // 2nd ROW (beginning from left)
-                                // ---------------
-                                //  ENGINE FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
-                                    == LightBits.EngineFault != _prevEngineFault)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
-                                    == LightBits.EngineFault)
-                                    {
-                                        CautionPanel_Row2 += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row2 -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    _prevEngineFault = ((LightBits)myCurrentData.lightBits & LightBits.EngineFault) 
-                                    == LightBits.EngineFault;
-                                }
-                                // ---------------
-                                //  SEC FAULT
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
-                                    == LightBits2.SEC != _prevSEC)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
-                                    == LightBits2.SEC)
-                                    {
-                                        CautionPanel_Row2 += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row2 -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    _prevSEC = ((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC) 
-                                    == LightBits2.SEC;
-                                }
-                                // ---------------
-                                //  FUEL OIL HOT
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
-                                    == LightBits2.FUEL_OIL_HOT != _prevFUEL_OIL_HOT)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
-                                    == LightBits2.FUEL_OIL_HOT)
-                                    {
-                                        CautionPanel_Row2 += 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row2 -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    _prevFUEL_OIL_HOT = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
-                                    == LightBits2.FUEL_OIL_HOT;
-                                }
-                                // ---------------
-                                //  INLET ICING
-                                // ---------------
-                                // Currently no lightbit implemented in 4.33.
-                                // 04.05.2019 LE.
-
-                                // ---------------
-                                //  OVERHEAT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.Overheat)
-                                    == LightBits.Overheat != _prevOverheat)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.Overheat)
-                                    == LightBits.Overheat)
-                                    {
-                                        CautionPanel_Row2 += 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row2 -= 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    _prevOverheat = ((LightBits)myCurrentData.lightBits & LightBits.Overheat) 
-                                    == LightBits.Overheat;
-                                }
-                                // ---------------
-                                //  EEC
-                                // ---------------
-                                // Currently no lightbit implemented in 4.33.
-                                // 04.05.2019 LE.
-
-                                // ---------------
-                                //  BUC
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
-                                    == LightBits2.BUC != _prevBUC)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
-                                    == LightBits2.BUC)
-                                    {
-                                        CautionPanel_Row2 += 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row2 -= 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-                                    }
-                                    _prevBUC = ((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC) 
-                                    == LightBits2.BUC;
-                                }
-
-                                //-------------------------------
-                                // 3rd ROW (beginning from left)
-                                // ---------------
-                                //  AVIONICS FAULT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.Avionics)
-                                    == LightBits.Avionics != _prevAvionics)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.Avionics)
-                                    == LightBits.Avionics)
-                                    {
-                                        CautionPanel_Row3 += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row3 -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    _prevAvionics = ((LightBits)myCurrentData.lightBits & LightBits.Avionics)
-                                    == LightBits.Avionics;
-                                }
-                                // ---------------
-                                //  EQUIP HOT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
-                                    == LightBits.EQUIP_HOT != _prevEQUIP_HOT)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
-                                    == LightBits.EQUIP_HOT)
-                                    {
-                                        CautionPanel_Row3 += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row3 -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    _prevEQUIP_HOT = ((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
-                                    == LightBits.EQUIP_HOT;
-                                }
-                                // ---------------
-                                //  RADAR ALT
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
-                                    == LightBits.RadarAlt != _prevRadarAlt)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
-                                    == LightBits.RadarAlt)
-                                    {
-                                        CautionPanel_Row3 += 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row3 -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    _prevRadarAlt = ((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
-                                    == LightBits.RadarAlt;
-                                }
-                                // ---------------
-                                //  IFF
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.IFF)
-                                    == LightBits.IFF != _prevIFF)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.IFF)
-                                    == LightBits.IFF)
-                                    {
-                                        CautionPanel_Row3 += 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row3 -= 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-                                    }
-                                    _prevIFF = ((LightBits)myCurrentData.lightBits & LightBits.IFF)
-                                    == LightBits.IFF;
-                                }
-                                // ---------------
-                                //  NUCLEAR
-                                // ---------------
-                                // Currently no lightbit implemented in 4.33.
-                                // 04.05.2019 LE.
-
-                                //-------------------------------
-                                // 4th ROW (beginning from left)
-                                // ---------------
-                                //  SEAT NOT ARMED
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
-                                    == LightBits2.SEAT_ARM != _prevSEAT_ARM)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
-                                    == LightBits2.SEAT_ARM)
-                                    {
-                                        CautionPanel_Row4 += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevSEAT_ARM = ((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
-                                    == LightBits2.SEAT_ARM;
-                                }
-                                // ---------------
-                                //  NWS FAIL
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
-                                    == LightBits.NWSFail != _prevNWSFail)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
-                                    == LightBits.NWSFail)
-                                    {
-                                        CautionPanel_Row4 += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevNWSFail = ((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
-                                    == LightBits.NWSFail;
-                                }
-                                // ---------------
-                                //  ANTI SKID
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
-                                    == LightBits2.ANTI_SKID != _prevANTI_SKID)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
-                                    == LightBits2.ANTI_SKID)
-                                    {
-                                        CautionPanel_Row4 += 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevANTI_SKID = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID) 
-                                    == LightBits2.ANTI_SKID;
-                                }
-                                // ---------------
-                                //  HOOK
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.Hook)
-                                    == LightBits.Hook != _prevHook)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.Hook)
-                                    == LightBits.Hook)
-                                    {
-                                        CautionPanel_Row4 += 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevHook = ((LightBits)myCurrentData.lightBits & LightBits.Hook)
-                                    == LightBits.Hook;
-                                }
-                                // ---------------
-                                //  OXY LOW
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
-                                    == LightBits2.OXY_LOW != _prevOXY_LOW)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
-                                    == LightBits2.OXY_LOW)
-                                    {
-                                        CautionPanel_Row4 += 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 16;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevOXY_LOW = ((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
-                                    == LightBits2.OXY_LOW;
-                                }
-                                // ---------------
-                                //  CABIN PRESS 
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
-                                    == LightBits.CabinPress != _prevCabinPress)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
-                                    == LightBits.CabinPress)
-                                    {
-                                        CautionPanel_Row4 += 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    else
-                                    {
-                                        CautionPanel_Row4 -= 32;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-                                    }
-                                    _prevCabinPress = ((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
-                                    == LightBits.CabinPress;
-                                }
-                                // -------------------------------------------------------------------------------- //
-                                //                          WARNING LIGHTS                                          //      
-                                //                          LEFT  EYEBROW                                          //
-                                // -------------------------------------------------------------------------------- //
-
-                                // ---------------
-                                //  MASTER CAUTION
-                                // ---------------
-                               if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
-                                  == LightBits.MasterCaution != _prevMasterCaution)
-                    
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
-                                    == LightBits.MasterCaution)
-                                    {
-                                        Misc += 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    else
-                                    {
-                                        Misc -= 1;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    _prevMasterCaution = ((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
-                                    == LightBits.MasterCaution;
-                                }
-                                // ---------------
-                                //   TF-FAIL
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.TF)
-                                    == LightBits.TF != _prevTF)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.TF)
-                                    == LightBits.TF)
-                                    {
-                                        Misc += 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    else
-                                    {
-                                        Misc -= 64;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    _prevTF = ((LightBits)myCurrentData.lightBits & LightBits.TF)
-                                    == LightBits.TF;
-                                }
-
-                                // ---------------
-                                //  Restliche Caution lights ohne lightbits leuchten lassen,
-                                //  z.b. bei Drücken des TEST-LAMP-Knopfes: 
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
-                                    == LightBits.AllLampBitsOn != _prevAllLampBitsOn)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
-                                    == LightBits.AllLampBitsOn)
-                                    {
-                                        // 2nd ROW "INLET ICING", "-------"
-                                        CautionPanel_Row2 += 168;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-
-                                        //3rd ROW "NUCLEAR", "------", "-----", "-----"
-                                        CautionPanel_Row3 += 240;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-
-                                        //4th ROW "-----", "-----"
-                                        CautionPanel_Row4 += 192;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-
-                                        // LEFT WARNING LIGHTS "-------", "-------", "-------"
-                                        Misc += 176;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    else
-                                    {
-                                        // 2nd ROW "INLET ICING", "-------"
-                                        CautionPanel_Row2 -= 168;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
-
-                                        //3rd ROW "NUCLEAR", "------", "-----", "-----"
-                                        CautionPanel_Row3 -= 240;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
-
-                                        //4th ROW "-----", "-----"
-                                        CautionPanel_Row4 -= 192;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
-
-                                        // LEFT WARNING LIGHTS "-------", "-------", "-------"
-                                        Misc -= 176;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn) 
-                                    == LightBits.AllLampBitsOn;
-                                }
-
-                                // -------------------------------------------------------------------------------- //
-                                //                         LEFT AUX CONSOLE                                         //      
-                                //                          MISC PANEL                                              //
-                                // -------------------------------------------------------------------------------- //
-                                // ---------------
-                                //  TFR_ENABLED
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
-                                    == LightBits2.TFR_ENGAGED != _prevTFR_ENGAGED)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
-                                    == LightBits2.TFR_ENGAGED)
-                                    {
-                                        Misc += 4;
-                                    }
-                                    else
-                                    {
-                                        Misc -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
-                                    }
-                                    _prevTFR_ENGAGED = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
-                                    == LightBits2.TFR_ENGAGED;
-                                }
-                                // ---------------
-                                //  TFR_STANDBY
-                                // ---------------
-                                if (((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
-                                    == LightBits.TFR_STBY != _prevTFR_STBY)
-                                {
-                                    if (((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
-                                    == LightBits.TFR_STBY)
-                                    {
-                                        Misc += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    else
-                                    {
-                                        Misc -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
-                                    }
-                                    _prevTFR_STBY = ((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
-                                    == LightBits.TFR_STBY;
-                                }
-                                // ---------------
-                                //   ECM ENABLED
-                                // ---------------
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
-                                    == LightBits2.EcmPwr != _prevECM)
-                                {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
-                                    == LightBits2.EcmPwr)
-                                    {
-                                        Misc += 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    else
-                                    {
-                                        Misc -= 8;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
-                                    }
-                                    _prevECM = ((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
-                                    == LightBits2.EcmPwr;
-                                }
-                                // -------------------------------------------------------------------------------- //
-                                //                          CAUTION LIGHTS                                          //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
+                                Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 0);
+                                Wait(5);
                            
-                                //int LEFlaps = (myCurrentData.lightBits & 0x80000);
-                                //int EngineFault = (myCurrentData.lightBits & 0x100000);
-                                //int Overheat = (myCurrentData.lightBits & 0x200000);
-                                //int FuelLow = (myCurrentData.lightBits & 0x400000);
-                                //int Avionics = (myCurrentData.lightBits & 0x800000);
-                                //int RadarAlt = (myCurrentData.lightBits & 0x1000000);
-                                //int IFF = (myCurrentData.lightBits & 0x2000000);
-                                //int ECM = (myCurrentData.lightBits & 0x4000000);
-                                //int Hook = (myCurrentData.lightBits & 0x8000000);
-                                //int NWSFail = (myCurrentData.lightBits & 0x1000000);
-                                //int CabinPress = (myCurrentData.lightBits & 0x2000000);
-                                //int AutoPilotOn = (myCurrentData.lightBits & 0x4000000);
-                                //int TFR_STBY = (myCurrentData.lightBits & 0x8000000);
-                               
+                                // reset counter to make upper loop work again 
+                                // once CMDS power is on again:
+                                _prevChaffEinerState = _prevChaffEinerState - 1;
+                                _prevChaffZehnerState = _prevChaffZehnerState - 1;
+                                _prevFlareEinerState = _prevFlareEinerState - 1;
+                                _prevFlareZehnerState = _prevFlareZehnerState - 1;
 
-                                //int SEC = (myCurrentData.lightBits2 & 0x400000);
-                                //int OXY_LOW = (myCurrentData.lightBits2 & 0x800000);
-                                //int SEAT_ARM = (myCurrentData.lightBits2 & 0x2000000);
-                                //int BUC = (myCurrentData.lightBits2 & 0x4000000);
-                                //int FUEL_OIL_HOT = (myCurrentData.lightBits2 & 0x8000000);
-                                //long ANTI_SKID = (myCurrentData.lightBits2 & 0x10000000);
-                                //long TFR_ENGAGED = (myCurrentData.lightBits2 & 0x20000000);
-                                //long GEARHANDLE = (myCurrentData.lightBits2 & 0x40000000);
+                                // reset previous status to make upper loop work again
+                                // once CMDS power is on again:
+                                _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                == LightBits2.FlareLo;
 
+                                _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
+                                == LightBits2.ChaffLo;
 
-                                
-                                //int Lef_Fault = (myCurrentData.lightBits3 & 0x800);
-                                //int OnGround = (myCurrentData.lightBits3 & 0x1000);
-                                //int FlcsBitRun = (myCurrentData.lightBits3 & 0x2000);
-                                //int FlcsBitFail = (myCurrentData.lightBits3 & 0x4000);
-                                //int NoseGearDown = (myCurrentData.lightBits3 & 0x10000);
-                                //int LeftGearDown = (myCurrentData.lightBits3 & 0x20000);
-                                //int RightGearDown = (myCurrentData.lightBits3 & 0x40000);
-                                //int ParkBrakeOn = (myCurrentData.lightBits3 & 0x100000);
-                                //int Power_Off = (myCurrentData.lightBits3 & 0x200000);
-                              
+                                _prevDegr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                == LightBits2.Degr;
 
-                                //int EPUOn = (myCurrentData.lightBits2 & 0x100000);
-                                //int JFSOn = (myCurrentData.lightBits2 & 0x200000);
+                                _prevGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                == LightBits2.Go;
 
+                                _prevNoGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                == LightBits2.NoGo;
 
+                                _prevRdy = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                == LightBits2.Rdy;
+                        }
 
+                            // When status "IS FLYING", perform a display-reset!
+                            // --> Needs to be tested, what happens and if necessary! <--
+                            //  if ((myCurrentData.hsiBits & 0x80000000) == 0)
+                            //   {
+                            //      Thread.Sleep(5);
+                            //   }
 
+                            //////////////////////////////////////////////////////////////////////////////////////
+                            //                              STATUS LIGHTS                                       //
+                            //               --> Need to crosscheck with "Flightdata.h" <<--                    //
+                            //////////////////////////////////////////////////////////////////////////////////////
 
-                                // -------------------------------------------------------------------------------- //
-                                //                          AOA INDEXER                                             //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                //int AOA_Above = (myCurrentData.lightBits & 0x1000);
-                                //int AOA_OnPath = (myCurrentData.lightBits & 0x2000);
-                                //int AOA_Below = (myCurrentData.lightBits & 0x4000);
+                            // -------------------------------------------------------------------------------- //
+                            //                          WARNING LIGHTS                                          //      
+                            //                                                                                  //
+                            // DOA_40DO:                                                                        //
+                            // Connector-numbers: 3, 4, 5, 6, 7                                                 //
+                            // Lamp-Bits: 0, 1, 2, 4, 8, 16, 32, 64, 128, 255                                   //      
+                            //                                                                                  //
+                            // --------------------------------------------------------------------- works! --- //
 
-                                //int RefuelRDY = (myCurrentData.lightBits & 0x8000);
-                                //int RefuelAR = (myCurrentData.lightBits & 0x10000);
-                                //int RefuelDSC = (myCurrentData.lightBits & 0x20000);
-
-
-                                // -------------------------------------------------------------------------------- //
-                                // LightBits2              THREAT WARNING PRIME                                     //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                              
-
-
-                                // -------------------------------------------------------------------------------- //
-                                //                         AUX THREAT WARNING                                       //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                //int AuxSrch = (myCurrentData.lightBits2 & 0x1000);
-                                //int AuxAct = (myCurrentData.lightBits2 & 0x2000);
-                                //int AuxLow = (myCurrentData.lightBits2 & 0x4000);
-                                //int AuxPwr = (myCurrentData.lightBits2 & 0x8000);
-
-                                // -------------------------------------------------------------------------------- //
-                                //                         ECM                                                      //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                //int EcmPwr = (myCurrentData.lightBits2 & 0x10000);
-                                //int EcmFail = (myCurrentData.lightBits2 & 0x20000);
-
-                                // -------------------------------------------------------------------------------- //
-                                // LightBits3              ELEC PANEL                                               //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                //int FlcsPmg = (myCurrentData.lightBits3 & 0x1);
-                                //int MainGen = (myCurrentData.lightBits3 & 0x2);
-                                //int StbyGen = (myCurrentData.lightBits3 & 0x4);
-                                //int EpuGen = (myCurrentData.lightBits3 & 0x8);
-                                //int EpuPmg = (myCurrentData.lightBits3 & 0x10);
-                                //int ToFlcs = (myCurrentData.lightBits3 & 0x20);
-                                //int FlcsRly = (myCurrentData.lightBits3 & 0x40);
-                                //int BatFail = (myCurrentData.lightBits3 & 0x80);
-
-
-                                // -------------------------------------------------------------------------------- //
-                                //                         EPU PANEL                                                //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                //int Hydrazine = (myCurrentData.lightBits3 & 0x100);
-                                //int Air = (myCurrentData.lightBits3 & 0x200);
-
-
-                                // -------------------------------------------------------------------------------- //
-                                //                         LEFT AUX CONSOLE                                         //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                int SpeedBrake = (myCurrentData.lightBits3 & 0x800000);
-
-                                if (_prevSpeedBrake != SpeedBrake)
+                            // -------------------------------------------------------------------------------- //
+                            //                          WARNING LIGHTS                                          //      
+                            //                          RIGHT  EYEBROW                                          //
+                            // -------------------------------------------------------------------------------- //
+                            // ---------------
+                            //   ENGINE FIRE
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
+                                == LightBits.ENG_FIRE != _prevENG_FIRE)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
+                                    == LightBits.ENG_FIRE)
                                 {
-                                    if (SpeedBrake == OFF)
-                                    {
-                                        // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
-                                        _prevSpeedBrake = SpeedBrake;
-                                     //   Thread.Sleep(5);
-                                    }
-
-                                    if (SpeedBrake == ON)
-                                    {
-                                        //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
-                                        _prevSpeedBrake = SpeedBrake;
-                                     //   Thread.Sleep(5);
-                                    }
+                                    Eyebrow_Right += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
                                 }
 
-                                // ----------------------------------------------------------------------------------//
-                                //                           TWP - Threat Warning Prime                              //
-                                // ----------------------------------------------------------------------------------//
-                                // Define short-definition of lightbits:
-                               // int HandOff = (myCurrentData.lightBits2 & 0x1);
-                               // int Launch = (myCurrentData.lightBits2 & 0x2);
-                               // int PriMode = (myCurrentData.lightBits2 & 0x4);
-                               // int Naval = (myCurrentData.lightBits2 & 0x8);
-                               // int Unk = (myCurrentData.lightBits2 & 0x10);
-                               // int TgtSep = (myCurrentData.lightBits2 & 0x20);
-                               // int SysTest = (myCurrentData.lightBits3 & 0x1000000);
+                                _prevENG_FIRE = ((LightBits)myCurrentData.lightBits & LightBits.ENG_FIRE)
+                                == LightBits.ENG_FIRE;
+                            }
+                            // ---------------
+                            //  ENGINE FAULT
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
+                                == LightBits2.ENGINE != _prevENGINE)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
+                                    == LightBits2.ENGINE)
+                                {
+                                    Eyebrow_Right += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevENGINE = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ENGINE)
+                                == LightBits2.ENGINE;
+                            }
+                            // ---------------
+                            //  HYD FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
+                                == LightBits.HYD != _prevHYD)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.HYD)
+                                    == LightBits.HYD)
+                                {
+                                    Eyebrow_Right += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevHYD = ((LightBits)myCurrentData.lightBits & LightBits.HYD)
+                                == LightBits.HYD;
+                            }
+                            // ---------------
+                            //  FLCS FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
+                                == LightBits.FLCS != _prevFLCS)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.FLCS)
+                                    == LightBits.FLCS)
+                                {
+                                    Eyebrow_Right += 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevFLCS = ((LightBits)myCurrentData.lightBits & LightBits.FLCS)
+                                == LightBits.FLCS;
+                            }
+                            // ---------------
+                            //  DBU FAULT
+                            // ---------------
+                            if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
+                                == LightBits3.DbuWarn != _prevDbuWarn)
+                            {
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
+                                    == LightBits3.DbuWarn)
+                                {
+                                    Eyebrow_Right += 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevDbuWarn = ((LightBits3)myCurrentData.lightBits3 & LightBits3.DbuWarn)
+                                == LightBits3.DbuWarn;
+                            }
+                            // ---------------
+                            //  T_L_CFG FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
+                                == LightBits.T_L_CFG != _prevT_L_CFG)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
+                                    == LightBits.T_L_CFG)
+                                {
+                                    Eyebrow_Right += 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevT_L_CFG = ((LightBits)myCurrentData.lightBits & LightBits.T_L_CFG)
+                                == LightBits.T_L_CFG;
+                            }
+                            // ---------------
+                            //   CAN FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
+                                == LightBits.CAN != _prevCAN)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.CAN)
+                                    == LightBits.CAN)
+                                {
+                                    Eyebrow_Right += 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevCAN = ((LightBits)myCurrentData.lightBits & LightBits.CAN)
+                                == LightBits.CAN;
+                            }
+                            // ---------------
+                            //  OXY BROW FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
+                                == LightBits.OXY_BROW != _prevOXY_BROW)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
+                                    == LightBits.OXY_BROW)
+                                {
+                                    Eyebrow_Right += 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                else
+                                {
+                                    Eyebrow_Right -= 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 7, Eyebrow_Right);
+                                }
+                                _prevOXY_BROW = ((LightBits)myCurrentData.lightBits & LightBits.OXY_BROW)
+                                == LightBits.OXY_BROW;
+                            }
 
-                                // ---------------
-                                // HANDOFF, PRIORITY MODE & SYS TEST LOWER INDICATOR
-                                // ---------------
-                                // Lower indicator,
-                                // just goes on when system is powerd:
+                            // -------------------------------------------------------------------------------- //
+                            //                          CAUTION PANEL                                           //      
+                            // -------------------------------------------------------------------------------- //
+                            //int FltControlSys = (myCurrentData.lightBits & 0x40000);
+
+                            //int Elec_Fault = (myCurrentData.lightBits3 & 0x400);
+                            //int PROBEHEAT = (myCurrentData.lightBits2 & 0x1000000);
+                            //int CONFIG = (myCurrentData.lightBits & 0x40);
+                            //int cadc = (myCurrentData.lightBits3 & 0x400000);
+                            //int ATFnotEngaged = (myCurrentData.lightBits3 & 0x10000000);
+                            //int FwdFuelLow = (myCurrentData.lightBits2 & 0x40000);
+                            //int AftFuelLow = (myCurrentData.lightBits2 & 0x80000);
+
+                            //-------------------------------
+                            // 1st ROW (beginning from left)
+                            // ---------------
+                            //  FLCS FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
+                                == LightBits.FltControlSys != _prevFltControlSys)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
+                                    == LightBits.FltControlSys)
+                                {
+                                    CautionPanel_Row1 += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    FltControlSys_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    FltControlSys_active = false;
+                                }
+                                _prevFltControlSys = ((LightBits)myCurrentData.lightBits & LightBits.FltControlSys)
+                                == LightBits.FltControlSys;
+                            }
+                            // ---------------
+                            //  ELEC FAULT                     /* Maybe blinking in future, but not implemented in BMS 4.34 yet. 10.05.2019 LE. */
+                            // ---------------
+                            if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
+                                == LightBits3.Elec_Fault != _prevElec_Fault)
+                            {
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
+                                    == LightBits3.Elec_Fault)
+                                {
+                                    CautionPanel_Row1 += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    Elec_Fault_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    Elec_Fault_active = false;
+                                }
+                                _prevElec_Fault = ((LightBits3)myCurrentData.lightBits3 & LightBits3.Elec_Fault)
+                                == LightBits3.Elec_Fault;
+                            }
+                            // ---------------
+                            //  PROBE HEAT FAULT
+                            // ---------------
+                            // Not neccessary, because extra Thread "ProbeHeat_Blinking"!
+                            //--------------------------------------------------------------
+                            //if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //       == LightBits2.PROBEHEAT != _prevProbeHeat)
+                            //{
+                            //    // Nur ausführen, wenn Probeheat nicht "blinkt":
+                            //    if ((((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
+                            //        == BlinkBits.PROBEHEAT) == false)
+                            //    {
+                            //        if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //            == LightBits2.PROBEHEAT)
+                            //        {
+                            //            CautionPanel_Row1 += 4;
+                            //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            //            ProbeHeat_active = true;
+                            //        }
+                            //        else
+                            //        {
+                            //            CautionPanel_Row1 -= 4;
+                            //            Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            //            ProbeHeat_active = false;
+                            //        }
+                            //    }
+                            //    _prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //    == LightBits2.PROBEHEAT;
+                            //}
+                            //if ((((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //       == LightBits2.PROBEHEAT != _prevProbeHeat) && (((BlinkBits)myCurrentData.blinkBits & BlinkBits.PROBEHEAT)
+                            //       != BlinkBits.PROBEHEAT))
+                            //{
+                            //    ProbeHeat_blinking = false;
+
+                            //    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //       == LightBits2.PROBEHEAT)
+                            //    {
+                            //        CautionPanel_Row1 += 4;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            //        ProbeHeat_active = true;
+                            //    }
+                            //    else
+                            //    {
+                            //        CautionPanel_Row1 -= 4;
+                            //        Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                            //        ProbeHeat_active = false;
+                            //    }
+                            //_prevProbeHeat = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PROBEHEAT)
+                            //== LightBits2.PROBEHEAT;
+                            //}
+                            //else
+                            //{
+                            //    ProbeHeat_blinking = true;
+                            //}
+
+
+                            // ---------------
+                            //  C ADC FAULT
+                            // ---------------
+                            if (((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
+                                == LightBits3.cadc != _prevcadc)
+                            {
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
+                                == LightBits3.cadc)
+                                {
+                                    CautionPanel_Row1 += 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    cadc_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    cadc_active = false;
+                                }
+                                _prevcadc = ((LightBits3)myCurrentData.lightBits3 & LightBits3.cadc)
+                                == LightBits3.cadc;
+                            }
+                            // ---------------
+                            //  STORES FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
+                                == LightBits.CONFIG != _prevCONFIG)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
+                                == LightBits.CONFIG)
+                                {
+                                    CautionPanel_Row1 += 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    CONFIG_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    CONFIG_active = false;
+                                }
+                                _prevCONFIG = ((LightBits)myCurrentData.lightBits & LightBits.CONFIG)
+                                == LightBits.CONFIG;
+                            }
+                            // ---------------
+                            //  ATF NOT ENGAGED
+                            // ---------------
+                            if (((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
+                                == LightBits3.ATF_Not_Engaged != _prevATF_Not_Engaged)
+                            {
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
+                                == LightBits3.ATF_Not_Engaged)
+                                {
+                                    CautionPanel_Row1 += 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    ATF_Not_Engaged_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    ATF_Not_Engaged_active = false;
+                                }
+                                _prevATF_Not_Engaged = ((LightBits3)myCurrentData.lightBits3 & LightBits3.ATF_Not_Engaged)
+                                == LightBits3.ATF_Not_Engaged;
+                            }
+                            // ---------------
+                            //  FWD FUEL LOW
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
+                                == LightBits2.FwdFuelLow != _prevFwdFuelLow)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
+                                 == LightBits2.FwdFuelLow)
+                                {
+                                    CautionPanel_Row1 += 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    FwdFuelLow_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    FwdFuelLow_active = false;
+                                }
+                                _prevFwdFuelLow = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FwdFuelLow)
+                                == LightBits2.FwdFuelLow;
+                            }
+                            // ---------------
+                            //  AFT FUEL LOW
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
+                                 == LightBits2.AftFuelLow != _prevAftFuelLow)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
+                                == LightBits2.AftFuelLow)
+                                {
+                                    CautionPanel_Row1 += 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    AftFuelLow_active = true;
+                                }
+                                else
+                                {
+                                    CautionPanel_Row1 -= 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 3, CautionPanel_Row1);
+                                    AftFuelLow_active = false;
+                                }
+                                _prevAftFuelLow = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AftFuelLow)
+                                == LightBits2.AftFuelLow;
+                            }
+                            //-------------------------------
+                            // 2nd ROW (beginning from left)
+                            // ---------------
+                            //  ENGINE FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
+                                == LightBits.EngineFault != _prevEngineFault)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
+                                == LightBits.EngineFault)
+                                {
+                                    CautionPanel_Row2 += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row2 -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                _prevEngineFault = ((LightBits)myCurrentData.lightBits & LightBits.EngineFault)
+                                == LightBits.EngineFault;
+                            }
+                            // ---------------
+                            //  SEC FAULT
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
+                                == LightBits2.SEC != _prevSEC)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
+                                == LightBits2.SEC)
+                                {
+                                    CautionPanel_Row2 += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row2 -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                _prevSEC = ((LightBits2)myCurrentData.lightBits2 & LightBits2.SEC)
+                                == LightBits2.SEC;
+                            }
+                            // ---------------
+                            //  FUEL OIL HOT
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
+                                == LightBits2.FUEL_OIL_HOT != _prevFUEL_OIL_HOT)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
+                                == LightBits2.FUEL_OIL_HOT)
+                                {
+                                    CautionPanel_Row2 += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row2 -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                _prevFUEL_OIL_HOT = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FUEL_OIL_HOT)
+                                == LightBits2.FUEL_OIL_HOT;
+                            }
+                            // ---------------
+                            //  INLET ICING
+                            // ---------------
+                            // Currently no lightbit implemented in 4.33.
+                            // 04.05.2019 LE.
+
+                            // ---------------
+                            //  OVERHEAT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.Overheat)
+                                == LightBits.Overheat != _prevOverheat)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.Overheat)
+                                == LightBits.Overheat)
+                                {
+                                    CautionPanel_Row2 += 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row2 -= 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                _prevOverheat = ((LightBits)myCurrentData.lightBits & LightBits.Overheat)
+                                == LightBits.Overheat;
+                            }
+                            // ---------------
+                            //  EEC
+                            // ---------------
+                            // Currently no lightbit implemented in 4.33.
+                            // 04.05.2019 LE.
+
+                            // ---------------
+                            //  BUC
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
+                                == LightBits2.BUC != _prevBUC)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
+                                == LightBits2.BUC)
+                                {
+                                    CautionPanel_Row2 += 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row2 -= 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+                                }
+                                _prevBUC = ((LightBits2)myCurrentData.lightBits2 & LightBits2.BUC)
+                                == LightBits2.BUC;
+                            }
+
+                            //-------------------------------
+                            // 3rd ROW (beginning from left)
+                            // ---------------
+                            //  AVIONICS FAULT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.Avionics)
+                                == LightBits.Avionics != _prevAvionics)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.Avionics)
+                                == LightBits.Avionics)
+                                {
+                                    CautionPanel_Row3 += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row3 -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                _prevAvionics = ((LightBits)myCurrentData.lightBits & LightBits.Avionics)
+                                == LightBits.Avionics;
+                            }
+                            // ---------------
+                            //  EQUIP HOT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
+                                == LightBits.EQUIP_HOT != _prevEQUIP_HOT)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
+                                == LightBits.EQUIP_HOT)
+                                {
+                                    CautionPanel_Row3 += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row3 -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                _prevEQUIP_HOT = ((LightBits)myCurrentData.lightBits & LightBits.EQUIP_HOT)
+                                == LightBits.EQUIP_HOT;
+                            }
+                            // ---------------
+                            //  RADAR ALT
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
+                                == LightBits.RadarAlt != _prevRadarAlt)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
+                                == LightBits.RadarAlt)
+                                {
+                                    CautionPanel_Row3 += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row3 -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                _prevRadarAlt = ((LightBits)myCurrentData.lightBits & LightBits.RadarAlt)
+                                == LightBits.RadarAlt;
+                            }
+                            // ---------------
+                            //  IFF
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.IFF)
+                                == LightBits.IFF != _prevIFF)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.IFF)
+                                == LightBits.IFF)
+                                {
+                                    CautionPanel_Row3 += 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row3 -= 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+                                }
+                                _prevIFF = ((LightBits)myCurrentData.lightBits & LightBits.IFF)
+                                == LightBits.IFF;
+                            }
+                            // ---------------
+                            //  NUCLEAR
+                            // ---------------
+                            // Currently no lightbit implemented in 4.33.
+                            // 04.05.2019 LE.
+
+                            //-------------------------------
+                            // 4th ROW (beginning from left)
+                            // ---------------
+                            //  SEAT NOT ARMED
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
+                                == LightBits2.SEAT_ARM != _prevSEAT_ARM)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
+                                == LightBits2.SEAT_ARM)
+                                {
+                                    CautionPanel_Row4 += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevSEAT_ARM = ((LightBits2)myCurrentData.lightBits2 & LightBits2.SEAT_ARM)
+                                == LightBits2.SEAT_ARM;
+                            }
+                            // ---------------
+                            //  NWS FAIL
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
+                                == LightBits.NWSFail != _prevNWSFail)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
+                                == LightBits.NWSFail)
+                                {
+                                    CautionPanel_Row4 += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevNWSFail = ((LightBits)myCurrentData.lightBits & LightBits.NWSFail)
+                                == LightBits.NWSFail;
+                            }
+                            // ---------------
+                            //  ANTI SKID
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
+                                == LightBits2.ANTI_SKID != _prevANTI_SKID)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
+                                == LightBits2.ANTI_SKID)
+                                {
+                                    CautionPanel_Row4 += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevANTI_SKID = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ANTI_SKID)
+                                == LightBits2.ANTI_SKID;
+                            }
+                            // ---------------
+                            //  HOOK
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.Hook)
+                                == LightBits.Hook != _prevHook)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.Hook)
+                                == LightBits.Hook)
+                                {
+                                    CautionPanel_Row4 += 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevHook = ((LightBits)myCurrentData.lightBits & LightBits.Hook)
+                                == LightBits.Hook;
+                            }
+                            // ---------------
+                            //  OXY LOW
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
+                                == LightBits2.OXY_LOW != _prevOXY_LOW)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
+                                == LightBits2.OXY_LOW)
+                                {
+                                    CautionPanel_Row4 += 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 16;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevOXY_LOW = ((LightBits2)myCurrentData.lightBits2 & LightBits2.OXY_LOW)
+                                == LightBits2.OXY_LOW;
+                            }
+                            // ---------------
+                            //  CABIN PRESS 
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
+                                == LightBits.CabinPress != _prevCabinPress)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
+                                == LightBits.CabinPress)
+                                {
+                                    CautionPanel_Row4 += 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                else
+                                {
+                                    CautionPanel_Row4 -= 32;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+                                }
+                                _prevCabinPress = ((LightBits)myCurrentData.lightBits & LightBits.CabinPress)
+                                == LightBits.CabinPress;
+                            }
+                            // -------------------------------------------------------------------------------- //
+                            //                          WARNING LIGHTS                                          //      
+                            //                          LEFT  EYEBROW                                          //
+                            // -------------------------------------------------------------------------------- //
+
+                            // ---------------
+                            //  MASTER CAUTION
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
+                               == LightBits.MasterCaution != _prevMasterCaution)
+
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
+                                == LightBits.MasterCaution)
+                                {
+                                    Misc += 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                else
+                                {
+                                    Misc -= 1;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                _prevMasterCaution = ((LightBits)myCurrentData.lightBits & LightBits.MasterCaution)
+                                == LightBits.MasterCaution;
+                            }
+                            // ---------------
+                            //   TF-FAIL
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.TF)
+                                == LightBits.TF != _prevTF)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.TF)
+                                == LightBits.TF)
+                                {
+                                    Misc += 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                else
+                                {
+                                    Misc -= 64;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                _prevTF = ((LightBits)myCurrentData.lightBits & LightBits.TF)
+                                == LightBits.TF;
+                            }
+
+                            // ---------------
+                            //  Restliche Caution lights ohne lightbits leuchten lassen,
+                            //  z.b. bei Drücken des TEST-LAMP-Knopfes: 
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                                == LightBits.AllLampBitsOn != _prevAllLampBitsOn)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                                == LightBits.AllLampBitsOn)
+                                {
+                                    // 2nd ROW "INLET ICING", "-------"
+                                    CautionPanel_Row2 += 168;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+
+                                    //3rd ROW "NUCLEAR", "------", "-----", "-----"
+                                    CautionPanel_Row3 += 240;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+
+                                    //4th ROW "-----", "-----"
+                                    CautionPanel_Row4 += 192;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+
+                                    // LEFT WARNING LIGHTS "-------", "-------", "-------"
+                                    Misc += 176;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                else
+                                {
+                                    // 2nd ROW "INLET ICING", "-------"
+                                    CautionPanel_Row2 -= 168;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 4, CautionPanel_Row2);
+
+                                    //3rd ROW "NUCLEAR", "------", "-----", "-----"
+                                    CautionPanel_Row3 -= 240;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 5, CautionPanel_Row3);
+
+                                    //4th ROW "-----", "-----"
+                                    CautionPanel_Row4 -= 192;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x10, 6, CautionPanel_Row4);
+
+                                    // LEFT WARNING LIGHTS "-------", "-------", "-------"
+                                    Misc -= 176;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                _prevAllLampBitsOn = ((LightBits)myCurrentData.lightBits & LightBits.AllLampBitsOn)
+                                == LightBits.AllLampBitsOn;
+                            }
+
+                            // -------------------------------------------------------------------------------- //
+                            //                         LEFT AUX CONSOLE                                         //      
+                            //                          MISC PANEL                                              //
+                            // -------------------------------------------------------------------------------- //
+                            // ---------------
+                            //  TFR_ENABLED
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
+                                == LightBits2.TFR_ENGAGED != _prevTFR_ENGAGED)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
+                                == LightBits2.TFR_ENGAGED)
+                                {
+                                    Misc += 4;
+                                }
+                                else
+                                {
+                                    Misc -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                }
+                                _prevTFR_ENGAGED = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TFR_ENGAGED)
+                                == LightBits2.TFR_ENGAGED;
+                            }
+                            // ---------------
+                            //  TFR_STANDBY
+                            // ---------------
+                            if (((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
+                                == LightBits.TFR_STBY != _prevTFR_STBY)
+                            {
+                                if (((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
+                                == LightBits.TFR_STBY)
+                                {
+                                    Misc += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                else
+                                {
+                                    Misc -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc); ;
+                                }
+                                _prevTFR_STBY = ((LightBits)myCurrentData.lightBits & LightBits.TFR_STBY)
+                                == LightBits.TFR_STBY;
+                            }
+                            // ---------------
+                            //   ECM ENABLED
+                            // ---------------
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
+                                == LightBits2.EcmPwr != _prevECM)
+                            {
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
+                                == LightBits2.EcmPwr)
+                                {
+                                    Misc += 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                else
+                                {
+                                    Misc -= 8;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 3, Misc);
+                                }
+                                _prevECM = ((LightBits2)myCurrentData.lightBits2 & LightBits2.EcmPwr)
+                                == LightBits2.EcmPwr;
+                            }
+                            // -------------------------------------------------------------------------------- //
+                            //                          CAUTION LIGHTS                                          //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+
+                            //int LEFlaps = (myCurrentData.lightBits & 0x80000);
+                            //int EngineFault = (myCurrentData.lightBits & 0x100000);
+                            //int Overheat = (myCurrentData.lightBits & 0x200000);
+                            //int FuelLow = (myCurrentData.lightBits & 0x400000);
+                            //int Avionics = (myCurrentData.lightBits & 0x800000);
+                            //int RadarAlt = (myCurrentData.lightBits & 0x1000000);
+                            //int IFF = (myCurrentData.lightBits & 0x2000000);
+                            //int ECM = (myCurrentData.lightBits & 0x4000000);
+                            //int Hook = (myCurrentData.lightBits & 0x8000000);
+                            //int NWSFail = (myCurrentData.lightBits & 0x1000000);
+                            //int CabinPress = (myCurrentData.lightBits & 0x2000000);
+                            //int AutoPilotOn = (myCurrentData.lightBits & 0x4000000);
+                            //int TFR_STBY = (myCurrentData.lightBits & 0x8000000);
+
+
+                            //int SEC = (myCurrentData.lightBits2 & 0x400000);
+                            //int OXY_LOW = (myCurrentData.lightBits2 & 0x800000);
+                            //int SEAT_ARM = (myCurrentData.lightBits2 & 0x2000000);
+                            //int BUC = (myCurrentData.lightBits2 & 0x4000000);
+                            //int FUEL_OIL_HOT = (myCurrentData.lightBits2 & 0x8000000);
+                            //long ANTI_SKID = (myCurrentData.lightBits2 & 0x10000000);
+                            //long TFR_ENGAGED = (myCurrentData.lightBits2 & 0x20000000);
+                            //long GEARHANDLE = (myCurrentData.lightBits2 & 0x40000000);
+
+
+
+                            //int Lef_Fault = (myCurrentData.lightBits3 & 0x800);
+                            //int OnGround = (myCurrentData.lightBits3 & 0x1000);
+                            //int FlcsBitRun = (myCurrentData.lightBits3 & 0x2000);
+                            //int FlcsBitFail = (myCurrentData.lightBits3 & 0x4000);
+                            //int NoseGearDown = (myCurrentData.lightBits3 & 0x10000);
+                            //int LeftGearDown = (myCurrentData.lightBits3 & 0x20000);
+                            //int RightGearDown = (myCurrentData.lightBits3 & 0x40000);
+                            //int ParkBrakeOn = (myCurrentData.lightBits3 & 0x100000);
+                            //int Power_Off = (myCurrentData.lightBits3 & 0x200000);
+
+
+                            //int EPUOn = (myCurrentData.lightBits2 & 0x100000);
+                            //int JFSOn = (myCurrentData.lightBits2 & 0x200000);
+
+
+
+
+
+                            // -------------------------------------------------------------------------------- //
+                            //                          AOA INDEXER                                             //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            //int AOA_Above = (myCurrentData.lightBits & 0x1000);
+                            //int AOA_OnPath = (myCurrentData.lightBits & 0x2000);
+                            //int AOA_Below = (myCurrentData.lightBits & 0x4000);
+
+                            //int RefuelRDY = (myCurrentData.lightBits & 0x8000);
+                            //int RefuelAR = (myCurrentData.lightBits & 0x10000);
+                            //int RefuelDSC = (myCurrentData.lightBits & 0x20000);
+
+
+                            // -------------------------------------------------------------------------------- //
+                            // LightBits2              THREAT WARNING PRIME                                     //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+
+
+
+                            // -------------------------------------------------------------------------------- //
+                            //                         AUX THREAT WARNING                                       //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            //int AuxSrch = (myCurrentData.lightBits2 & 0x1000);
+                            //int AuxAct = (myCurrentData.lightBits2 & 0x2000);
+                            //int AuxLow = (myCurrentData.lightBits2 & 0x4000);
+                            //int AuxPwr = (myCurrentData.lightBits2 & 0x8000);
+
+                            // -------------------------------------------------------------------------------- //
+                            //                         ECM                                                      //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            //int EcmPwr = (myCurrentData.lightBits2 & 0x10000);
+                            //int EcmFail = (myCurrentData.lightBits2 & 0x20000);
+
+                            // -------------------------------------------------------------------------------- //
+                            // LightBits3              ELEC PANEL                                               //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            //int FlcsPmg = (myCurrentData.lightBits3 & 0x1);
+                            //int MainGen = (myCurrentData.lightBits3 & 0x2);
+                            //int StbyGen = (myCurrentData.lightBits3 & 0x4);
+                            //int EpuGen = (myCurrentData.lightBits3 & 0x8);
+                            //int EpuPmg = (myCurrentData.lightBits3 & 0x10);
+                            //int ToFlcs = (myCurrentData.lightBits3 & 0x20);
+                            //int FlcsRly = (myCurrentData.lightBits3 & 0x40);
+                            //int BatFail = (myCurrentData.lightBits3 & 0x80);
+
+
+                            // -------------------------------------------------------------------------------- //
+                            //                         EPU PANEL                                                //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            //int Hydrazine = (myCurrentData.lightBits3 & 0x100);
+                            //int Air = (myCurrentData.lightBits3 & 0x200);
+
+
+                            // -------------------------------------------------------------------------------- //
+                            //                         LEFT AUX CONSOLE                                         //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            int SpeedBrake = (myCurrentData.lightBits3 & 0x800000);
+
+                            if (_prevSpeedBrake != SpeedBrake)
+                            {
+                                if (SpeedBrake == OFF)
+                                {
+                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
+                                    _prevSpeedBrake = SpeedBrake;
+                                    //   Thread.Sleep(5);
+                                }
+
+                                if (SpeedBrake == ON)
+                                {
+                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
+                                    _prevSpeedBrake = SpeedBrake;
+                                    //   Thread.Sleep(5);
+                                }
+                            }
+
+                            // ----------------------------------------------------------------------------------//
+                            //                           TWP - Threat Warning Prime                              //
+                            // ----------------------------------------------------------------------------------//
+                            // Define short-definition of lightbits:
+                            // int HandOff = (myCurrentData.lightBits2 & 0x1);
+                            // int Launch = (myCurrentData.lightBits2 & 0x2);
+                            // int PriMode = (myCurrentData.lightBits2 & 0x4);
+                            // int Naval = (myCurrentData.lightBits2 & 0x8);
+                            // int Unk = (myCurrentData.lightBits2 & 0x10);
+                            // int TgtSep = (myCurrentData.lightBits2 & 0x20);
+                            // int SysTest = (myCurrentData.lightBits3 & 0x1000000);
+
+                            // ---------------
+                            // HANDOFF, PRIORITY MODE & SYS TEST LOWER INDICATOR
+                            // ---------------
+                            // Lower indicator,
+                            // just goes on when system is powerd:
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
+                               == LightBits2.AuxPwr != _prevAuxPwr)
+                            {
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                   == LightBits2.AuxPwr != _prevAuxPwr)
+                                == LightBits2.AuxPwr)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                    == LightBits2.AuxPwr)
-                                    {
-                                        TWP += 64; // HANDOFF "ON"
-                                        TWP += 16; // PRIORITY "OPEN"
-                                        TWP += 8;  // TGT SEP, lower Half "ON"
-                                        TWP += 1;  // SysTest, lower Half "SysTest" ON
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    TWP += 64; // HANDOFF "ON"
+                                    TWP += 16; // PRIORITY "OPEN"
+                                    TWP += 8;  // TGT SEP, lower Half "ON"
+                                    TWP += 1;  // SysTest, lower Half "SysTest" ON
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
 
-                                        TWP_Shp += 1; // UNKNOWN, lower Half "ON" (Naval)
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                    }
-                                    else
-                                    {
-                                        TWP -= 64; // HANDOFF "ON"
-                                        TWP -= 16; // PRIORITY "OPEN"
-                                        TWP -= 8;  // TGT SEP, lower Half "ON"
-                                        TWP -= 1;  // SysTest, lower Half "SysTest" ON
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-
-                                        TWP_Shp -= 1; // UNKNOWN, lower Half "ON" (Naval)
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-
-                                    }
-                                    _prevAuxPwr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
-                                    == LightBits2.AuxPwr;
+                                    TWP_Shp += 1; // UNKNOWN, lower Half "ON" (Naval)
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
                                 }
-                                // ---------------
-                                // HANDOFF
-                                // ---------------
-                                // Upper indicator:
+                                else
+                                {
+                                    TWP -= 64; // HANDOFF "ON"
+                                    TWP -= 16; // PRIORITY "OPEN"
+                                    TWP -= 8;  // TGT SEP, lower Half "ON"
+                                    TWP -= 1;  // SysTest, lower Half "SysTest" ON
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+
+                                    TWP_Shp -= 1; // UNKNOWN, lower Half "ON" (Naval)
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+
+                                }
+                                _prevAuxPwr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.AuxPwr)
+                                == LightBits2.AuxPwr;
+                            }
+                            // ---------------
+                            // HANDOFF
+                            // ---------------
+                            // Upper indicator:
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
+                               == LightBits2.HandOff != _prevHandOff)
+                            {
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                   == LightBits2.HandOff != _prevHandOff)
+                                == LightBits2.HandOff)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                    == LightBits2.HandOff)
-                                    {
-                                        TWP += 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        HandOff_active = true;
-                                    }
-                                    else
-                                    {
-                                        TWP -= 128;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        HandOff_active = false;
-                                    }
-                                    _prevHandOff = ((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
-                                    == LightBits2.HandOff;
+                                    TWP += 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    HandOff_active = true;
                                 }
-                                // ---------------
-                                // PRIORITY MODE
-                                // ---------------
-                                // Upper indicator, PRIORITY:
+                                else
+                                {
+                                    TWP -= 128;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    HandOff_active = false;
+                                }
+                                _prevHandOff = ((LightBits2)myCurrentData.lightBits2 & LightBits2.HandOff)
+                                == LightBits2.HandOff;
+                            }
+                            // ---------------
+                            // PRIORITY MODE
+                            // ---------------
+                            // Upper indicator, PRIORITY:
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
+                                  == LightBits2.PriMode != _prevPriMode)
+                            {
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                      == LightBits2.PriMode != _prevPriMode)
+                                == LightBits2.PriMode)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                    == LightBits2.PriMode)
-                                    {
-                                        TWP -= 16; // Unteren Indicator "OPEN" ausschalten
-                                        TWP += 32; // Oberen Indicator "PRIORITY" einschalten
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        PriMode_active = true;
-                                    }
-                                    else
-                                    {
-                                        TWP -= 32; // Oberen Indicator "PRIORITY" ausschalten
-                                        TWP += 16; // Unteren Indicator "OPEN" einschalten
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        PriMode_active = false;
-                                    }
-                                    _prevPriMode = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
-                                    == LightBits2.PriMode;
+                                    TWP -= 16; // Unteren Indicator "OPEN" ausschalten
+                                    TWP += 32; // Oberen Indicator "PRIORITY" einschalten
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    PriMode_active = true;
                                 }
-                                // ---------------
-                                //  TGT SEP
-                                // ---------------
-                                // TGP SEP - upper indicator "TGT SEP", 
-                                // goes on when switch is pushed:
+                                else
+                                {
+                                    TWP -= 32; // Oberen Indicator "PRIORITY" ausschalten
+                                    TWP += 16; // Unteren Indicator "OPEN" einschalten
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    PriMode_active = false;
+                                }
+                                _prevPriMode = ((LightBits2)myCurrentData.lightBits2 & LightBits2.PriMode)
+                                == LightBits2.PriMode;
+                            }
+                            // ---------------
+                            //  TGT SEP
+                            // ---------------
+                            // TGP SEP - upper indicator "TGT SEP", 
+                            // goes on when switch is pushed:
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
+                                   == LightBits2.TgtSep != _prevTgtSep)
+                            {
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                       == LightBits2.TgtSep != _prevTgtSep)
+                                == LightBits2.TgtSep)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                    == LightBits2.TgtSep)
-                                    {
-                                        TWP += 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        TgtSep_active = true;
-                                    }
-                                    else
-                                    {
-                                        TWP -= 4;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        TgtSep_active = false;
-                                    }
-                                    _prevTgtSep = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
-                                    == LightBits2.TgtSep;
+                                    TWP += 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    TgtSep_active = true;
                                 }
-                                // ---------------
-                                //  SYS TEST - PERFORMING TEST
-                                // ---------------
-                                // SysTest - upper indicator "ON", 
-                                // goes on when system performing a test:
-                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
-                                        == LightBits3.SysTest != _prevSysTest)
+                                else
                                 {
-                                    if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
-                                    == LightBits3.SysTest)
-                                    {
-                                        TWP += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        SysTest_active = true;
-                                    }
-                                    else
-                                    {
-                                        TWP -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
-                                        SysTest_active = false;
-                                    }
+                                    TWP -= 4;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    TgtSep_active = false;
+                                }
+                                _prevTgtSep = ((LightBits2)myCurrentData.lightBits2 & LightBits2.TgtSep)
+                                == LightBits2.TgtSep;
+                            }
+                            // ---------------
+                            //  SYS TEST - PERFORMING TEST
+                            // ---------------
+                            // SysTest - upper indicator "ON", 
+                            // goes on when system performing a test:
+                            if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
+                                    == LightBits3.SysTest != _prevSysTest)
+                            {
+                                if (((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
+                                == LightBits3.SysTest)
+                                {
+                                    TWP += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    SysTest_active = true;
+                                }
+                                else
+                                {
+                                    TWP -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 7, TWP);
+                                    SysTest_active = false;
+                                }
                                 _prevSysTest = ((LightBits3)myCurrentData.lightBits3 & LightBits3.SysTest)
                                 == LightBits3.SysTest;
                             }
-                                // ---------------
-                                //  UNKNOWN / SHIP 
-                                // ---------------
-                                // UNKNOWN / SHP - upper indicator "UNKNOWN", 
+                            // ---------------
+                            //  UNKNOWN / SHIP 
+                            // ---------------
+                            // UNKNOWN / SHP - upper indicator "UNKNOWN", 
+                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
+                                     == LightBits2.Unk != _prevUnk)
+                            {
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                         == LightBits2.Unk != _prevUnk)
+                                == LightBits2.Unk)
                                 {
-                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                    == LightBits2.Unk)
-                                    {
-                                        TWP_Shp += 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                        Unk_active = true;
-                                    }
-                                    else
-                                    {
-                                        TWP_Shp -= 2;
-                                        Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
-                                        Unk_active = false;
-                                    }
-                                    _prevUnk = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
-                                    == LightBits2.Unk;
+                                    TWP_Shp += 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                    Unk_active = true;
                                 }
-                                // -------------------------------------------------------------------------------- //
-                                //                         HSI BITS                                                 //
-                                //     -> Not all are necessary because using YAME suite!!! <-                      //
-                                // --------------------------------------------------------------------- works! --- //
-                                // Define short-definition of lightbits:
-                                int OuterMarker = (myCurrentData.hsiBits & 0x4000);
-                                int MiddleMarker = (myCurrentData.hsiBits & 0x8000);
-                                int Flying = (myCurrentData.hsiBits & 0x10000);
-
-                                if (_prevOuterMarker != OuterMarker)
+                                else
                                 {
-                                    if (OuterMarker == OFF)
-                                    {
-                                        // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
-                                        _prevOuterMarker = OuterMarker;
-                                     //   Thread.Sleep(5);
-                                    }
-
-                                    if (OuterMarker == ON)
-                                    {
-                                        //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
-                                        _prevOuterMarker = OuterMarker;
-                                       // Thread.Sleep(5);
-                                    }
+                                    TWP_Shp -= 2;
+                                    Port3_PHCC_Input_Output.DoaSend40DO(0x11, 6, TWP_Shp);
+                                    Unk_active = false;
                                 }
-
-                                if (_prevMiddleMarker != MiddleMarker)
-                                {
-                                    if (MiddleMarker == OFF)
-                                    {
-                                        // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
-                                        _prevMiddleMarker = MiddleMarker;
-                                     //   Thread.Sleep(5);
-                                    }
-                                    if (MiddleMarker == ON)
-                                    {
-                                        //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
-                                        _prevMiddleMarker = MiddleMarker;
-                                      //  Thread.Sleep(5);
-                                    }
-                                }
-                                if (_prevFlying != Flying)
-                                {
-                                    if (Flying == OFF)
-                                    {
-                                        // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
-                                        _prevFlying = Flying;
-                                      //  Thread.Sleep(5);
-                                    }
-                                    if (Flying == ON)
-                                    {
-                                        //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
-                                        _prevFlying = Flying;
-                                      //  Thread.Sleep(5);
-                                    }
+                                _prevUnk = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Unk)
+                                == LightBits2.Unk;
                             }
-                                }          Thread.Sleep(50);
-                    Application.DoEvents();
-                                            }
-                   // }
-              //  }
-            }
-        }
+                            // -------------------------------------------------------------------------------- //
+                            //                         HSI BITS                                                 //
+                            //     -> Not all are necessary because using YAME suite!!! <-                      //
+                            // --------------------------------------------------------------------- works! --- //
+                            // Define short-definition of lightbits:
+                            int OuterMarker = (myCurrentData.hsiBits & 0x4000);
+                            int MiddleMarker = (myCurrentData.hsiBits & 0x8000);
+                            int Flying = (myCurrentData.hsiBits & 0x10000);
 
+                            if (_prevOuterMarker != OuterMarker)
+                            {
+                                if (OuterMarker == OFF)
+                                {
+                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
+                                    _prevOuterMarker = OuterMarker;
+                                    //   Thread.Sleep(5);
+                                }
+
+                                if (OuterMarker == ON)
+                                {
+                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
+                                    _prevOuterMarker = OuterMarker;
+                                    // Thread.Sleep(5);
+                                }
+                            }
+
+                            if (_prevMiddleMarker != MiddleMarker)
+                            {
+                                if (MiddleMarker == OFF)
+                                {
+                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
+                                    _prevMiddleMarker = MiddleMarker;
+                                    //   Thread.Sleep(5);
+                                }
+                                if (MiddleMarker == ON)
+                                {
+                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
+                                    _prevMiddleMarker = MiddleMarker;
+                                    //  Thread.Sleep(5);
+                                }
+                            }
+                            if (_prevFlying != Flying)
+                            {
+                                if (Flying == OFF)
+                                {
+                                    // Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 0);
+                                    _prevFlying = Flying;
+                                    //  Thread.Sleep(5);
+                                }
+                                if (Flying == ON)
+                                {
+                                    //  Port3_PHCC_Input_Output.DoaSendRaw(0x30, 0x0, 1);
+                                    _prevFlying = Flying;
+                                    //  Thread.Sleep(5);
+                                }
+                            }
+                        }
+                        Thread.Sleep(50);
+                        Application.DoEvents();
+                    
+                }
+
+                finally
+                { }
+        }
+        #region Switches ---> Uncompleted   TO BE DONE!
+        /// <summary>
+        /// Key64 interface for switches, toggles and calling callbacks.
+        /// </summary>
         private void Switches()
         {
-            using (Reader myReader = new F4SharedMem.Reader())  //Neue Instanz von Reader, um die Daten von FalconBMS auslesen zu kÃƒÂ¶nnen.
-            {
-                //while (_keepRunning == true)
-                //{
-                //    if (myReader.IsFalconRunning == true)
-                //    {
-                        while ((myReader.IsFalconRunning) && (_keepRunning))
+            using (Reader myReader = new F4SharedMem.Reader())
+
+                try
+                {
+                    while (isFlying == true)
+                    {
+                        FlightData myCurrentSwitchData = myReader.GetCurrentData();
+                        F4Callbacks F4 = new F4Callbacks();
+                        Switch = Port3_PHCC_Input_Output.DigitalInputs;
+                        // Key2 @ Key64-board, Slot 1.
+                        //        EjectHandlePulled = Port3_PHCC_Input_Output.DigitalInputs.GetValue(1).ToString(); // Zahlenwert ÃƒÂ¤ndern fÃƒÂ¼r Schalteranzahl! 0 --> Schalter 1. 64 ist Schalter 65.
+
+                        //Switch[1] = SimSeatOn;
+                        // Thread.Sleep(5);  // 25 möglich????
+
+                        //if (_prevSwitchState[0] != Switch[0])
+                        //{
+                        //    if (Switch[0] == ON)
+                        //    {
+                        //        CW = true;
+                        //        CCW = false;
+                        //         F4.AltPressureIncrease1();
+
+                        //        if ((Switch[0] == ON) && (Switch[1] == OFF))
+                        //        {
+                        //            CW = true;
+                        //            CCW = false;
+                        //            F4.AltPressureIncrease1();
+
+                        //            if ((Switch[0] == ON) && (Switch[1] == ON))
+                        //            {
+                        //                CW = true;
+                        //                CCW = false;
+                        //                F4.AltPressureIncrease1();
+                        //            }
+
+                        //        }
+
+                        //        //if (CW == true)
+                        //        //    {
+                        //        //        F4.AltPressureIncrease1();
+                        //        //        CW = false;
+
+
+                        //    }
+                        //        _prevSwitchState[0] = Switch[0];
+                        //        _prevSwitchState[1] = Switch[1];                            
+                        //}
+
+                        //if (_prevSwitchState[1] != Switch[1])
+                        //{
+                        //    if (Switch[1] == ON)
+                        //    {
+                        //        CCW = true;
+                        //        CW = false;
+                        //         F4.AltPressureDecrease1();
+
+                        //        if ((Switch[1] == ON) && (Switch[0] == OFF))
+                        //        {
+                        //            CCW = true;
+                        //            CW = false;
+                        //            F4.AltPressureDecrease1();
+
+                        //            if ((Switch[1] == ON) && (Switch[0] == ON))
+                        //            {
+                        //                CCW = true;
+                        //                CW = false;
+                        //                F4.AltPressureDecrease1();
+                        //            }
+
+
+                        //        }
+
+                        //        //if (CCW == true)
+                        //        //    {
+                        //        //        F4.AltPressureDecrease1();
+                        //        //        CCW = false;
+                        //        //        }
+                        //    }
+                        //        _prevSwitchState[1] = Switch[1];
+                        //        _prevSwitchState[0] = Switch[0];
+                        //}
+
+                        if (_prevSwitchState[0] != Switch[0])
                         {
-                            FlightData myCurrentSwitchData = myReader.GetCurrentData();
 
-                            if ((myCurrentSwitchData.hsiBits & 0x80000000) != 0)
+                            if (Switch[0] == _ON)
                             {
-                                F4Callbacks F4 = new F4Callbacks();
-                                Switch = Port3_PHCC_Input_Output.DigitalInputs;
-                                // Key2 @ Key64-board, Slot 1.
-                                //        EjectHandlePulled = Port3_PHCC_Input_Output.DigitalInputs.GetValue(1).ToString(); // Zahlenwert ÃƒÂ¤ndern fÃƒÂ¼r Schalteranzahl! 0 --> Schalter 1. 64 ist Schalter 65.
+                                F4.SimSeatOn();
+                                _prevSwitchState[0] = Switch[0];
 
-                                //Switch[1] = SimSeatOn;
-                                // Thread.Sleep(5);  // 25 möglich????
+                            }
+                            if (Switch[0] == _OFF)
+                            {
+                                F4.SimSeatOff();
+                                _prevSwitchState[1] = Switch[1];
 
-                                //if (_prevSwitchState[0] != Switch[0])
-                                //{
-                                //    if (Switch[0] == ON)
-                                //    {
-                                //        CW = true;
-                                //        CCW = false;
-                                //         F4.AltPressureIncrease1();
+                                SendCallback("SimSeatOff");  //<---- WORKS! 26.05.2019 LE
 
-                                //        if ((Switch[0] == ON) && (Switch[1] == OFF))
-                                //        {
-                                //            CW = true;
-                                //            CCW = false;
-                                //            F4.AltPressureIncrease1();
-
-                                //            if ((Switch[0] == ON) && (Switch[1] == ON))
-                                //            {
-                                //                CW = true;
-                                //                CCW = false;
-                                //                F4.AltPressureIncrease1();
-                                //            }
-
-                                //        }
-
-                                //        //if (CW == true)
-                                //        //    {
-                                //        //        F4.AltPressureIncrease1();
-                                //        //        CW = false;
-
-
-                                //    }
-                                //        _prevSwitchState[0] = Switch[0];
-                                //        _prevSwitchState[1] = Switch[1];                            
-                                //}
-
-                                //if (_prevSwitchState[1] != Switch[1])
-                                //{
-                                //    if (Switch[1] == ON)
-                                //    {
-                                //        CCW = true;
-                                //        CW = false;
-                                //         F4.AltPressureDecrease1();
-
-                                //        if ((Switch[1] == ON) && (Switch[0] == OFF))
-                                //        {
-                                //            CCW = true;
-                                //            CW = false;
-                                //            F4.AltPressureDecrease1();
-
-                                //            if ((Switch[1] == ON) && (Switch[0] == ON))
-                                //            {
-                                //                CCW = true;
-                                //                CW = false;
-                                //                F4.AltPressureDecrease1();
-                                //            }
-
-
-                                //        }
-
-                                //        //if (CCW == true)
-                                //        //    {
-                                //        //        F4.AltPressureDecrease1();
-                                //        //        CCW = false;
-                                //        //        }
-                                //    }
-                                //        _prevSwitchState[1] = Switch[1];
-                                //        _prevSwitchState[0] = Switch[0];
-                                //}
-                                if (_prevSwitchState[0] != Switch[0])
-                                {
-
-                                    if (Switch[0] == _ON)
-                                    {
-                                        F4.SimSeatOn();
-                                        _prevSwitchState[0] = Switch[0];
-
-                                    }
-                                    if (Switch[0] == _OFF)
-                                    {
-                                        F4.SimSeatOff();
-                                        _prevSwitchState[1] = Switch[1];
-
-                                        SendCallback("SimSeatOff");  //<---- WORKS! 26.05.2019 LE
-
-                                    }
-                                }
+                            }
+                        }
                         //Thread.Sleep(250); // Testweise eingefügt. 04.03.2020 LE.
                         //SwitchesThread.Join();
 
                         Thread.Sleep(50);
                         Application.DoEvents();
-                            }
-                        }
-
                     }
-           
-            //    }
-            //}
-        }
+                }
 
+                finally
+                { }
 
-
+            }
+        #endregion
 
         public void button2_Click(object sender, EventArgs e)
         {
@@ -3590,15 +3843,57 @@ namespace WindowsFormsApplication1
                     //this.label6.Text = " ";
 
 
-                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
+                  //  Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
                     Thread.Sleep(5);
 
+
+                 
+                   
+                   
+
+                  
+                    if ((SwitchesThread != null) && (SwitchesThread.IsAlive))
+                    {
+                          SwitchesThread.Abort();
+                        SwitchesThread.Join();
+                    }
+
+                    if ((Blink_SysTestThread != null) && (Blink_SysTestThread.IsAlive))
+                    {
+                        Blink_SysTestThread.Abort();
+                        Blink_SysTestThread.Join();
+                    }
+
+                    if ((Blink_SysTestThread != null) && (Blink_SysTestThread.IsAlive))
+                    {
+                        Blink_SysTestThread.Abort();
+                        Blink_SysTestThread.Join();
+                    }
+
+                    if ((Blink_MissileLaunchThread != null) && (Blink_MissileLaunchThread.IsAlive))
+                    {
+                        Blink_MissileLaunchThread.Abort();
+                        Blink_MissileLaunchThread.Join();
+                    }
+
+                    if ((Blink_ProbeHeatThread != null) && (Blink_ProbeHeatThread.IsAlive))
+                    {
+                        Blink_ProbeHeatThread.Abort();
+                        Blink_ProbeHeatThread.Join();
+                    }
+
+                    if ((SimOutputThread != null) && (SimOutputThread.IsAlive))
+                    {
+                        SimOutputThread.Abort();
+                        SimOutputThread.Join();
+                    }
 
                     if ((DataThread != null) && (DataThread.IsAlive))
                     {
                         DataThread.Abort();
                         DataThread.Join();
                     }
+
                     if ((RPMThread != null) && (RPMThread.IsAlive))
                     {
                         RPMThread.Abort();
