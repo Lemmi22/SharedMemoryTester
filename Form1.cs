@@ -1998,7 +1998,8 @@ namespace WindowsFormsApplication1
         public void SimOutput()
         {
             using (Reader myReader = new F4SharedMem.Reader())  //Neue Instanz von Reader, um die Daten von FalconBMS auslesen zu kÃƒÂ¶nnen.
-              //   while (_keepRunning == true)
+            
+                //   while (_keepRunning == true)
                 //  {
                 //      if (myReader.IsFalconRunning == true)
                 //      {
@@ -2009,6 +2010,8 @@ namespace WindowsFormsApplication1
                     {
                         FlightData myFlightData = new FlightData();
                         FlightData myCurrentData = myReader.GetCurrentData();
+
+                                       
 
                         myChaffCount = myCurrentData.ChaffCount;
                         myFlareCount = myCurrentData.FlareCount;
@@ -2206,210 +2209,223 @@ namespace WindowsFormsApplication1
                         //                                              //
                         //----------------------------------------------//
 
-                        // Normale Zahlenwerte anzeigen für
-                        // verbleibenden Caff- / Flare-Vorrat:
-                        //    
-
-                        if (myCurrentData.cmdsMode != 0)
+                       
+                        // CMDS nur in Betrieb, wenn am Gerät eingeschaltet und 
+                        // MainGenerator und StandbyGenerator laufen.
+                        // Erfordert Langzeittest, ob richtige Implementierung.....!!!
+                        //
+                        // WORKS so far. 08.03.2020 LE.
+                        if ((((PowerBits)myCurrentData.powerBits & PowerBits.MainGenerator)
+                                  == PowerBits.MainGenerator) && (((PowerBits)myCurrentData.powerBits & PowerBits.StandbyGenerator)
+                                  == PowerBits.StandbyGenerator))
                         {
-                            if (_prevFlareEinerState != myFlareEiner)
-                            {
-                                if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
-                                if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
-                                if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
-                                if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
-                                if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
-                                if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
-                                if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
-                                if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
-                                if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
-                                if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
-                                Wait(5);
-                                _prevFlareEinerState = myFlareEiner;
-                            }
-
-                            if (_prevFlareZehnerState != myFlareZehner)
-                            {
-                                if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
-                                if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
-                                if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
-                                if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
-                                if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
-                                if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
-                                if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
-                                if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
-                                if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
-                                if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
-                                Wait(5);
-                                _prevFlareZehnerState = myFlareZehner;
-                            }
-
-                            if (_prevChaffEinerState != myChaffEiner)
-                            {
-                                if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
-                                if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
-                                if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
-                                if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
-                                if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
-                                if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
-                                if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
-                                if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
-                                if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
-                                if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
-                                Wait(5);
-                                _prevChaffEinerState = myChaffEiner;
-                            }
-
-                            if (_prevChaffZehnerState != myChaffZehner)
-                            {
-                                if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
-                                if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
-                                if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
-                                if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
-                                if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
-                                if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
-                                if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
-                                if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
-                                if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
-                                if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
-                                Wait(5);
-                                _prevChaffZehnerState = myChaffZehner;
-                            }
-
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
-                            == LightBits2.FlareLo != _prevChaffLo)
-                            {
-                                // Show "L0", when low on Chaffs:
-                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
-                                == LightBits2.ChaffLo)
+                            // Wenn CMDS am Gerät eingeschaltet:
+                            if (myCurrentData.cmdsMode != 0)
+                            { 
+                                // Normale Zahlenwerte anzeigen für
+                                // verbleibenden Caff- / Flare-Vorrat:
+                                if (_prevFlareEinerState != myFlareEiner)
                                 {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                    if (myFlareEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
+                                    if (myFlareEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 49);
+                                    if (myFlareEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 50);
+                                    if (myFlareEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 51);
+                                    if (myFlareEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 52);
+                                    if (myFlareEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 53);
+                                    if (myFlareEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 54);
+                                    if (myFlareEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 55);
+                                    if (myFlareEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 56);
+                                    if (myFlareEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 57);
+                                    if (myFlareCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 15, 48);
                                     Wait(5);
+                                    _prevFlareEinerState = myFlareEiner;
                                 }
-                                else
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
-                                    Wait(5);
-                                }
-                                _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
-                                == LightBits2.ChaffLo;
-                            }
 
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
-                              == LightBits2.FlareLo != _prevFlareLo)
-                            {
-                                // Show "L0", when low on Flares:
+                                if (_prevFlareZehnerState != myFlareZehner)
+                                {
+                                    if (myFlareZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 48);
+                                    if (myFlareZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 49);
+                                    if (myFlareZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 50);
+                                    if (myFlareZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 51);
+                                    if (myFlareZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 52);
+                                    if (myFlareZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 53);
+                                    if (myFlareZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 54);
+                                    if (myFlareZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 55);
+                                    if (myFlareZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 56);
+                                    if (myFlareZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 14, 57);
+                                    Wait(5);
+                                    _prevFlareZehnerState = myFlareZehner;
+                                }
+
+                                if (_prevChaffEinerState != myChaffEiner)
+                                {
+                                    if (myChaffEiner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                    if (myChaffEiner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 49);
+                                    if (myChaffEiner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 50);
+                                    if (myChaffEiner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 51);
+                                    if (myChaffEiner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 52);
+                                    if (myChaffEiner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 53);
+                                    if (myChaffEiner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 54);
+                                    if (myChaffEiner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 55);
+                                    if (myChaffEiner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 56);
+                                    if (myChaffEiner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 57);
+                                    if (myChaffCount < 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 11, 48);
+                                    Wait(5);
+                                    _prevChaffEinerState = myChaffEiner;
+                                }
+
+                                if (_prevChaffZehnerState != myChaffZehner)
+                                {
+                                    if (myChaffZehner == 0) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 48);
+                                    if (myChaffZehner == 1) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 49);
+                                    if (myChaffZehner == 2) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 50);
+                                    if (myChaffZehner == 3) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 51);
+                                    if (myChaffZehner == 4) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 52);
+                                    if (myChaffZehner == 5) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 53);
+                                    if (myChaffZehner == 6) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 54);
+                                    if (myChaffZehner == 7) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 55);
+                                    if (myChaffZehner == 8) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 56);
+                                    if (myChaffZehner == 9) Port3_PHCC_Input_Output.DoaSendRaw(0x44, 10, 57);
+                                    Wait(5);
+                                    _prevChaffZehnerState = myChaffZehner;
+                                }
+
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
-                                == LightBits2.FlareLo)
+                                == LightBits2.FlareLo != _prevChaffLo)
                                 {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
-                                    Wait(5);
+                                    // Show "L0", when low on Chaffs:
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
+                                    == LightBits2.ChaffLo)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 111);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 8, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 9, 32);
+                                        Wait(5);
+                                    }
+                                    _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.ChaffLo)
+                                    == LightBits2.ChaffLo;
                                 }
-                                else
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
-                                    Wait(5);
-                                }
-                                _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
-                                == LightBits2.FlareLo;
-                            }
 
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
-                             == LightBits2.Degr != _prevDegr)
-                            {
-                                // Show "AUTO DEGR":
+                                if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                  == LightBits2.FlareLo != _prevFlareLo)
+                                {
+                                    // Show "L0", when low on Flares:
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                    == LightBits2.FlareLo)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 76);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 111);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 12, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 13, 32);
+                                        Wait(5);
+                                    }
+                                    _prevFlareLo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.FlareLo)
+                                    == LightBits2.FlareLo;
+                                }
+
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
-                                == LightBits2.Degr)
+                                 == LightBits2.Degr != _prevDegr)
                                 {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
+                                    // Show "AUTO DEGR":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                    == LightBits2.Degr)
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 65);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 85);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 84);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 79);
 
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
-                                    Wait(5);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 68);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 69);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 71);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 82);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
+
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
+                                        Wait(5);
+
+                                    }
+                                    _prevDegr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
+                                    == LightBits2.Degr;
                                 }
-                                else
-                                {
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 0, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 1, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 2, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 3, 32);
 
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 4, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 5, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 6, 32);
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 7, 32);
-                                    Wait(5);
-
-                                }
-                                _prevDegr = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Degr)
-                                == LightBits2.Degr;
-                            }
-
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
-                            == LightBits2.Go != _prevGo)
-                            {
-                                // lighten up "GO":
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
-                                == LightBits2.Go)
+                                == LightBits2.Go != _prevGo)
                                 {
-                                    StatusLight = 4;
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
-                                    Wait(5);
+                                    // lighten up "GO":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                    == LightBits2.Go)
+                                    {
+                                        StatusLight = 4;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
+                                    == LightBits2.Go;
                                 }
-                                _prevGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Go)
-                                == LightBits2.Go;
-                            }
 
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
-                            == LightBits2.NoGo != _prevNoGo)
-                            {
-                                // lighten up "NOGO":
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
-                                == LightBits2.NoGo)
+                                == LightBits2.NoGo != _prevNoGo)
                                 {
-                                    StatusLight = 8;
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
-                                    Wait(5);
+                                    // lighten up "NOGO":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                    == LightBits2.NoGo)
+                                    {
+                                        StatusLight = 8;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevNoGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
+                                    == LightBits2.NoGo;
                                 }
-                                _prevNoGo = ((LightBits2)myCurrentData.lightBits2 & LightBits2.NoGo)
-                                == LightBits2.NoGo;
-                            }
 
-                            if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
-                             == LightBits2.Rdy != _prevRdy)
-                            {
-                                // lighten up "DISPENSE READY":
                                 if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
-                                == LightBits2.Rdy)
+                                 == LightBits2.Rdy != _prevRdy)
                                 {
-                                    StatusLight += 3;
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
-                                    Wait(5);
+                                    // lighten up "DISPENSE READY":
+                                    if (((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                    == LightBits2.Rdy)
+                                    {
+                                        StatusLight += 3;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    else
+                                    {
+                                        StatusLight -= 3;
+                                        Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
+                                        Wait(5);
+                                    }
+                                    _prevRdy = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
+                                        == LightBits2.Rdy;
                                 }
-                                else
-                                {
-                                    StatusLight -= 3;
-                                    Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, StatusLight);
-                                    Wait(5);
-                                }
-                                _prevRdy = ((LightBits2)myCurrentData.lightBits2 & LightBits2.Rdy)
-                                    == LightBits2.Rdy;
                             }
                         }
 
-                        // Reset CMDS-display & LED when CMDS power is off:
-                        if (myCurrentData.cmdsMode == 0)
+                        // Reset CMDS-display & LED when CMDS power is off,
+                        // or when MainGenerator and StandbyGenerator are without power:
+                        if ((myCurrentData.cmdsMode == 0)|| ((((PowerBits)myCurrentData.powerBits & PowerBits.MainGenerator)
+                                  != PowerBits.MainGenerator) && (((PowerBits)myCurrentData.powerBits & PowerBits.StandbyGenerator)
+                                  != PowerBits.StandbyGenerator)))
                         {
                             Port3_PHCC_Input_Output.DoaSendRaw(0x44, 34, 0);
                             Port3_PHCC_Input_Output.DoaSendRaw(0x44, 33, 0);
